@@ -1,0 +1,23 @@
+<html>
+	<head>
+		<title>SIGNUP</title>
+</head>
+<body>
+		{% block content %}
+		<form action="" method="post">
+			{% csrf_token %}
+			<h3>Username: {{lostitem_form.username}}</h3>
+			<h3>Firstname: {{lostitem_form.firstname}}</h3>
+			<h3>Lastname: {{lostitem_form.lastname}}</h3>
+			<h3>EmailId: {{lostitem_form.email}}</h3>
+			<h3>Location: {{lostitem_form.location}}</h3>
+			<h3>Time: {{lostitem_form.time}}</h3>
+			<h3>Priority: {{lostitem_form.priority}}</h3>
+			<h3>Additional Info: {{lostitem_form.additonalinfo}}</h3>
+			<h3>Profile Pic: {{lostitem_form.profilePhoto}}</h3>
+			<input type="submit" value="SIGNUP"/>
+		</form>
+		{% endblock %}
+	</div>
+</body>
+</html> 

@@ -1,0 +1,87 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title></title>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+	<link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+	<link href='http://fonts.googleapis.com/css?family=Londrina+Shadow' rel='stylesheet' type='text/css'>	
+
+	<script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+	 <script type="text/javascript">
+      $(function () {
+          $(document).on('click', 'a.disconnect', function (e) {
+              e.preventDefault();
+              $('form#disconnect-form')
+                  .attr('action', $(this).attr('href'))
+                  .submit();
+          });
+      });
+    </script>
+ 	
+
+	 <style type="text/css">
+body{
+font-size:100%
+}
+
+.logo{
+    font-family: 'Londrina Shadow', cursive;
+    width: 100%;
+	padding-bottom:20px;
+	font-size: 7.2vw;
+	font-weight:700;
+    color: #3fada8;
+	text-align: center;
+  }
+	
+</style>
+   
+  </head>
+	
+
+<body>
+
+<div class="container-login">
+	<div class="logo">
+	findmystuff
+	</div>
+	<center>
+		<button type="button" class="btn btn-primary btn-lg" style="width:22%" href="{% url 'social:begin' 'google' %}">Login</button>
+	</center>
+</div>
+</body>
+</html>
+
+<!--
+{% block scripts %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
+<script src="https://login.persona.org/include.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(function () {
+    $('#persona').on('click', function (e) {
+        e.preventDefault();
+        var self = $(this);
+
+        navigator.id.get(function (assertion) {
+            if (assertion) {
+                self.parent('form')
+                        .find('input[type=hidden]')
+                        .attr('value', assertion)
+                        .end()
+                    .submit();
+            } else {
+                alert('Some error occurred');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}-->
+

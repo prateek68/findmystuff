@@ -1,0 +1,138 @@
+{% load staticfiles %}
+{% load url from future %}
+<html>
+	<head>
+	<title>Lost Item Details</title>
+
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+  	<link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="{% static 'js/chart.js' %}"></script>
+    
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+
+-   <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+-   <link rel="stylesheet" href="/resources/demos/style.css" />
+
+
+
+
+		
+		
+		
+		
+		
+	<script>
+		$(function() {
+		$( "#{{lostitem_form.time.auto_id}}" ).datepicker({
+		changeMonth: true,
+		changeYear: true
+		});
+		});
+	</script>
+
+
+	 <script type="text/javascript">
+      $(function () {
+          $(document).on('click', 'a.disconnect', function (e) {
+              e.preventDefault();
+              $('form#disconnect-form')
+                  .attr('action', $(this).attr('href'))
+                  .submit();
+          });
+      });
+    </script>
+
+
+	 <style type="text/css">
+body{
+font-size:100%
+}
+
+.logo{
+    font-family: 'Londrina Shadow', cursive;
+    width: 100%;
+	font-size: 28px;
+	font-weight:700;
+    color: #DDDDDD;`
+	text-align: center;
+  }
+	
+</style>
+
+
+
+</head>
+
+
+<body>
+<nav class="navbar navbar-default navbar-fixed-top " role="navigation" >
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="/"><h3>IIITD FindMyStuff</h3></a>
+  </div>
+
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse navbar-ex1-collapse">
+
+
+    <ul class="nav navbar-nav navbar-right">
+      <li ><a href="/log"><i class="fa fa-th-list "></i>&nbsp&nbsp&nbspInventory</a></li> 
+      <li ><a href="http://www.facebook.com/iiitdfms"><i class="fa fa-facebook-square "></i>&nbsp&nbsp&nbspOfficial Page</a></li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.username }}<b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="/logout">Logout</a></li>
+          <li><a href="/history">History</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div><!-- /.navbar-collapse -->
+</nav>
+
+		
+<div class=row>
+	<div class="col-lg-12">
+		  <div class="container-form2">
+      <legend>Item Details</legend>
+			<form action="" method="post">
+					
+					{% csrf_token %}
+					<div style="display:none"><h3>Username:    {{lostitem_form.username}}</h3></div>
+					<div style="display:none"><h3>Firstname:   {{lostitem_form.firstname}}</h3></div>
+					<div style="display:none"><h3>Lastname:    {{lostitem_form.lastname}}</h3></div>
+					<div style="display:none"><h3><label>EmailId:</label>   {{lostitem_form.email}}</h3></div>
+					<div style="display:none"><h3>{{lostitem_form.status}}</h3></div>
+					<div style="display:none"><h3>{{lostitem_form.pub_date}}</h3></div>
+					<h3>   {{lostitem_form.itemname}}</h3>
+					<h3>  {{lostitem_form.location}}</h3>
+					<h3>  {{lostitem_form.time}}</h3>
+					<h3>    {{lostitem_form.priority}}</h3>
+					<h3>    {{lostitem_form.additonalinfo}}</h3>
+					<!--h3>Profile Pic: {{lostitem_form.profilePhoto}}</h3-->
+					<center><input type="submit" value="Submit"class="btn btn-primary"></center>
+				</form>
+		</div>
+	</div>
+</div>
+
+</body>
+</html> 

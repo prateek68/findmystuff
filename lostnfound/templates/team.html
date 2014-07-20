@@ -1,0 +1,73 @@
+{% load staticfiles %}
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+    <title>Team</title>
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,900' rel='stylesheet' type='text/css'>
+    
+
+    
+    
+
+    
+  </head>
+
+  <body>
+
+   
+	
+	
+
+	<div class="container">
+		<center>
+		<h1>TEAM</h1>
+		</center>
+		<div class="row mt centered">
+			<div class="col-lg-4">
+
+				<img class="img-thumbnail" src="{% static 'pic1.jpg' %}" width="140" alt="">
+				<h4>Ankur Dohare</h4>
+				<h3><p><a href="http://www.facebook.com/dre.ankur"><span class="label label-default"><i class="fa fa-facebook"></span></i> <a target="_blank" href="mailto:ankur11022@iiitd.ac.in"><span class="label label-default"><i class="fa fa-google-plus"></span></i></a> <a href="http://www.twitter.com/dreankur"><span class="label label-default"><i class="fa fa-twitter"></span></i></p></a></h3>
+			</div><!--/col-lg-4 -->
+
+			<div class="col-lg-4">
+				<img class="img-thumbnail" src="{% static 'pic2.jpg' %}" width="140" alt="">
+				<h4>Kshitij Jain</h4>
+				
+				<h3><p><a href="http://www.facebook.com/kshitij.jain.92"><span class="label label-default"><i class="fa fa-facebook"></a></i></span>&nbsp&nbsp&nbsp<a target="_blank" href="mailto:kshitij11060@iiitd.ac.in"><span class="label label-default"><i class="fa fa-google-plus"></span></a></i></p></span></h3>
+			</div><!--/col-lg-4 -->
+
+			<div class="col-lg-4">
+				<img class="img-thumbnail" src="{% static 'pic3.jpg' %}" width="140" alt="">
+				<h4>Magus Verma</h4>
+				<h3><p><a href="http://www.facebook.com/magus.verma"><span class="label label-default"><i class="fa fa-facebook"></span></a></i> <a target="_blank" href="mailto:magus12141@iiitd.ac.in"><span class="label label-default"><i class="fa fa-google-plus"></a></i></span></i></p></h3>
+
+
+			</div><!--/col-lg-4 -->
+		</div><!-- /row -->
+		<div class="row mt centered">
+				<h3><span class="label label-warning"><a href="{% url 'home' %}">Go Back</a></span></h3>
+				</div>
+	</div><!-- /container -->
+	
+	
+	
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  </body>
+</html>

@@ -1,0 +1,197 @@
+{% load url from future %}
+{% load staticfiles %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title></title>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+	<link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+	<link href='http://fonts.googleapis.com/css?family=Londrina+Shadow' rel='stylesheet' type='text/css'>	
+
+	<script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+	 <script type="text/javascript">
+      $(function () {
+          $(document).on('click', 'a.disconnect', function (e) {
+              e.preventDefault();
+              $('form#disconnect-form')
+                  .attr('action', $(this).attr('href'))
+                  .submit();
+          });
+      });
+    </script>
+	<script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBK0EN65C9072dbRhU-YJ5qMl4RSBg5dJs&sensor=false">
+    </script>
+    <script type="text/javascript">
+      function initialize() {
+        var mapOptions = {
+          center: new google.maps.LatLng(28.5460459, 77.2714055),
+          zoom: 17,
+          mapTypeId: google.maps.MapTypeId.SATELLITE
+        };
+        var map = new google.maps.Map(document.getElementById("map-canvas"),
+            mapOptions);
+	
+	var contentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
+      '<div id="bodyContent">'+
+      '<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
+      'sandstone rock formation in the southern part of the '+
+      'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) '+
+      'south west of the nearest large town, Alice Springs; 450&#160;km '+
+      '(280&#160;mi) by road. Kata Tjuta and Uluru are the two major '+
+      'features of the Uluru - Kata Tjuta National Park. Uluru is '+
+      'sacred to the Pitjantjatjara and Yankunytjatjara, the '+
+      'Aboriginal people of the area. It has many springs, waterholes, '+
+      'rock caves and ancient paintings. Uluru is listed as a World '+
+      'Heritage Site.</p>'+
+      '<p>Attribution: Uluru, <a href="/found/id">'+
+      'Found This Item</a> '+
+      '(last visited June 22, 2009).</p>'+
+      '</div>'+
+      '</div>';
+      
+      {{s|safe}}
+    	
+	//newmarker(28.5060459, 77.2714055,"magus",contentString);//newmarker(28.5460459, 77.2714055,"magus",contentString);//,'image2.png');	
+	
+	//newmarker(28.5460454, 77.2710000,"gagus");
+	
+	function toggleBounce() {
+		newmarker(28.5460454, 77.2710000,this.text);
+	}
+	
+	function newmarker(x,y,text,contentString){
+		var myLatlng = new google.maps.LatLng(x, y);
+      		var marker = new google.maps.Marker({
+    		position: myLatlng,
+    		map: map,
+		draggable:true,
+	    	animation: google.maps.Animation.DROP,
+		//position: parliament,
+		title:text
+		});
+			var infowindow = new google.maps.InfoWindow({
+			      content: contentString
+			  });
+
+			 google.maps.event.addListener(marker, 'click', function() {
+			    infowindow.open(map,marker);
+			  });
+		marker.setMap(map);
+	}
+	/*function newmarker(x,y,text,urll){
+		//  var image = 'leaflet/image2.png';
+		var image = {
+			    url: urll,
+			    size: new google.maps.Size(20, 32),
+			    origin: new google.maps.Point(0,0),
+			    anchor: new google.maps.Point(0, 32)
+			  };
+		var myLatlng = new google.maps.LatLng(x, y);
+      		var marker = new google.maps.Marker({
+    		position: myLatlng,
+    		map: map,
+    		title:text,
+		icon: image
+		});
+		marker.setMap(map);
+	}*/
+	/*var myLatlng = new google.maps.LatLng(28.5460459, 77.2714055);
+      	var marker = new google.maps.Marker({
+    	position: myLatlng,
+    	map: map,
+    	title:"magus"});*/
+	}
+	
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+
+
+	 <style type="text/css">
+body{
+font-size:100%;
+background-color:#303030;
+}
+
+.logo{
+    font-family: 'Londrina Shadow', cursive;
+    width: 100%;
+	font-size: 28px;
+	font-weight:700;
+    color: #DDDDDD;`
+	text-align: center;
+  }
+	
+</style>
+   
+  </head>
+
+
+
+
+<body>
+
+<nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="#"><div class=logo>findmystuff</div></a>
+  </div>
+
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse navbar-ex1-collapse">
+
+
+    <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.username }}<b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div><!-- /.navbar-collapse -->
+</nav>
+
+
+<div class="container" style="height:95%;width:100%;margin-top:3.8%;padding:0px 0px 0px 0px">
+	 <div id="map-canvas" style ="height:100%;width:100%"></div>
+</div>
+
+
+
+<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation" style="background-color: rgba(128, 128, 128, 0.5);">
+ 	
+	<div class="container">
+		
+			<center>
+			<div class="btn-group btn-lg" style="padding:20px 20px 20px 0px">
+			<a href="/lostitem"><button type="button" class="btn btn-danger" style="width:140px">Lost</button></a> 
+			<a href="/founditem"><button type="button" class="btn btn-success" style="width:140px">Found</button></a>
+			
+			</div>
+			<div class="container">
+			<a href="http://facebook.com/iiitdfms"><button type="button" class="btn btn-info" style="width:140px">Facebook</button></a>	</div>
+			</center>
+ 			
+			
+	
+			
+	
+</nav>
+	
+
+</body>
+</html>
