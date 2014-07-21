@@ -17,6 +17,8 @@ from lostnfound import settings
 @login_required
 def add(request):
 
+	websites = AuthenticationTokens.objects.filter(user = request.user)
+
 	def add_user(sender, **kwargs):
 		if sender == AuthenticationTokens:
 			obj = kwargs['instance']
@@ -31,8 +33,8 @@ def add(request):
 			return HttpResponseRedirect(reverse('add_404_website'))
 	else:
 		form = AddWebsiteForm(request.user.pk)
-	return render(request, 'todo-newwebsite.html', {'form': form,
-	 'websites': AuthenticationTokens.objects.all()})
+	return render(request, '404_apps.html', {'form': form,
+	 'websites': websites})
 
 def refresh_token(request, token_id):
 	site = get_object_or_404(AuthenticationTokens, pk=token_id)
