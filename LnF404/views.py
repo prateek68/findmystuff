@@ -2,12 +2,16 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
+from django.dispatch import receiver
 
 from LnF404.models import RecentLostItems, AuthenticationTokens
 from LnF404.models import AddWebsiteForm
 
+from lostndfound.models import LostItem
+
 import json
+from lostnfound import settings
 
 @login_required
 def add(request):
@@ -35,6 +39,23 @@ def refresh_token(request, token_id):
 		site.token = site.generate_token()
 		site.save()
 	return HttpResponseRedirect(reverse('add_404_website'))
+
+@receiver(post_save)
+def update_404_items(sender, **kwargs):
+	if sender != LostItem:
+		return
+
+	item = kwargs['instance']
+	if item.status != 'active':
+		return
+
+	if RecentLostItems.objects.all().count() < settings.LnF404_ITEMS_NUMBER:
+		RecentLostItems.objects.create(item=item)
+		return
+
+	#Hence item is a new item added, or an old item reopened.
+	RecentLostItems.objects.first().delete()
+	RecentLostItems.objects.create(item=item)
 
 def send_data(request, site_id='0', token='0'):
 	response 	= {'success': 'true'}
