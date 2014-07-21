@@ -46,16 +46,26 @@ def update_404_items(sender, **kwargs):
 		return
 
 	item = kwargs['instance']
-	if item.status != 'active':
-		return
 
-	if RecentLostItems.objects.all().count() < settings.LnF404_ITEMS_NUMBER:
+	if item.status == 'active':
 		RecentLostItems.objects.create(item=item)
-		return
+		if RecentLostItems.objects.all().count() > settings.LnF404_ITEMS_NUMBER:
+			RecentLostItems.objects.first().delete()
 
-	#Hence item is a new item added, or an old item reopened.
-	RecentLostItems.objects.first().delete()
-	RecentLostItems.objects.create(item=item)
+	else:
+		check = RecentLostItems.objects.filter(item=item).first()
+		if check:
+			check.delete()
+			new_item = LostItem.objects.filter(status='active').order_by('-pub_date')
+			for x in new_item:
+				if not RecentLostItems.objects.filter(item=x).first():
+					new_item = x
+					break
+			else:
+				#no item found which is currectly active and not in our list
+				return
+			RecentLostItems.objects.create(item=new_item)
+
 
 def send_data(request, site_id='0', token='0'):
 	response 	= {'success': 'true'}
