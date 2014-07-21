@@ -81,13 +81,14 @@ def send_data(request, site_id='0', token='0'):
 		site = get_object_or_404(AuthenticationTokens, pk=token_id)
 		if site.token == token:
 
+			response['quantity'] = RecentLostItems.objects.all().count()
 			for i, link in enumerate(RecentLostItems.objects.all()):
 				json_item_data = {}
 				json_item_data['item-name'] = link.item.itemname
 				json_item_data['location'] 	= link.item.location
 				json_item_data['info']		= link.item.additonalinfo
 				json_item_data['email']		= link.item.email
-				response[str(i)] = json_item_data
+				response[i] = json_item_data
 
 			return HttpResponse(json.dumps(response),
 			 content_type="application/json")
