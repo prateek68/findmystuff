@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Inventory</title>
+    <title>404 Apps</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
@@ -65,62 +65,38 @@
 
 <div class="row" style="padding-top:5%">
 	<div class="col-md-6 col-md-offset-3">
-
-
-{% if lost %}
-<h3>  Lost Items </h3>
-<table class="table">
-			<thead>
+	<table>
+		<thead>
 			<tr>
-	          <th>Item</th>
-	          <th>Details</th>
-	          <th>Status</th>
-	        </tr>
-     		</thead>
-     	 <tbody>	
-{% for x in lost %}
-
-<tr class="active">
-<td>{{x.itemname}} </td>
-<td>Lost at {{x.location}} on {{x.time}} {{x.additonalinfo}} </td>
-<td><a href="/found/{{x.id}}" align="right"><span class="label label-default">Report Found</span></a>
-		<br></td>
-
-{% endfor %}
-</tbody>
-</table>
-
- {% else %}
-    <h3>    <p>There are currently No Lost Items</p>  </h3>
-    {% endif %} 
-
-{% if found %}
-<h3>Found Items </h3>
-<table class="table">
-			<thead>
+				<td>Website name</td>
+				<td>Website IP</td>
+				<td>website link</td>
+				<td>Site-ID</td>
+				<td>Token</td>
+				<tr>Actions</tr>
+			</tr>
+		</thead>
+		<tbody>
+			{% for a in websites %}
 			<tr>
-	          <th>Item</th>
-	          <th>Details</th>
-	          <th>Status</th>
-	        </tr>
-     		</thead>
-     	 <tbody>
-
-{% for x in found %}
-<tr class="active">
-<td>{{x.itemname}} </td>
-<td>Lost at {{x.location}} on {{x.time}} {{x.additonalinfo}} </td>
-<td><a href="/lost/{{x.id}}" align="right"><span class="label label-default">Report Lost</span></a>
-		<br></td>
-
-{% endfor %}
- {% else %}
-    <h3>    <p>You have No Found Items</p>  </h3>
-    {% endif %}
-
+				<td>{{ a.website_name }}</td>
+				<td>{{ a.website_IP }}</td>
+				<td>{{ a.website_url }}</td>
+				<td>{{ a.pk }}</td>
+				<td>{{ a.token }}</td>
+				<td><a href="{% url 'refresh_404_token' a.pk %}"><span class = 'glyphicon glyphicon-refresh' style='color:green'></span></a></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+			<p>
+			<form action="{% url 'add_404_website' %}" method="post">{% csrf_token %}
+				{{ form.as_p }}
+				<input type="submit" value="Submit">
+			</form>
+		</p>
      </div>
  </div>
 
-
-   </body>
+</body>
 </html>

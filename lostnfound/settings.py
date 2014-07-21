@@ -90,6 +90,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'lostndfound',
+    'LnF404',
     'social.apps.django_app.default',
     'djrill',
       )
@@ -145,6 +146,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH_EXTRA_SCOPE = [
     'https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/userinfo.profile'
 ]
+
+LnF404_ITEMS_NUMBER = 5
 
 try:
     from lostnfound.local_settings import *
