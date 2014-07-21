@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
+from django.views.decorators.csrf import csrf_exempt
 
 from LnF404.models import RecentLostItems, AuthenticationTokens
 from LnF404.models import AddWebsiteForm
@@ -66,19 +67,20 @@ def update_404_items(sender, **kwargs):
 				return
 			RecentLostItems.objects.create(item=new_item)
 
-
+@csrf_exempt
 def send_data(request, site_id='0', token='0'):
 	response 	= {'success': 'true'}
-	import pdb
-	pdb.set_trace()
-	dictionary = request.POST if request.method == "POST" else {'id': site_id, 'token': token}
+	if token == '0':
+		dictionary = request.POST if request.method == "POST" else request.GET
+	else:
+		dictionary = {'id': site_id, 'token': token}
 
 	token_id = int(dictionary.get('id', None))
 	token 	 = str(dictionary.get('token', None))
 	if token_id and token:
 		site = get_object_or_404(AuthenticationTokens, pk=token_id)
 		if site.token == token:
-			
+
 			for i, link in enumerate(RecentLostItems.objects.all()):
 				json_item_data = {}
 				json_item_data['item-name'] = link.item.itemname
@@ -86,8 +88,7 @@ def send_data(request, site_id='0', token='0'):
 				json_item_data['info']		= link.item.additonalinfo
 				json_item_data['email']		= link.item.email
 				response[str(i)] = json_item_data
-			import pdb
-			pdb.set_trace()
+
 			return HttpResponse(json.dumps(response),
 			 content_type="application/json")
 
