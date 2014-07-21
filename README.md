@@ -45,3 +45,6 @@ Go on and create an admin account and remember its login details and run our pro
 
 The site get hosted on your local machine go on and open the link shown in your terminal on a browser window.
 Default login is 127.0.0.1:8000
+
+##Configuring the 404 Easter Egg##
+Refer to [this wiki](https://github.com/IIIT-Delhi/lost-n-found/wiki/Adding-404-Easter-Egg-to-your-web-app)
