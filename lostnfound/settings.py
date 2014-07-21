@@ -90,6 +90,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'lostndfound',
+    'LnF404',
     'social.apps.django_app.default',
     'djrill',
       )
