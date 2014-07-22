@@ -91,8 +91,12 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'lostndfound',
     'LnF404',
-    'social.apps.django_app.default',
+    #'social.apps.django_app.default',
     'djrill',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
       )
 
 
@@ -122,16 +126,20 @@ LOGGING = {
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.request',
     'django.core.context_processors.debug',
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
     'django.contrib.messages.context_processors.messages',
-    'social.apps.django_app.context_processors.backends',
+    #'social.apps.django_app.context_processors.backends',
+    'allauth.account.context_processors.account',
+    'allauth.socialaccount.context_processors.socialaccount',
 )
 
 AUTHENTICATION_BACKENDS = (
-    'social.backends.google.GoogleOpenId',
+    # 'social.backends.google.GoogleOpenId',
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 )
 MANDRILL_API_KEY = 'Z_GwF4iDxCx59-24qzr4Nw'
 EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
@@ -140,14 +148,21 @@ EMAIL_HOST_PASSWORD='kshitij@86'
 LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = '/done/'
 URL_PATH = ''
-SOCIAL_AUTH_STRATEGY = 'social.strategies.django_strategy.DjangoStrategy'
-SOCIAL_AUTH_STORAGE = 'social.apps.django_app.default.models.DjangoStorage'
-SOCIAL_AUTH_GOOGLE_OAUTH_EXTRA_SCOPE = [
-    'https://www.googleapis.com/auth/drive',
-    'https://www.googleapis.com/auth/userinfo.profile'
-]
 
 LnF404_ITEMS_NUMBER = 5
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/accounts/login'
+SOCIALACCOUNT_QUERY_EMAIL = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_REQUIRED = True
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+    'SCOPE': ['https://www.googleapis.com/auth/userinfo.email',
+     'https://www.googleapis.com/auth/userinfo.profile'],
+     'AUTH_PARAMS': {'access_type': 'online'}
+    }
+}
 
 try:
     from lostnfound.local_settings import *

@@ -10,6 +10,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^LnF404/', include('LnF404.urls')),
+    url(r'^accounts/', include('allauth.urls')),
     url(r'^%s$' % PATH, 'lostndfound.views.home',name='home'),
     url(r'^%slogout$' % PATH, 'lostndfound.views.logout',name='logout'),
     url(r'^%steam/$' % PATH, 'lostndfound.views.team',name='team'),
