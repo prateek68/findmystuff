@@ -9,6 +9,7 @@ from models import LostItem,FoundItem
 from django.utils import timezone
 import datetime
 from django.core.mail import send_mail
+from lostnfound import settings
 
 #######LAT LONG LIST#############
 {"Faculty Residency":(28.5439000, 77.2704000,28.5443000, 77.2709000),"Academic Block":(28.5441000, 77.2722000,28.5448000, 77.2729000)}
@@ -25,16 +26,8 @@ def home(request):
 def done(request):
     #print request
     s=User.objects.get(username=request.user).email
-    flag=0
-    s1=""
-    for i in s:
-        if(flag==1):
-            s1=s1+i
-        if(i=='@'):
-         flag=1
-            
-    #print s1
-    if(s1!="iiitd.ac.in"):
+    s1 = s.split('@')[-1]
+    if s1 not in settings.ALLOWED_HOSTS:
         User.objects.get(username=request.user).delete()
         return render_to_response('wronglogin.html', {}, RequestContext(request))
     """Login complete view, displays user data"""
@@ -48,17 +41,13 @@ def logout(request):
     """Logs out user"""
     auth_logout(request)
     return redirect('home')
+
 @login_required 
 def lostitem(request):
 	if (request.user!=""):
 		if request.method == 'POST':
-			#print 'in request'
-			#print request
 			lostitem_form=LostItemForm(request.POST,request.FILES)
-			#print 'in request'
-			#print lostitem_form
 			if lostitem_form.is_valid():
-				#print 'in request'
 				lostitem_form.save()
 				####FACEBOOK POST########
 				#m = Mail()
@@ -72,7 +61,6 @@ def lostitem(request):
 				return redirect('done')
 			return render_to_response('wrongpage.html', {},{})
 		else :
-			
 			s=User.objects.get(username=request.user)
 			lostitem_form={'lostitem_form':LostItemForm({'username':request.user,'email':s.email,'firstname':s.first_name,'lastname':s.last_name,'status':'active','pub_date':timezone.now()})}
 			return render_to_response('LostItem.html',lostitem_form,RequestContext(request))
@@ -216,7 +204,3 @@ def log(request):
 	found=FoundItem.objects.all().filter(status='active').order_by('-id')
 	s={'lost':lost,'found':found}
 	return render_to_response('log.html',s,RequestContext(request))
-	
-
-
-

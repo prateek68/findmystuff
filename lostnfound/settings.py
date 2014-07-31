@@ -164,6 +164,8 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+ALLOWED_HOSTS = ['iiitd.ac.in']
+
 try:
     from lostnfound.local_settings import *
 except ImportError:
