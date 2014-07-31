@@ -16,9 +16,10 @@ class AuthenticationTokens(models.Model):
 	"""
 	user 			= models.ForeignKey(User)
 	website_name	= models.CharField(max_length = '100')
-	# to redirect back to if need be
+	# to redirect back to if need be.
 	website_url		= models.URLField()
 	website_IP		= models.CharField(max_length=64)
+	#URL and IP are not being used as of now.
 	token 			= models.CharField(max_length=32)
 
 	def generate_token(self):
