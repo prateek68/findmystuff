@@ -122,7 +122,7 @@ def gmap(request):
 					str(i.time.day) if len(str(i.time.day))>1 else '0' + str(i.time.day),
 					str(i.time.month) if len(str(i.time.month))>1 else '0' + str(i.time.month),
 					str(i.time.year)),
-				'<p text-align:right ><a href="/lost/%d"> \<span class="label label-default">Report Lost</span></a> </div></div>\');\n'%(i.pk),
+				'<p text-align:right ><a href="/found/%d"> \<span class="label label-default">Report Found</span></a> </div></div>\');\n'%(i.pk),
 			])
 			final += contentString
 
@@ -146,7 +146,7 @@ def gmap(request):
 					str(i.time.day) if len(str(i.time.day))>1 else '0' + str(i.time.day),
 					str(i.time.month) if len(str(i.time.month))>1 else '0' + str(i.time.month),
 					str(i.time.year)),
-				'<p text-align:right ><a href="/found/%d"> \<span class="label label-default">Report Found</span></a> </div></div>\', color="green");\n'%(i.pk),
+				'<p text-align:right ><a href="/lost/%d"> \<span class="label label-default">Report Lost</span></a> </div></div>\', color="green");\n'%(i.pk),
 			])
 			final += contentString
 
@@ -181,7 +181,7 @@ def lost(request,lost_id):
 
 		subject = "Found the owner of Lost Item"
 		content = " ".join([
-			"The item '%s' you reported found belongs to ",
+			"The item '%s' you reported found belongs to "%item.itemname,
 			request.user.first_name, ''.join([request.user.last_name,'.']),
 			"Please contact at %s"%request.user.email,
 			])

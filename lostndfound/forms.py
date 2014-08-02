@@ -24,7 +24,7 @@ class LostItemForm(forms.ModelForm):
 
 	itemname = forms.CharField(label = 'Item', widget=forms.TextInput(attrs = {
 		'class':'form-control','placeholder':'Object Lost'}))
-	time = forms.DateField(widget=forms.DateInput(attrs = {
+	time = forms.DateField(label = 'Last seen on', widget=forms.DateInput(attrs = {
 		'class':'form-control','placeholder':'Date'}), validators = [validate_date])
 	additionalinfo = forms.CharField(label="Addition Information", widget=forms.TextInput(attrs = {
 		'class':'form-control','placeholder':'Additional Info'}))
@@ -42,7 +42,7 @@ class FoundItemForm(forms.ModelForm):
 
 	itemname = forms.CharField(label="Item", widget=forms.TextInput(attrs = {
 		'class':'form-control','placeholder':'Object Lost'}))
-	time = forms.DateField(widget=forms.DateInput(attrs = {
+	time = forms.DateField(label='Found on', widget=forms.DateInput(attrs = {
 		'class':'form-control','placeholder':'Date'}), validators = [validate_date])
 	additionalinfo = forms.CharField(label="Additional Info", widget=forms.TextInput(attrs = {
 		'class':'form-control','placeholder':'Additional Info'}))
