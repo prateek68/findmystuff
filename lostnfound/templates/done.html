@@ -55,7 +55,6 @@
 	
 	function newmarker(x,y,text,contentString, color='red'){
 		var myLatlng = new google.maps.LatLng(x, y);
-    var image = "{% static 'gmaps-blue-marker.png' %}"
     content = {
       position: myLatlng,
       map: map,
@@ -63,8 +62,11 @@
       animation: google.maps.Animation.DROP,
       title:text,
     }
-    if (color!=='red'){
-      content.icon = image;
+    if (color==='blue'){
+      content.icon = "{% static 'gmaps-blue-marker.png' %}";
+    }
+    else if (color==='green'){
+      content.icon = "{% static 'gmaps-green-marker.png' %}";
     }
     var marker = new google.maps.Marker(content);
     var infowindow = new google.maps.InfoWindow({

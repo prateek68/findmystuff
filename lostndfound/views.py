@@ -96,7 +96,7 @@ limit = {"Faculty Residency":(28.5439000, 77.2704000,28.5443000, 77.2709000),
 @login_required
 def gmap(request):
 	lost_items=LostItem.objects.all().filter(status=True).filter(
-		pub_date__gt=timezone.now()-datetime.timedelta(days=10))
+		pub_date__gt=timezone.now()-datetime.timedelta(days=10)).order_by('-pub_date')[:5]
 	final = ""
 	for i in lost_items:
 		if(i.location in limit.keys()):
@@ -122,12 +122,13 @@ def gmap(request):
 					str(i.time.day) if len(str(i.time.day))>1 else '0' + str(i.time.day),
 					str(i.time.month) if len(str(i.time.month))>1 else '0' + str(i.time.month),
 					str(i.time.year)),
-				'<p text-align:right ><a href="/lost/%d"> \<span class="label label-default">Report Lost</span></a> </div></div>\',color="blue");\n'%(i.pk),
+				'<p text-align:right ><a href="/lost/%d"> \<span class="label label-default">Report Lost</span></a> </div></div>\');\n'%(i.pk),
 			])
 			final += contentString
 
-	found_items=FoundItem.objects.all().filter(status=True).filter( pub_date__gt=timezone.now()-datetime.timedelta(days=10))
-	
+	found_items=FoundItem.objects.all().filter(status=True).filter(
+		pub_date__gt=timezone.now()-datetime.timedelta(days=10)).order_by('-pub_date')[:10 - len(lost_items)]
+
 	for i in found_items:
 		if(i.location in limit.keys()):
 			x = random.uniform(limit[i.location][0], limit[i.location][2])
@@ -145,7 +146,7 @@ def gmap(request):
 					str(i.time.day) if len(str(i.time.day))>1 else '0' + str(i.time.day),
 					str(i.time.month) if len(str(i.time.month))>1 else '0' + str(i.time.month),
 					str(i.time.year)),
-				'<p text-align:right ><a href="/found/%d"> \<span class="label label-default">Report Found</span></a> </div></div>\');\n'%(i.pk),
+				'<p text-align:right ><a href="/found/%d"> \<span class="label label-default">Report Found</span></a> </div></div>\', color="green");\n'%(i.pk),
 			])
 			final += contentString
 
@@ -160,7 +161,7 @@ def found(request,found_id):
 	if request.method == 'GET':
 		item = get_object_or_404(LostItem, pk = found_id)
 		subject = "Congratulations ! Found Your Lost Item"
-		content = " ",join([
+		content = " ".join([
 			"We have found your item.",
 			"Please contact",
 			request.user.first_name, request.user.last_name,
@@ -221,6 +222,6 @@ def history(request):
 @login_required
 def log(request):
 	lost=LostItem.objects.all().filter(status=True).order_by('-id')
-	found=FoundItem.objects.all().filter(status=False).order_by('-id')
+	found=FoundItem.objects.all().filter(status=True).order_by('-id')
 	s={'lost':lost,'found':found}
 	return render_to_response('log.html',s,RequestContext(request))

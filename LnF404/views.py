@@ -50,7 +50,7 @@ def update_404_items(sender, **kwargs):
 
 	item = kwargs['instance']
 
-	if item.status == 'active':
+	if item.status == True:
 		RecentLostItems.objects.create(item=item)
 		if RecentLostItems.objects.all().count() > settings.LnF404_ITEMS_NUMBER:
 			RecentLostItems.objects.first().delete()
@@ -59,7 +59,7 @@ def update_404_items(sender, **kwargs):
 		check = RecentLostItems.objects.filter(item=item).first()
 		if check:
 			check.delete()
-			new_item = LostItem.objects.filter(status='active').order_by('-pub_date')
+			new_item = LostItem.objects.filter(status=True).order_by('-pub_date')
 			for x in new_item:
 				if not RecentLostItems.objects.filter(item=x).first():
 					new_item = x
@@ -68,6 +68,16 @@ def update_404_items(sender, **kwargs):
 				#no item found which is currectly active and not in our list
 				return
 			RecentLostItems.objects.create(item=new_item)
+
+def confirmIP(request, allotedIP):
+	x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+	if x_forwarded_for:
+		ip = x_forwarded_for.split(',')[0]
+	else:
+		ip = request.META.get('REMOTE_ADDR')
+	if ip == allotedIP.split(':')[0]:
+		return True
+	return False
 
 @csrf_exempt
 def send_data(request, site_id='0', token='0'):
@@ -82,6 +92,7 @@ def send_data(request, site_id='0', token='0'):
 	if token_id and token:
 		try:
 			site = AuthenticationTokens.objects.get(pk=token_id)
+			site = site if confirmIP(request, site.website_IP) else None
 		except AuthenticationTokens.DoesNotExist:
 			site = None
 
@@ -92,8 +103,8 @@ def send_data(request, site_id='0', token='0'):
 				json_item_data = {}
 				json_item_data['item-name'] = link.item.itemname
 				json_item_data['location'] 	= link.item.location
-				json_item_data['info']		= link.item.additonalinfo
-				json_item_data['email']		= link.item.email
+				json_item_data['info']		= link.item.additionalinfo
+				json_item_data['email']		= link.item.user.email
 				response[i] = json_item_data
 
 			return HttpResponse(json.dumps(response),

@@ -23,7 +23,7 @@ urlpatterns = patterns('',
     url(r'^found/(?P<found_id>\d+)/$', 'lostndfound.views.found', name='found'),
     url(r'^lost/(?P<lost_id>\d+)/$', 'lostndfound.views.lost', name='lost'),
     url(r'^reopenlost/(?P<lost_id>\d+)/$', 'lostndfound.views.reopenlost', name='reopenlost'),
-    url(r'^reopenfound/(?P<lost_id>\d+)/$', 'lostndfound.views.reopenfound', name='reopenlost'),
+    url(r'^reopenfound/(?P<found_id>\d+)/$', 'lostndfound.views.reopenfound', name='reopenfound'),
     url(r'%s' % PATH, include('social.apps.django_app.urls',
         namespace='social'))
 )

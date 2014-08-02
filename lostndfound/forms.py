@@ -3,6 +3,13 @@ from django import forms
 from models import LostItem,FoundItem
 from django.forms import ModelChoiceField
 from django.contrib.admin import widgets
+from datetime import date
+
+def validate_date(value):
+	from django.core.exceptions import ValidationError
+	if date.today() < value:
+		raise ValidationError("Date not passed")
+	return True
 
 class LostItemForm(forms.ModelForm):
 	class Meta:
@@ -18,7 +25,7 @@ class LostItemForm(forms.ModelForm):
 	itemname = forms.CharField(label = 'Item', widget=forms.TextInput(attrs = {
 		'class':'form-control','placeholder':'Object Lost'}))
 	time = forms.DateField(widget=forms.DateInput(attrs = {
-		'class':'form-control','placeholder':'Date'}))
+		'class':'form-control','placeholder':'Date'}), validators = [validate_date])
 	additionalinfo = forms.CharField(label="Addition Information", widget=forms.TextInput(attrs = {
 		'class':'form-control','placeholder':'Additional Info'}))
 
@@ -36,6 +43,6 @@ class FoundItemForm(forms.ModelForm):
 	itemname = forms.CharField(label="Item", widget=forms.TextInput(attrs = {
 		'class':'form-control','placeholder':'Object Lost'}))
 	time = forms.DateField(widget=forms.DateInput(attrs = {
-		'class':'form-control','placeholder':'Date'}))
+		'class':'form-control','placeholder':'Date'}), validators = [validate_date])
 	additionalinfo = forms.CharField(label="Additional Info", widget=forms.TextInput(attrs = {
 		'class':'form-control','placeholder':'Additional Info'}))
