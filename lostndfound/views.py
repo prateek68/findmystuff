@@ -122,7 +122,7 @@ def gmap(request):
 					str(i.time.day) if len(str(i.time.day))>1 else '0' + str(i.time.day),
 					str(i.time.month) if len(str(i.time.month))>1 else '0' + str(i.time.month),
 					str(i.time.year)),
-				'<p text-align:right ><a href="/lost/%d"> \<span class="label label-default">Report Lost</span></a> </div></div>\');\n'%(i.pk),
+				'<p text-align:right ><a href="/lost/%d"> \<span class="label label-default">Report Lost</span></a> </div></div>\',color="blue");\n'%(i.pk),
 			])
 			final += contentString
 
