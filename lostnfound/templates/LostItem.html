@@ -117,17 +117,11 @@ font-size:100%
 			<form action="" method="post">
 					
 					{% csrf_token %}
-					<div style="display:none"><h3>Username:    {{lostitem_form.username}}</h3></div>
-					<div style="display:none"><h3>Firstname:   {{lostitem_form.firstname}}</h3></div>
-					<div style="display:none"><h3>Lastname:    {{lostitem_form.lastname}}</h3></div>
-					<div style="display:none"><h3><label>EmailId:</label>   {{lostitem_form.email}}</h3></div>
-					<div style="display:none"><h3>{{lostitem_form.status}}</h3></div>
-					<div style="display:none"><h3>{{lostitem_form.pub_date}}</h3></div>
 					<h3>   {{lostitem_form.itemname}}</h3>
 					<h3>  {{lostitem_form.location}}</h3>
 					<h3>  {{lostitem_form.time}}</h3>
 					<h3>    {{lostitem_form.priority}}</h3>
-					<h3>    {{lostitem_form.additonalinfo}}</h3>
+					<h3>    {{lostitem_form.additionalinfo}}</h3>
 					<!--h3>Profile Pic: {{lostitem_form.profilePhoto}}</h3-->
 					<center><input type="submit" value="Submit"class="btn btn-primary"></center>
 				</form>

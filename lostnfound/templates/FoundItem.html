@@ -84,22 +84,11 @@
 				<legend>Item Details</legend>
 			<form action="" method="post">
 			{% csrf_token %}
-			<!--h3>Username: {{founditem_form.username}}</h3>
-			<h3>Firstname: {{founditem_form.firstname}}</h3>
-			<h3>Lastname: {{founditem_form.lastname}}</h3>
-			<h3>EmailId: {{founditem_form.email}}</h3-->
-
-			<div style="display:none"><h4>Username:    {{founditem_form.username}}</h4></div>
-					<div style="display:none"><h4>Firstname:   {{founditem_form.firstname}}</h4></div>
-					<div style="display:none"><h4>Lastname:    {{founditem_form.lastname}}</h4></div>
-					<div style="display:none"><h4><label>EmailId:</label>   {{founditem_form.email}}</h4></div>
-					<div style="display:none"><h4><label>Status:</label>   {{founditem_form.status}}</h4></div>
-					<div style="display:none"><h4><label>Pub_Date:</label>{{founditem_form.pub_date}}</h4></div>
 			<h4>{{founditem_form.itemname}}</h4>
 			<h4>{{founditem_form.location}}</h4>
 			<h4>{{founditem_form.time}}    </h4>
 			<h4>{{founditem_form.priority}}</h4>
-			<h4>{{founditem_form.additonalinfo}}</h4>
+			<h4>{{founditem_form.additionalinfo}}</h4>
 
 			<!--h3>Profile Pic: {{founditem_form.profilePhoto}}</h3-->
 			<center><input type="submit" value="REPORT"class="btn btn-primary"/></center>
