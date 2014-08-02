@@ -28,7 +28,7 @@ def done(request):
     s1 = s.split('@')[-1]
     if s1 not in settings.ALLOWED_HOSTS:
         User.objects.get(username=request.user).delete()
-        return render_to_response('wronglogin.html', {}, RequestContext(request))
+        return redirect('home')
     """Login complete view, displays user data"""
     return redirect('gmap')
 
@@ -39,6 +39,7 @@ def logout(request):
 
 @login_required
 def lostitem(request):
+	lostitem_form={'lostitem_form':LostItemForm(None)}
 	if request.method == 'POST':
 		lostitem_form=LostItemForm(request.POST)
 		if lostitem_form.is_valid():
@@ -56,17 +57,18 @@ def lostitem(request):
 
 			send_mail(content, content,'iiitdfindmystuff@gmail.com', ['crete497valet@m.facebook.com'])
 			return redirect('done')
-	else :
-		lostitem_form={'lostitem_form':LostItemForm({})}
-	return render_to_response('LostItem.html',lostitem_form,RequestContext(request))
+		else:
+			return render_to_response('wrongpage.html',None, RequestContext(request))
+	return render_to_response('LostItem.html', lostitem_form,RequestContext(request))
 
 @login_required
 def founditem(request):
+	founditem_form={'founditem_form':FoundItemForm()}
 	if request.method == 'POST':
 		founditem_form=FoundItemForm(request.POST)
 		if founditem_form.is_valid():
 			obj = founditem_form.save(commit=False)
-			obj.user = reqeust.user
+			obj.user = request.user
 			obj.save()
 
 			####FACEBOOK POST########
@@ -76,8 +78,9 @@ def founditem(request):
 				"has found", obj.itemname, "at", obj.location])
 			
 			send_mail(content, content,'iiitdfindmystuff@gmail.com', ['crete497valet@m.facebook.com'])
-	else :
-		founditem_form={'founditem_form':FoundItemForm()}
+			return redirect("done")
+		else:
+			return render_to_response('wrongpage.html',None, RequestContext(request))
 	return render_to_response('FoundItem.html',founditem_form,RequestContext(request))
 	
 

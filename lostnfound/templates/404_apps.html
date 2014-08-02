@@ -53,7 +53,7 @@
       <li ><a href="/log"><i class="fa fa-th-list "></i>&nbsp&nbsp&nbspInventory</a></li> 
       <li ><a href="http://www.facebook.com/iiitdfms"><i class="fa fa-facebook-square "></i>&nbsp&nbsp&nbspOfficial Page</a></li>
       <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.username }}<b class="caret"></b></a>
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.first_name }}<b class="caret"></b></a>
         <ul class="dropdown-menu">
           <li><a href="/logout">Logout</a></li>
           <li><a href="/history">History</a></li>
@@ -67,7 +67,6 @@
 <div class="row" style="padding-top:5%">
   <div class="col-md-8 col-md-offset-2">
 
-
   <div class="well">
   <form action="{% url 'add_404_website' %}" method="POST"> {% csrf_token %}
   {{ form|bootstrap }}
@@ -80,7 +79,7 @@
   </div>
   </form>
   </div>
-
+  <center> Refer to <a style = "color:blue" href="https://github.com/IIIT-Delhi/lost-n-found/wiki/Adding-404-Easter-Egg-to-your-web-app">this wiki</a> for instructions.</center>
   {% if websites %}
   <h1 class="page-header">
     Registered apps

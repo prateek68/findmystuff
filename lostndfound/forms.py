@@ -15,11 +15,11 @@ class LostItemForm(forms.ModelForm):
 		self.fields['location'].empty_label = "Last Seen Location"
 		self.fields['location'].widget.choices =self.fields['location'].choices
 
-	itemname = forms.CharField(widget=forms.TextInput(attrs = {
+	itemname = forms.CharField(label = 'Item', widget=forms.TextInput(attrs = {
 		'class':'form-control','placeholder':'Object Lost'}))
 	time = forms.DateField(widget=forms.DateInput(attrs = {
 		'class':'form-control','placeholder':'Date'}))
-	additionalinfo = forms.CharField(widget=forms.TextInput(attrs = {
+	additionalinfo = forms.CharField(label="Addition Information", widget=forms.TextInput(attrs = {
 		'class':'form-control','placeholder':'Additional Info'}))
 
 class FoundItemForm(forms.ModelForm):
@@ -33,9 +33,9 @@ class FoundItemForm(forms.ModelForm):
 		self.fields['location'].empty_label = "Found Location"
 		self.fields['location'].widget.choices =self.fields['location'].choices
 
-	itemname = forms.CharField(widget=forms.TextInput(attrs = {
+	itemname = forms.CharField(label="Item", widget=forms.TextInput(attrs = {
 		'class':'form-control','placeholder':'Object Lost'}))
 	time = forms.DateField(widget=forms.DateInput(attrs = {
 		'class':'form-control','placeholder':'Date'}))
-	additionalinfo = forms.CharField(widget=forms.TextInput(attrs = {
+	additionalinfo = forms.CharField(label="Additional Info", widget=forms.TextInput(attrs = {
 		'class':'form-control','placeholder':'Additional Info'}))

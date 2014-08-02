@@ -2,6 +2,7 @@
 {% load staticfiles %}
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -39,7 +40,6 @@
   </head>
 
   <body>
-
     <!-- Fixed navbar -->
     <nav class="navbar navbar-default navbar-fixed-top " role="navigation" >
   <!-- Brand and toggle get grouped for better mobile display -->
@@ -58,14 +58,13 @@
 
 
     <ul class="nav navbar-nav navbar-right">
-      
-      <li ><a href="http://www.facebook.com/iiitdfms"><i class="fa fa-facebook-square "></i>&nbsp&nbsp&nbspOfficial Page</a></li>
-      
+      <li>
+      <a href="{% url 'add_404_website' %}">Developers</a>
       </li>
+      <li ><a href="http://www.facebook.com/iiitdfms"><i class="fa fa-facebook-square "></i>&nbsp&nbsp&nbspOfficial Page</a></li>
     </ul>
   </div><!-- /.navbar-collapse -->
 </nav>
-
 
   <div id="hello">
       <div class="container" style="margin-top:-200px;">

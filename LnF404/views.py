@@ -80,8 +80,12 @@ def send_data(request, site_id='0', token='0'):
 	token_id = int(dictionary.get('id', None))
 	token 	 = str(dictionary.get('token', None))
 	if token_id and token:
-		site = get_object_or_404(AuthenticationTokens, pk=token_id)
-		if site.token == token:
+		try:
+			site = AuthenticationTokens.objects.get(pk=token_id)
+		except AuthenticationTokens.DoesNotExist:
+			site = None
+
+		if site and site.token == token:
 
 			response['quantity'] = RecentLostItems.objects.all().count()
 			for i, link in enumerate(RecentLostItems.objects.all()):
