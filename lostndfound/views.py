@@ -11,7 +11,7 @@ import datetime
 import random
 from django.core.mail import send_mail
 from lostnfound import settings
-
+from lostndfound.Data import get_limit
 
 #######LAT LONG LIST#############
 {"Faculty Residency":(28.5439000, 77.2704000,28.5443000, 77.2709000),"Academic Block":(28.5441000, 77.2722000,28.5448000, 77.2729000)}
@@ -55,7 +55,7 @@ def lostitem(request):
 				'(', obj.user.email, ')',
 				"has lost", obj.itemname, "at", obj.location])
 
-			send_mail(content, content,'iiitdfindmystuff@gmail.com', ['crete497valet@m.facebook.com'])
+			send_mail(content, '','iiitdfindmystuff@gmail.com', ['begun150hasty@m.facebook.com'])
 			return redirect('done')
 		else:
 			return render_to_response('wrongpage.html',None, RequestContext(request))
@@ -77,27 +77,28 @@ def founditem(request):
 				'(', obj.user.email, ')',
 				"has found", obj.itemname, "at", obj.location])
 			
-			send_mail(content, content,'iiitdfindmystuff@gmail.com', ['crete497valet@m.facebook.com'])
+			send_mail(content, '','iiitdfindmystuff@gmail.com', ['begun150hasty@m.facebook.com'])
 			return redirect("done")
 		else:
 			return render_to_response('wrongpage.html',None, RequestContext(request))
 	return render_to_response('FoundItem.html',founditem_form,RequestContext(request))
 	
 
-limit = {"Faculty Residency":(28.5439000, 77.2704000,28.5443000, 77.2709000),
-			"Academic Block":(28.5441000, 77.2722000,28.5448000, 77.2729000),
-			"Library Building":(28.5439000, 77.2722000,28.5440000, 77.2726000),
-			"Student Activity Center":(28.5461649, 77.2731461,28.5462649, 77.2735461),
-			"Boys Hostel":(28.5472649, 77.2734461,28.5475949, 77.2739461),
-			"Girls Hostel":(28.5466649, 77.2732461,28.5468949, 77.2736461),
-			"Sports Field":(28.5464649, 77.2720461,28.5480949, 77.2739461),
-			"Parking Area":(28.544490 , 77.271325,28.544890 , 77.27185)}
+# limit = {"Faculty Residency":(28.5439000, 77.2704000,28.5443000, 77.2709000),
+# 			"Academic Block":(28.5441000, 77.2722000,28.5448000, 77.2729000),
+# 			"Library Building":(28.5439000, 77.2722000,28.5440000, 77.2726000),
+# 			"Student Activity Center":(28.5461649, 77.2731461,28.5462649, 77.2735461),
+# 			"Boys Hostel":(28.5472649, 77.2734461,28.5475949, 77.2739461),
+# 			"Girls Hostel":(28.5466649, 77.2732461,28.5468949, 77.2736461),
+# 			"Sports Field":(28.5464649, 77.2720461,28.5480949, 77.2739461),
+# 			"Parking Area":(28.544490 , 77.271325,28.544890 , 77.27185)}
 
 @login_required
 def gmap(request):
 	lost_items=LostItem.objects.all().filter(status=True).filter(
 		pub_date__gt=timezone.now()-datetime.timedelta(days=10)).order_by('-pub_date')[:5]
 	final = ""
+	limit = get_limit()
 	for i in lost_items:
 		if(i.location in limit.keys()):
 			x = random.uniform(limit[i.location][0], limit[i.location][2])

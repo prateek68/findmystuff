@@ -4,6 +4,7 @@ from models import LostItem,FoundItem
 from django.forms import ModelChoiceField
 from django.contrib.admin import widgets
 from datetime import date
+from lostndfound.Data import get_Location_Choices
 
 def validate_date(value):
 	from django.core.exceptions import ValidationError
@@ -19,8 +20,8 @@ class LostItemForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		super(LostItemForm, self).__init__(*args, **kwargs)
+		self.fields['location'] = forms.ChoiceField(choices=list(get_Location_Choices()))
 		self.fields['location'].empty_label = "Last Seen Location"
-		self.fields['location'].widget.choices =self.fields['location'].choices
 
 	itemname = forms.CharField(label = 'Item', widget=forms.TextInput(attrs = {
 		'class':'form-control','placeholder':'Object Lost'}))
@@ -38,7 +39,8 @@ class FoundItemForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		super(FoundItemForm, self).__init__(*args, **kwargs)
 		self.fields['location'].empty_label = "Found Location"
-		self.fields['location'].widget.choices =self.fields['location'].choices
+		self.fields['location'] = forms.ChoiceField(choices=list(get_Location_Choices()))
+
 
 	itemname = forms.CharField(label="Item", widget=forms.TextInput(attrs = {
 		'class':'form-control','placeholder':'Object Lost'}))
