@@ -165,6 +165,8 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+FACEBOOK_EMAIL = 'begun150hasty@m.facebook.com'
+
 ALLOWED_HOSTS = ['iiitd.ac.in']
 
 try:

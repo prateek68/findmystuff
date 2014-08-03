@@ -55,7 +55,7 @@ def lostitem(request):
 				'(', obj.user.email, ')',
 				"has lost", obj.itemname, "at", obj.location])
 
-			send_mail(content, '','iiitdfindmystuff@gmail.com', ['begun150hasty@m.facebook.com'])
+			send_mail(content, '',settings.EMAIL_HOST_USER, [settings.FACEBOOK_EMAIL])
 			return redirect('done')
 		else:
 			return render_to_response('wrongpage.html',None, RequestContext(request))
@@ -77,7 +77,7 @@ def founditem(request):
 				'(', obj.user.email, ')',
 				"has found", obj.itemname, "at", obj.location])
 			
-			send_mail(content, '','iiitdfindmystuff@gmail.com', ['begun150hasty@m.facebook.com'])
+			send_mail(content, '',settings.EMAIL_HOST_USER, [settings.FACEBOOK_EMAIL])
 			return redirect("done")
 		else:
 			return render_to_response('wrongpage.html',None, RequestContext(request))
@@ -166,9 +166,11 @@ def found(request,found_id):
 			"We have found your item.",
 			"Please contact",
 			request.user.first_name, request.user.last_name,
-			"(%s)."%request.user.email
+			"(%s)."%request.user.email,
+			"\n\n", "In case there is a problem getting your", item.itemname,
+			"back from", request.user.first_name, " or it is not yours, go to your history and reopen your item."
 			])
-		send_mail(subject, content,"iiitdfindmystuff@gmail.com", [item.user.email])
+		send_mail(subject, content,settings.EMAIL_HOST_USER, [item.user.email])
 		item.status = False
 		item.save()
 
@@ -184,10 +186,12 @@ def lost(request,lost_id):
 		content = " ".join([
 			"The item '%s' you reported found belongs to "%item.itemname,
 			request.user.first_name, ''.join([request.user.last_name,'.']),
-			"Please contact at %s"%request.user.email,
+			"Please contact at %s."%request.user.email,
+			"\n\n", "In case the item does not belong to %s,"%request.user.first_name,
+			"go to your history and reopen the item.",
 			])
 
-		send_mail(subject, content,"iiitdfindmystuff@gmail.com", [item.user.email])
+		send_mail(subject, content,settings.EMAIL_HOST_USER, [item.user.email])
 		item.status = False
 		item.save()
 
