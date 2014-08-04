@@ -83,6 +83,7 @@ TEMPLATE_DIRS = (
 
 INSTALLED_APPS = (
     'django.contrib.auth',
+    'suit',
     'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -165,7 +166,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-FACEBOOK_EMAIL = 'begun150hasty@m.facebook.com'
+FACEBOOK_AUTHENTICATION_TOKEN = ""
 
 ALLOWED_HOSTS = ['iiitd.ac.in']
 

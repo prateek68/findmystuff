@@ -13,8 +13,20 @@ from django.core.mail import send_mail
 from lostnfound import settings
 from lostndfound.Data import get_limit
 
+import urllib
+import urllib2
+
 #######LAT LONG LIST#############
 {"Faculty Residency":(28.5439000, 77.2704000,28.5443000, 77.2709000),"Academic Block":(28.5441000, 77.2722000,28.5448000, 77.2729000)}
+
+def PostToFB(message):
+	token = settings.FACEBOOK_AUTHENTICATION_TOKEN or None
+	url   = "https://graph.facebook.com/me/feed"
+	data  = urllib.urlencode({'message': message, 'access_token': token})
+	try:
+		request = urllib2.urlopen(url, data)
+	except:
+		print "Error in posting to FB", request.read()			# will show up in uwsgi logs.
 
 def home(request):
     """Home view, displays login mechanism"""
@@ -54,8 +66,8 @@ def lostitem(request):
 				obj.user.first_name, obj.user.last_name,
 				'(', obj.user.email, ')',
 				"has lost", obj.itemname, "at", obj.location])
+			PostToFB(content)
 
-			send_mail(content, '',settings.EMAIL_HOST_USER, [settings.FACEBOOK_EMAIL])
 			return redirect('done')
 		else:
 			return render_to_response('wrongpage.html',None, RequestContext(request))
@@ -77,7 +89,7 @@ def founditem(request):
 				'(', obj.user.email, ')',
 				"has found", obj.itemname, "at", obj.location])
 			
-			send_mail(content, '',settings.EMAIL_HOST_USER, [settings.FACEBOOK_EMAIL])
+			PostToFB(content)
 			return redirect("done")
 		else:
 			return render_to_response('wrongpage.html',None, RequestContext(request))
