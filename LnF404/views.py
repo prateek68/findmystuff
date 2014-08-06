@@ -36,6 +36,7 @@ def add(request):
 	return render(request, '404_apps.html', {'form': form,
 	 'websites': websites})
 
+@login_required
 def refresh_token(request, token_id):
 	site = get_object_or_404(AuthenticationTokens, pk=token_id)
 	if site.user == request.user:
