@@ -15,6 +15,7 @@ from lostndfound.Data import get_limit
 
 import urllib
 import urllib2
+from collections import Counter
 
 #######LAT LONG LIST#############
 {"Faculty Residency":(28.5439000, 77.2704000,28.5443000, 77.2709000),"Academic Block":(28.5441000, 77.2722000,28.5448000, 77.2729000)}
@@ -26,7 +27,7 @@ def PostToFB(message):
 	try:
 		request = urllib2.urlopen(url, data)
 	except:
-		print "Error in posting to FB", request.read()			# will show up in uwsgi logs.
+		print "Error in posting to FB", message			# will show up in uwsgi logs.
 
 def home(request):
     """Home view, displays login mechanism"""
@@ -108,11 +109,30 @@ def founditem(request):
 @login_required
 def gmap(request):
 	lost_items=LostItem.objects.all().filter(status=True).filter(
-		pub_date__gt=timezone.now()-datetime.timedelta(days=10)).order_by('-pub_date')[:5]
+		pub_date__gt=timezone.now()-datetime.timedelta(days=10)).order_by('-pub_date')
+
+	found_items=FoundItem.objects.all().filter(status=True).filter(
+		pub_date__gt=timezone.now()-datetime.timedelta(days=10)).order_by('-pub_date')
+
+	limiterByLocation = Counter([])
+
 	final = ""
 	limit = get_limit()
-	for i in lost_items:
+	itemsPerLocationLimit = settings.ITEMS_PER_LOCATION or 5
+
+	#giving preference to recent lost items
+	items = []
+	items.extend(list(lost_items))
+	items.extend(list(found_items))
+
+	for i in items:
+
+		if limiterByLocation[i.location] == itemsPerLocationLimit:
+			continue
+
 		if(i.location in limit.keys()):
+			limiterByLocation.update([i.location])
+
 			x = random.uniform(limit[i.location][0], limit[i.location][2])
 			y = random.uniform(limit[i.location][1], limit[i.location][3])
 
@@ -122,6 +142,7 @@ def gmap(request):
 				'<div id="content"><div id="siteNotice"></div><h1 id="firstHeading" class="firstHeading">itemname</h1>
 				<div id="bodyContent"><p>info</p>(Lost on 2014-08-01).</p>
 				<p text-align:right ><a href="/found/9"> \<span class="label label-default">Report Found</span></a> </div></div>');
+				Also pass argument 'color = green' for found items;
 			"""
 			contentString = " ".join([
 				"newmarker",
@@ -135,31 +156,11 @@ def gmap(request):
 					str(i.time.day) if len(str(i.time.day))>1 else '0' + str(i.time.day),
 					str(i.time.month) if len(str(i.time.month))>1 else '0' + str(i.time.month),
 					str(i.time.year)),
-				'<p text-align:right ><a href="/found/%d"> \<span class="label label-default">Report Found</span></a> </div></div>\');\n'%(i.pk),
-			])
-			final += contentString
-
-	found_items=FoundItem.objects.all().filter(status=True).filter(
-		pub_date__gt=timezone.now()-datetime.timedelta(days=10)).order_by('-pub_date')[:10 - len(lost_items)]
-
-	for i in found_items:
-		if(i.location in limit.keys()):
-			x = random.uniform(limit[i.location][0], limit[i.location][2])
-			y = random.uniform(limit[i.location][1], limit[i.location][3])
-
-			contentString = " ".join([
-				"newmarker",
-				'(',
-				str(x), ',', str(y), ',',
-				'"',i.itemname,'"',',',
-				'\'',
-				'<div id="content"><div id = "siteNotice"></div><h1 id="firstHeading" class="firstHeading">%s</h1>'%i.itemname,
-				'<div id="bodyContent"><p>%s</p>(Found on %s-%s-%s).</p>'%(
-					i.additionalinfo,
-					str(i.time.day) if len(str(i.time.day))>1 else '0' + str(i.time.day),
-					str(i.time.month) if len(str(i.time.month))>1 else '0' + str(i.time.month),
-					str(i.time.year)),
-				'<p text-align:right ><a href="/lost/%d"> \<span class="label label-default">Report Lost</span></a> </div></div>\', color="green");\n'%(i.pk),
+				'<p text-align:right ><a href="/%s/%d"> \<span class="label label-default">Report %s</span></a> </div></div>\',%s);\n'%(
+					'found' if isinstance(i, LostItem) else 'lost',
+					i.pk,
+					'Found' if isinstance(i, LostItem) else 'Lost',
+					"color='red'" if isinstance(i, LostItem) else "color='green'")
 			])
 			final += contentString
 
