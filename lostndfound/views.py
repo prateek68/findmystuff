@@ -175,8 +175,8 @@ def gmap(request):
 				'"',i.itemname,'"',',',
 				'\'',
 
-				'<div id="content"><div id = "siteNotice"></div><h3 id="firstHeading" class="firstHeading">%(itemname)s</h3>'
-					%{'itemname': i.itemname},
+				'<div id="content"><div id = "siteNotice"></div><h3 id="firstHeading" class="firstHeading"> %(itemname)s  </h3>'
+					%{'itemname': i.itemname,},
 
 				'<div id="bodyContent"><p>%(info)s</p>(Lost on %(day)s-%(month)s-%(year)s).</p>'%
 					{'info': i.additionalinfo,
@@ -184,13 +184,16 @@ def gmap(request):
 					'month': str(i.time.month) if len(str(i.time.month))>1 else '0' + str(i.time.month),
 					'year': str(i.time.year)},
 
-				'<p text-align:right > <a href="/%(itemlink)s/%(itemid)d"> <button type="button" class="btn btn-%(buttonstyle)s btn-xs" style="width:135px;">'
-				'%(saying)s</button></a> </div></div>\',%(markercolor)s);\n'%
+				'<p text-align:right > %(claimed)s <a href="/%(itemlink)s/%(itemid)d"> <button type="button" class="btn btn-%(buttonstyle)s btn-xs" style="width:135px;">'
+				'%(saying)s</button></a> </div></div> \',%(markercolor)s);\n'%
 					{'itemlink': 'found' if isinstance(i, LostItem) else 'lost',
 					'itemid': i.pk,
 					'buttonstyle': 'info' if isinstance(i, LostItem) else 'danger',
-					 'saying': 'I found it !' if isinstance(i, LostItem) else 'Hey... its mine !',
-					'markercolor': "color='red'" if isinstance(i, LostItem) else "color='blue'"}
+					'saying': 'I found it !' if isinstance(i, LostItem) else 'Hey... its mine !',
+					'markercolor': "color='red'" if isinstance(i, LostItem) else "color='blue'",
+					'claimed': '<span class="label pull-right label-default">Claimed</span>' if \
+					i.claimed==True else '',				#TODO: improve html for claimed tag
+					}
 			])
 			final += contentString
 
@@ -217,7 +220,7 @@ def found(request,found_id):
 			"to remove it from the portal."
 			])
 		send_mail(subject, content,settings.EMAIL_HOST_USER, [item.user.email])
-		item.claimed = False
+		item.claimed = True
 		item.save()
 
 		return redirect('gmap')
@@ -242,7 +245,7 @@ def lost(request,lost_id):
 		print content
 
 		send_mail(subject, content,settings.EMAIL_HOST_USER, [item.user.email])
-		item.claimed = False
+		item.claimed = True
 		item.save()
 
 		return redirect('gmap')
