@@ -16,7 +16,7 @@ class LostItemForm(forms.ModelForm):
 	class Meta:
 		model  = LostItem
 		fields = ['itemname', 'location',
-				'additionalinfo', 'priority', 'time']
+				'additionalinfo', 'time']
 
 	def __init__(self, *args, **kwargs):
 		super(LostItemForm, self).__init__(*args, **kwargs)
@@ -34,7 +34,7 @@ class FoundItemForm(forms.ModelForm):
 	class Meta:
 		model  = FoundItem
 		fields = ['itemname', 'location',
-				'additionalinfo', 'priority', 'time']
+				'additionalinfo', 'time']
 
 	def __init__(self, *args, **kwargs):
 		super(FoundItemForm, self).__init__(*args, **kwargs)

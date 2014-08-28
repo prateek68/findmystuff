@@ -25,5 +25,7 @@ urlpatterns = patterns('',
     url(r'^reopenlost/(?P<lost_id>\d+)/$', 'lostndfound.views.reopenlost', name='reopenlost'),
     url(r'^reopenfound/(?P<found_id>\d+)/$', 'lostndfound.views.reopenfound', name='reopenfound'),
     url(r'%s' % PATH, include('social.apps.django_app.urls',
-        namespace='social'))
+        namespace='social')),
+    url(r'^complete/(?P<itemtype>[a-z]+)/(?P<itemid>\d+)/(?P<token>[a-zA-Z0-9]+)/$', 'lostndfound.views.close_item',
+        name="close_item"),
 )

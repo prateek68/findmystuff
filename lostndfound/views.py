@@ -1,9 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect, get_object_or_404
-from django.http import HttpResponseRedirect,HttpResponse
+from django.http import HttpResponseRedirect,HttpResponse, Http404
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from forms import LostItemForm,FoundItemForm
 from models import LostItem,FoundItem
 from django.utils import timezone
@@ -209,11 +210,14 @@ def found(request,found_id):
 			"Please contact",
 			request.user.first_name, request.user.last_name,
 			"(%s)."%request.user.email,
-			"\n\n", "In case there is a problem getting your", item.itemname,
-			"back from", request.user.first_name, " or it is not yours, go to your history and reopen your item."
+			"\n\n", "After receiving your", item.itemname,
+			"back from", request.user.first_name, ", please click on this link:",
+			request.build_absolute_uri(
+				reverse(close_item, kwargs={'itemtype':'lost', 'itemid':item.pk, 'token':item.closing_token})),
+			"to remove it from the portal."
 			])
 		send_mail(subject, content,settings.EMAIL_HOST_USER, [item.user.email])
-		item.status = False
+		item.claimed = False
 		item.save()
 
 		return redirect('gmap')
@@ -229,12 +233,16 @@ def lost(request,lost_id):
 			"The item '%s' you reported found belongs to "%item.itemname,
 			request.user.first_name, ''.join([request.user.last_name,'.']),
 			"Please contact at %s."%request.user.email,
-			"\n\n", "In case the item does not belong to %s,"%request.user.first_name,
-			"go to your history and reopen the item.",
+			"\n\n", "After you hand over the item to %s,"%request.user.first_name,
+			"please click on this link:",
+			request.build_absolute_uri(
+				reverse(close_item, kwargs={'itemtype':'found', 'itemid':item.pk, 'token':item.closing_token})),
+			"to remove it from the portal."
 			])
+		print content
 
 		send_mail(subject, content,settings.EMAIL_HOST_USER, [item.user.email])
-		item.status = False
+		item.claimed = False
 		item.save()
 
 		return redirect('gmap')
@@ -272,3 +280,17 @@ def log(request):
 	found=FoundItem.objects.all().filter(status=True).order_by('-id')
 	s={'lost':lost,'found':found}
 	return render_to_response('log.html',s,RequestContext(request))
+
+@login_required
+def close_item(request, itemtype, itemid, token):
+	if not (itemtype == 'lost'
+		or itemtype == 'found'): raise Http404
+
+	item = get_object_or_404(LostItem, pk=itemid) \
+		if itemtype == 'lost' else get_object_or_404(FoundItem, pk=itemid)
+
+	if not token == item.closing_token: raise Http404
+	item.status = False
+	item.save()
+
+	return redirect('gmap')
