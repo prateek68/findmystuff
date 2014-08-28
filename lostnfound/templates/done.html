@@ -42,7 +42,7 @@
         var mapOptions = {
           center: new google.maps.LatLng(28.5460459, 77.2714055),
           zoom: 17,
-          mapTypeId: google.maps.MapTypeId.SATELLITE
+          mapTypeId: google.maps.MapTypeId.HYBRID,
         };
         var map = new google.maps.Map(document.getElementById("map-canvas"),
             mapOptions);
@@ -58,7 +58,7 @@
     content = {
       position: myLatlng,
       map: map,
-      draggable:true,
+      draggable:false,
       animation: google.maps.Animation.DROP,
       title:text,
     }
