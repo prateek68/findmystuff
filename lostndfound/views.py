@@ -17,17 +17,25 @@ import urllib
 import urllib2
 from collections import Counter
 
+import threading
+
 #######LAT LONG LIST#############
 {"Faculty Residency":(28.5439000, 77.2704000,28.5443000, 77.2709000),"Academic Block":(28.5441000, 77.2722000,28.5448000, 77.2729000)}
 
-def PostToFB(message):
-	token = settings.FACEBOOK_AUTHENTICATION_TOKEN or None
-	url   = "https://graph.facebook.com/me/feed"
-	data  = urllib.urlencode({'message': message, 'access_token': token})
-	try:
-		request = urllib2.urlopen(url, data)
-	except:
-		print "Error in posting to FB", message			# will show up in uwsgi logs.
+class PostToFB(threading.Thread):
+	def __init__(self, message):
+		threading.Thread.__init__(self)
+		self.message = message
+		self.start()
+
+	def run(self):
+		token = settings.FACEBOOK_AUTHENTICATION_TOKEN or None
+		url   = "https://graph.facebook.com/me/feed"
+		data  = urllib.urlencode({'message': self.message, 'access_token': token})
+		try:
+			#request = urllib2.urlopen(url, data)
+		except:
+			print "Error in posting to FB", self.message			# will show up in uwsgi logs.
 
 def home(request):
     """Home view, displays login mechanism"""

@@ -1,9 +1,9 @@
 from django.dispatch import receiver
-from django.db.models.signals import pre_save
+from django.db.models.signals import post_save
 from lostndfound.models import Location
 import lostndfound.Data as data
 
-@receiver(pre_save, sender=Location)
+@receiver(post_save, sender=Location)
 def update_locations(sender, **kwargs):
 	Location_Choices = []
 	limit = {}
