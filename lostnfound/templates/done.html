@@ -53,7 +53,7 @@
 		newmarker(28.5460454, 77.2710000,this.text);
 	}
 	
-	function newmarker(x,y,text,contentString, color='red'){
+	function newmarker(x,y,text,contentString, color){
 		var myLatlng = new google.maps.LatLng(x, y);
     content = {
       position: myLatlng,
@@ -62,6 +62,7 @@
       animation: google.maps.Animation.DROP,
       title:text,
     }
+    if (color === 'red'){}
     if (color==='blue'){
       content.icon = "{% static 'gmaps-blue-marker.png' %}";
     }

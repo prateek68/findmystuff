@@ -10,7 +10,7 @@ EMAIL_PORT = 587
 
 sys.path.insert(0, '../..')
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ROOT_PATH = abspath(dirname(__file__))
@@ -94,9 +94,9 @@ INSTALLED_APPS = (
     'LnF404',
     #'social.apps.django_app.default',
     'djrill',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
+    #'allauth',
+    #'allauth.account',
+    #'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'bootstrapform',
       )
@@ -170,7 +170,9 @@ ITEMS_PER_LOCATION = 3
 
 FACEBOOK_AUTHENTICATION_TOKEN = ""
 
-ALLOWED_HOSTS = ['iiitd.ac.in']
+ALLOWED_LOGIN_HOSTS = ['iiitd.ac.in']
+
+ALLOWED_HOSTS = ['findmystuff.iiitd.edu.in']
 
 try:
     from lostnfound.local_settings import *

@@ -71,6 +71,8 @@ def update_404_items(sender, **kwargs):
 			RecentLostItems.objects.create(item=new_item)
 
 def confirmIP(request, allotedIP):
+	#TODO nginx is not adding forwarded for header. check it
+	return True
 	x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
 	if x_forwarded_for:
 		ip = x_forwarded_for.split(',')[0]

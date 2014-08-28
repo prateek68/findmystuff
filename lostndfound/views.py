@@ -39,7 +39,7 @@ def home(request):
 def done(request):
     s=User.objects.get(username=request.user).email
     s1 = s.split('@')[-1]
-    if s1 not in settings.ALLOWED_HOSTS:
+    if s1 not in settings.ALLOWED_LOGIN_HOSTS:
         User.objects.get(username=request.user).delete()
         return redirect('home')
     """Login complete view, displays user data"""
@@ -109,10 +109,10 @@ def founditem(request):
 @login_required
 def gmap(request):
 	lost_items=LostItem.objects.all().filter(status=True).filter(
-		pub_date__gt=timezone.now()-datetime.timedelta(days=10)).order_by('-pub_date')
+		pub_date__gt=timezone.now()-datetime.timedelta(days=30)).order_by('-pub_date')
 
 	found_items=FoundItem.objects.all().filter(status=True).filter(
-		pub_date__gt=timezone.now()-datetime.timedelta(days=10)).order_by('-pub_date')
+		pub_date__gt=timezone.now()-datetime.timedelta(days=30)).order_by('-pub_date')
 
 	limiterByLocation = Counter([])
 

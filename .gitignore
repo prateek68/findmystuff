@@ -2,3 +2,11 @@
 *.db
 *.pyc
 *.*~
+static
+*.save*
+*.log*
+diff.txt
+lnf_nginx.conf
+lnf_uwsgi.ini
+requirements
+uwsgi_params
