@@ -139,7 +139,7 @@ def gmap(request):
 			#Sample content String
 			"""
 			newmarker(28.5473169531,77.2739118891,"itemname",
-				'<div id="content"><div id="siteNotice"></div><h1 id="firstHeading" class="firstHeading">itemname</h1>
+				'<div id="content"><div id="siteNotice"></div><h3 id="firstHeading" class="firstHeading">itemname</h3>
 				<div id="bodyContent"><p>info</p>(Lost on 2014-08-01).</p>
 				<p text-align:right ><a href="/found/9"> \<span class="label label-default">Report Found</span></a> </div></div>');
 				Also pass argument 'color = blue' for found items;
@@ -150,17 +150,23 @@ def gmap(request):
 				str(x), ',', str(y), ',',
 				'"',i.itemname,'"',',',
 				'\'',
-				'<div id="content"><div id = "siteNotice"></div><h1 id="firstHeading" class="firstHeading">%s</h1>'%i.itemname,
-				'<div id="bodyContent"><p>%s</p>(Lost on %s-%s-%s).</p>'%(
-					i.additionalinfo,
-					str(i.time.day) if len(str(i.time.day))>1 else '0' + str(i.time.day),
-					str(i.time.month) if len(str(i.time.month))>1 else '0' + str(i.time.month),
-					str(i.time.year)),
-				'<p text-align:right ><a href="/%s/%d"> \<span class="label label-default">Report %s</span></a> </div></div>\',%s);\n'%(
-					'found' if isinstance(i, LostItem) else 'lost',
-					i.pk,
-					'Found' if isinstance(i, LostItem) else 'Lost',
-					"color='red'" if isinstance(i, LostItem) else "color='blue'")
+
+				'<div id="content"><div id = "siteNotice"></div><h3 id="firstHeading" class="firstHeading">%(itemname)s</h3>'
+					%{'itemname': i.itemname},
+
+				'<div id="bodyContent"><p>%(info)s</p>(Lost on %(day)s-%(month)s-%(year)s).</p>'%
+					{'info': i.additionalinfo,
+					'day': str(i.time.day) if len(str(i.time.day))>1 else '0' + str(i.time.day),
+					'month': str(i.time.month) if len(str(i.time.month))>1 else '0' + str(i.time.month),
+					'year': str(i.time.year)},
+
+				'<p text-align:right > <a href="/%(itemlink)s/%(itemid)d"> <button type="button" class="btn btn-%(buttonstyle)s btn-xs" style="width:135px;">'
+				'%(saying)s</button></a> </div></div>\',%(markercolor)s);\n'%
+					{'itemlink': 'found' if isinstance(i, LostItem) else 'lost',
+					'itemid': i.pk,
+					'buttonstyle': 'info' if isinstance(i, LostItem) else 'danger',
+					 'saying': 'I found it !' if isinstance(i, LostItem) else 'Hey... its mine !',
+					'markercolor': "color='red'" if isinstance(i, LostItem) else "color='blue'"}
 			])
 			final += contentString
 
