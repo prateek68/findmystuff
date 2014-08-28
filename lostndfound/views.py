@@ -142,7 +142,7 @@ def gmap(request):
 				'<div id="content"><div id="siteNotice"></div><h1 id="firstHeading" class="firstHeading">itemname</h1>
 				<div id="bodyContent"><p>info</p>(Lost on 2014-08-01).</p>
 				<p text-align:right ><a href="/found/9"> \<span class="label label-default">Report Found</span></a> </div></div>');
-				Also pass argument 'color = green' for found items;
+				Also pass argument 'color = blue' for found items;
 			"""
 			contentString = " ".join([
 				"newmarker",
@@ -160,7 +160,7 @@ def gmap(request):
 					'found' if isinstance(i, LostItem) else 'lost',
 					i.pk,
 					'Found' if isinstance(i, LostItem) else 'Lost',
-					"color='red'" if isinstance(i, LostItem) else "color='green'")
+					"color='red'" if isinstance(i, LostItem) else "color='blue'")
 			])
 			final += contentString
 

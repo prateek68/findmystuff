@@ -62,7 +62,9 @@
       animation: google.maps.Animation.DROP,
       title:text,
     }
-    if (color === 'red'){}
+    if (color === 'red'){
+      content.icon = "{% static 'gmaps-red-marker.png' %}"
+    }
     if (color==='blue'){
       content.icon = "{% static 'gmaps-blue-marker.png' %}";
     }
