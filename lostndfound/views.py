@@ -10,7 +10,7 @@ from models import LostItem,FoundItem
 from django.utils import timezone
 import datetime
 import random
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import send_mail
 from lostnfound import settings
 from lostndfound.Data import get_limit
 
@@ -35,23 +35,8 @@ class PostToFB(threading.Thread):
 		data  = urllib.urlencode({'message': self.message, 'access_token': token})
 		try:
 			#request = urllib2.urlopen(url, data)
-			pass
 		except:
 			print "Error in posting to FB", self.message			# will show up in uwsgi logs.
-
-class send_mail(threading.Thread):
-	def __init__(self, subject, text_content, host_user, recipient_list):
-		self.subject = subject
-		self.host_user = host_user
-		self.recipient_list = recipient_list
-		self.text_content = text_content
-		threading.Thread.__init__(self)
-		self.start()
-
-	def run(self):
-		msg = EmailMultiAlternatives(self.subject, self.text_content, self.host_user, self.recipient_list)
-		msg.send()
-
 
 def home(request):
     """Home view, displays login mechanism"""
