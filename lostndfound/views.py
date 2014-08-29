@@ -75,7 +75,7 @@ def logout(request):
 
 @login_required
 def lostitem(request):
-	lostitem_form={'lostitem_form':LostItemForm(None)}
+	lostitem_form = LostItemForm()
 	if request.method == 'POST':
 		lostitem_form=LostItemForm(request.POST)
 		if lostitem_form.is_valid():
@@ -93,13 +93,12 @@ def lostitem(request):
 			PostToFB(content)
 
 			return redirect('done')
-		else:
-			return render_to_response('wrongpage.html',None, RequestContext(request))
-	return render_to_response('LostItem.html', lostitem_form,RequestContext(request))
+	return render_to_response('LostItem.html', {'lostitem_form': lostitem_form}, 
+		context_instance=RequestContext(request))
 
 @login_required
 def founditem(request):
-	founditem_form={'founditem_form':FoundItemForm()}
+	founditem_form = FoundItemForm()
 	if request.method == 'POST':
 		founditem_form=FoundItemForm(request.POST)
 		if founditem_form.is_valid():
@@ -115,9 +114,7 @@ def founditem(request):
 			
 			PostToFB(content)
 			return redirect("done")
-		else:
-			return render_to_response('wrongpage.html',None, RequestContext(request))
-	return render_to_response('FoundItem.html',founditem_form,RequestContext(request))
+	return render_to_response('FoundItem.html',{'founditem_form': founditem_form}, RequestContext(request))
 	
 
 # limit = {"Faculty Residency":(28.5439000, 77.2704000,28.5443000, 77.2709000),
