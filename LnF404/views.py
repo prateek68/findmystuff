@@ -6,7 +6,7 @@ from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.views.decorators.csrf import csrf_exempt
 
-from LnF404.models import RecentLostItems, AuthenticationTokens
+from LnF404.models import RecentLostItem, AuthenticationToken
 from LnF404.models import AddWebsiteForm
 
 from lostndfound.models import LostItem
@@ -17,10 +17,10 @@ from lostnfound import settings
 @login_required
 def add(request):
 
-	websites = AuthenticationTokens.objects.filter(user = request.user)
+	websites = AuthenticationToken.objects.filter(user = request.user)
 
 	def add_user(sender, **kwargs):
-		if sender == AuthenticationTokens:
+		if sender == AuthenticationToken:
 			obj = kwargs['instance']
 			obj.user = request.user
 
@@ -38,7 +38,7 @@ def add(request):
 
 @login_required
 def refresh_token(request, token_id):
-	site = get_object_or_404(AuthenticationTokens, pk=token_id)
+	site = get_object_or_404(AuthenticationToken, pk=token_id)
 	if site.user == request.user:
 		site.token = site.generate_token()
 		site.save()
@@ -52,23 +52,23 @@ def update_404_items(sender, **kwargs):
 	item = kwargs['instance']
 
 	if item.status == True:
-		RecentLostItems.objects.create(item=item)
-		if RecentLostItems.objects.all().count() > settings.LnF404_ITEMS_NUMBER:
-			RecentLostItems.objects.first().delete()
+		RecentLostItem.objects.create(item=item)
+		if RecentLostItem.objects.all().count() > settings.LnF404_ITEMS_NUMBER:
+			RecentLostItem.objects.first().delete()
 
 	else:
-		check = RecentLostItems.objects.filter(item=item).first()
+		check = RecentLostItem.objects.filter(item=item).first()
 		if check:
 			check.delete()
 			new_item = LostItem.objects.filter(status=True).order_by('-pub_date')
 			for x in new_item:
-				if not RecentLostItems.objects.filter(item=x).first():
+				if not RecentLostItem.objects.filter(item=x).first():
 					new_item = x
 					break
 			else:
 				#no item found which is currectly active and not in our list
 				return
-			RecentLostItems.objects.create(item=new_item)
+			RecentLostItem.objects.create(item=new_item)
 
 def confirmIP(request, allotedIP):
 	#TODO nginx is not adding forwarded for header. check it
@@ -94,15 +94,15 @@ def send_data(request, site_id='0', token='0'):
 	token 	 = str(dictionary.get('token', None))
 	if token_id and token:
 		try:
-			site = AuthenticationTokens.objects.get(pk=token_id)
+			site = AuthenticationToken.objects.get(pk=token_id)
 			site = site if confirmIP(request, site.website_IP) else None
-		except AuthenticationTokens.DoesNotExist:
+		except AuthenticationToken.DoesNotExist:
 			site = None
 
 		if site and site.token == token:
 
-			response['quantity'] = RecentLostItems.objects.all().count()
-			for i, link in enumerate(RecentLostItems.objects.all()):
+			response['quantity'] = RecentLostItem.objects.all().count()
+			for i, link in enumerate(RecentLostItem.objects.all()):
 				json_item_data = {}
 				json_item_data['item-name'] = link.item.itemname
 				json_item_data['location'] 	= link.item.location

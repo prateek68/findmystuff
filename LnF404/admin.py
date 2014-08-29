@@ -1,6 +1,6 @@
 from django.contrib import admin
-from LnF404.models import AuthenticationTokens, RecentLostItems
+from LnF404.models import AuthenticationToken, RecentLostItem
 
-admin.site.register(AuthenticationTokens)
-admin.site.register(RecentLostItems)
+admin.site.register(AuthenticationToken)
+admin.site.register(RecentLostItem)
 # Register your models here.

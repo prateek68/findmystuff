@@ -2,6 +2,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from lostndfound.models import Location
 import lostndfound.Data as data
+import django.db.utils
 
 @receiver(post_save, sender=Location)
 def update_locations(sender, **kwargs):
@@ -18,4 +19,8 @@ def update_locations(sender, **kwargs):
 	data.set_Location_Choices(tuple(Location_Choices))
 	data.set_limit(limit)
 
-update_locations(Location)
+try:
+	update_locations(Location)
+except (django.db.utils.OperationalError):
+	print "If the db is being constructed for the first time, this is normal. else please check"
+	pass

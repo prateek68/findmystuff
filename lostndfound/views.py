@@ -10,7 +10,7 @@ from models import LostItem,FoundItem
 from django.utils import timezone
 import datetime
 import random
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
 from lostnfound import settings
 from lostndfound.Data import get_limit
 
@@ -35,8 +35,22 @@ class PostToFB(threading.Thread):
 		data  = urllib.urlencode({'message': self.message, 'access_token': token})
 		try:
 			#request = urllib2.urlopen(url, data)
+			pass
 		except:
 			print "Error in posting to FB", self.message			# will show up in uwsgi logs.
+
+class send_mail(threading.Thread):
+	def __init__(self, subject, text_content, host_user, recipient_list):
+		self.subject = subject
+		self.host_user = host_user
+		self.recipient_list = recipient_list
+		self.text_content = text_content
+		threading.Thread.__init__(self)
+		self.start()
+
+	def run(self):
+		msg = EmailMultiAlternatives(self.subject, self.text_content, self.host_user, self.recipient_list)
+		# msg.send()
 
 def home(request):
     """Home view, displays login mechanism"""
@@ -127,7 +141,7 @@ def gmap(request):
 
 	final = ""
 	limit = get_limit()
-	itemsPerLocationLimit = settings.ITEMS_PER_LOCATION or 5
+	itemsPerLocationLimit = getattr(settings,'ITEMS_PER_LOCATION', None) or 5
 
 	#giving preference to recent lost items
 	items = []
@@ -169,15 +183,13 @@ def gmap(request):
 					'month': str(i.time.month) if len(str(i.time.month))>1 else '0' + str(i.time.month),
 					'year': str(i.time.year)},
 
-				'<p text-align:right > %(claimed)s <a href="/%(itemlink)s/%(itemid)d"> <button type="button" class="btn btn-%(buttonstyle)s btn-xs" style="width:135px;">'
+				'<p text-align:right > <a href="/%(itemlink)s/%(itemid)d"> <button type="button" class="btn btn-%(buttonstyle)s btn-xs" style="width:135px;">'
 				'%(saying)s</button></a> </div></div> \',%(markercolor)s);\n'%
 					{'itemlink': 'found' if isinstance(i, LostItem) else 'lost',
 					'itemid': i.pk,
 					'buttonstyle': 'info' if isinstance(i, LostItem) else 'danger',
 					'saying': 'I found it !' if isinstance(i, LostItem) else 'Hey... its mine !',
 					'markercolor': "color='red'" if isinstance(i, LostItem) else "color='blue'",
-					'claimed': '<span class="label pull-right label-default">Claimed</span>' if \
-					i.claimed==True else '',				#TODO: improve html for claimed tag
 					}
 			])
 			final += contentString
@@ -198,14 +210,11 @@ def found(request,found_id):
 			"Please contact",
 			request.user.first_name, request.user.last_name,
 			"(%s)."%request.user.email,
-			"\n\n", "After receiving your", item.itemname,
-			"back from", request.user.first_name, ", please click on this link:",
-			request.build_absolute_uri(
-				reverse(close_item, kwargs={'itemtype':'lost', 'itemid':item.pk, 'token':item.closing_token})),
-			"to remove it from the portal."
+			"\n",
 			])
 		send_mail(subject, content,settings.EMAIL_HOST_USER, [item.user.email])
-		item.claimed = True
+		item.status = False
+		item.found_by = request.user
 		item.save()
 
 		return redirect('gmap')
@@ -221,16 +230,13 @@ def lost(request,lost_id):
 			"The item '%s' you reported found belongs to "%item.itemname,
 			request.user.first_name, ''.join([request.user.last_name,'.']),
 			"Please contact at %s."%request.user.email,
-			"\n\n", "After you hand over the item to %s,"%request.user.first_name,
-			"please click on this link:",
-			request.build_absolute_uri(
-				reverse(close_item, kwargs={'itemtype':'found', 'itemid':item.pk, 'token':item.closing_token})),
-			"to remove it from the portal."
+			"\n",
 			])
 		print content
 
 		send_mail(subject, content,settings.EMAIL_HOST_USER, [item.user.email])
-		item.claimed = True
+		item.status = False
+		item.lost_by = request.user
 		item.save()
 
 		return redirect('gmap')
@@ -268,17 +274,3 @@ def log(request):
 	found=FoundItem.objects.all().filter(status=True).order_by('-id')
 	s={'lost':lost,'found':found}
 	return render_to_response('log.html',s,RequestContext(request))
-
-@login_required
-def close_item(request, itemtype, itemid, token):
-	if not (itemtype == 'lost'
-		or itemtype == 'found'): raise Http404
-
-	item = get_object_or_404(LostItem, pk=itemid) \
-		if itemtype == 'lost' else get_object_or_404(FoundItem, pk=itemid)
-
-	if not token == item.closing_token: raise Http404
-	item.status = False
-	item.save()
-
-	return redirect('gmap')
