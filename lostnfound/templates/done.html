@@ -2,70 +2,78 @@
 {% load staticfiles %}
 {% block body %}
 
-	 <script type="text/javascript">
-      $(function () {
-          $(document).on('click', 'a.disconnect', function (e) {
-              e.preventDefault();
-              $('form#disconnect-form')
-                  .attr('action', $(this).attr('href'))
-                  .submit();
-          });
-      });
-    </script>
-	<script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBK0EN65C9072dbRhU-YJ5qMl4RSBg5dJs&sensor=false">
-    </script>
-    <script type="text/javascript">
-      var openInfoWindow = null;
-      function initialize() {
-        var mapOptions = {
-          center: new google.maps.LatLng(28.5460459, 77.2714055),
-          zoom: 17,
-          mapTypeId: google.maps.MapTypeId.HYBRID,
-        };
-        var map = new google.maps.Map(document.getElementById("map-canvas"),
-            mapOptions);
+<script type="text/javascript"
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBK0EN65C9072dbRhU-YJ5qMl4RSBg5dJs&sensor=false">
+</script>
+
+<script type="text/javascript">
+  var openInfoWindow = null;
+  function initialize() {
+    var mapOptions = {
+      center: new google.maps.LatLng(28.5460459, 77.2714055),
+      zoom: 17,
+      mapTypeId: google.maps.MapTypeId.HYBRID,
+    };
+    var map = new google.maps.Map(document.getElementById("map-canvas"),
+        mapOptions);
+
+    {{s|safe}}
 	
-      {{s|safe}}
-	
-	function toggleBounce() {
-		newmarker(28.5460454, 77.2710000,this.text);
-	}
-	
-	function newmarker(x,y,text,contentString, color){
-		var myLatlng = new google.maps.LatLng(x, y);
-    content = {
-      position: myLatlng,
-      map: map,
-      draggable:false,
-      animation: google.maps.Animation.DROP,
-      title:text,
-    }
-    if (color === 'red'){
-      content.icon = "{% static 'gmaps-red-marker.png' %}"
-    }
-    if (color==='blue'){
-      content.icon = "{% static 'gmaps-blue-marker.png' %}";
-    }
-    else if (color==='green'){
-      content.icon = "{% static 'gmaps-green-marker.png' %}";
-    }
-    var marker = new google.maps.Marker(content);
-    var infowindow = new google.maps.InfoWindow({
-     content: contentString
-   });
+    function newmarker(x, y, name, description, time, item_type, link){
+      var myLatlng = new google.maps.LatLng(x, y);
+      content = {
+        position: myLatlng,
+        map: map,
+        draggable:false,
+        animation: google.maps.Animation.DROP,
+        title:name,
+      }
+
+      if (item_type === 'lost'){
+        content.icon = "{% static 'gmaps-red-marker.png' %}"
+      }
+      else {
+        content.icon = "{% static 'gmaps-blue-marker.png' %}";
+      }
+
+      var popup_html = '<div id="content"><div id = "siteNotice"></div><h3 id="firstHeading" class="firstHeading">' + 
+       name + '</h3> <div id="bodyContent"><p>' + description + '</p>(Lost on ' + time + ').</p> <p text-align:right > <a href="' + link + '"> <button type="button" class="btn btn-';
+     
+      if (item_type === 'lost'){
+        popup_html += 'info';
+      }
+      else{
+        popup_html += 'danger'; 
+      }
+
+      popup_html += ' btn-xs" style="width:135px;">';
+
+      if (item_type === 'lost'){
+        popup_html += 'I found it !';
+      }
+      else{
+        popup_html += 'Hey. Its mine !';
+      }
+
+      popup_html += '</button></a> </div></div> ';
+
+      var marker = new google.maps.Marker(content);
+      var infowindow = new google.maps.InfoWindow({
+      content: popup_html
+    });
     google.maps.event.addListener(marker, 'click', function() {
-     if (openInfoWindow){
+    if (openInfoWindow){
       openInfoWindow.close();
-     }
-     openInfoWindow = infowindow;
-     infowindow.open(map,marker);
+    }
+    
+    openInfoWindow = infowindow;
+    infowindow.open(map,marker);
    });
-    marker.setMap(map);
+   marker.setMap(map);
   }
 	}
 	
-      google.maps.event.addDomListener(window, 'load', initialize);
+  google.maps.event.addDomListener(window, 'load', initialize);
     </script>
 
 

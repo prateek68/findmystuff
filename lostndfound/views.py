@@ -158,39 +158,19 @@ def gmap(request):
 			x = random.uniform(limit[i.location][0], limit[i.location][2])
 			y = random.uniform(limit[i.location][1], limit[i.location][3])
 
-			#Sample content String
-			"""
-			newmarker(28.5473169531,77.2739118891,"itemname",
-				'<div id="content"><div id="siteNotice"></div><h3 id="firstHeading" class="firstHeading">itemname</h3>
-				<div id="bodyContent"><p>info</p>(Lost on 2014-08-01).</p>
-				<p text-align:right ><a href="/found/9"> \<span class="label label-default">Report Found</span></a> </div></div>');
-				Also pass argument 'color = blue' for found items;
-			"""
-			contentString = " ".join([
-				"newmarker",
-				'(',
-				str(x), ',', str(y), ',',
-				'"',i.itemname,'"',',',
-				'\'',
+			contentString = "newmarker(%(x)f, %(y)f, '%(name)s', '%(description)s', '%(time)s', '%(itemtype)s', '%(link)s');\n"%{
+				'x': x,
+				'y': y,
+				'name': i.itemname,
+				'description': i.additionalinfo,
+				'time': i.time,
+				'itemtype': 'lost' if isinstance(i, LostItem) else 'found',
+				'link': '%s/%d'%(
+					'lost' if isinstance(i, FoundItem) else 'found',
+					i.pk
+					),
+			}
 
-				'<div id="content"><div id = "siteNotice"></div><h3 id="firstHeading" class="firstHeading"> %(itemname)s  </h3>'
-					%{'itemname': i.itemname,},
-
-				'<div id="bodyContent"><p>%(info)s</p>(Lost on %(day)s-%(month)s-%(year)s).</p>'%
-					{'info': i.additionalinfo,
-					'day': str(i.time.day) if len(str(i.time.day))>1 else '0' + str(i.time.day),
-					'month': str(i.time.month) if len(str(i.time.month))>1 else '0' + str(i.time.month),
-					'year': str(i.time.year)},
-
-				'<p text-align:right > <a href="/%(itemlink)s/%(itemid)d"> <button type="button" class="btn btn-%(buttonstyle)s btn-xs" style="width:135px;">'
-				'%(saying)s</button></a> </div></div> \',%(markercolor)s);\n'%
-					{'itemlink': 'found' if isinstance(i, LostItem) else 'lost',
-					'itemid': i.pk,
-					'buttonstyle': 'info' if isinstance(i, LostItem) else 'danger',
-					'saying': 'I found it !' if isinstance(i, LostItem) else 'Hey... its mine !',
-					'markercolor': "color='red'" if isinstance(i, LostItem) else "color='blue'",
-					}
-			])
 			final += contentString
 
 	s={'s':final}
