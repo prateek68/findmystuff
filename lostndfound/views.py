@@ -158,12 +158,14 @@ def gmap(request):
 			x = random.uniform(limit[i.location][0], limit[i.location][2])
 			y = random.uniform(limit[i.location][1], limit[i.location][3])
 
+			now = datetime.datetime.now()
+
 			contentString = "newmarker(%(x)f, %(y)f, '%(name)s', '%(description)s', '%(time)s', '%(itemtype)s', '%(link)s');\n"%{
 				'x': x,
 				'y': y,
 				'name': i.itemname,
 				'description': i.additionalinfo,
-				'time': i.time,
+				'time': abs(i.time - datetime.date(now.year, now.month, now.day)).days,
 				'itemtype': 'lost' if isinstance(i, LostItem) else 'found',
 				'link': '/get_confirm_modal/%s/%d'%(
 					'lost' if isinstance(i, LostItem) else 'found',
