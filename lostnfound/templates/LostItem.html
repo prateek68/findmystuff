@@ -2,12 +2,17 @@
 {% load bootstrap %}
 
 {% block body %}
+
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
 <script>
   $(function() {
-  $( "#{{lostitem_form.time.auto_id}}" ).datepicker({
-  changeMonth: true,
-  changeYear: true
-  });
+    var today = new Date();
+    $( "#{{lostitem_form.time.auto_id}}" ).datepicker({
+      maxDate: 0,
+      changeMonth: true,
+      changeYear: true
+    });
   });
 </script>
 

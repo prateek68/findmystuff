@@ -2,13 +2,18 @@
 {% load bootstrap %}
 
 {% block body %}
+
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
 <script>
-	$(function() {
-	$( "#{{founditem_form.time.auto_id}}" ).datepicker({
-	changeMonth: true,
-	changeYear: true
-	});
-	});
+  $(function() {
+    var today = new Date();
+    $( "#{{founditem_form.time.auto_id}}" ).datepicker({
+      maxDate: 0,
+      changeMonth: true,
+      changeYear: true
+    });
+  });
 </script>
 
 <div class=row>

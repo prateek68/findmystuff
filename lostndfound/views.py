@@ -89,7 +89,8 @@ def lostitem(request):
 			content = ' '.join([
 				obj.user.first_name, obj.user.last_name,
 				'(', obj.user.email, ')',
-				"has lost", obj.itemname, "at", obj.location])
+				"has lost", obj.itemname, "at", obj.location + '.',
+				'\nAdditional details:', obj.additionalinfo+'.'])
 			PostToFB(content)
 
 			return redirect('home')
@@ -110,9 +111,10 @@ def founditem(request):
 			content = ' '.join([
 				obj.user.first_name, obj.user.last_name,
 				'(', obj.user.email, ')',
-				"has found", obj.itemname, "at", obj.location])
-			
+				"has found", obj.itemname, "at", obj.location + '.',
+				'\nAdditional details:', obj.additionalinfo+'.'])
 			PostToFB(content)
+
 			return redirect("home")
 	return render_to_response('FoundItem.html',{'founditem_form': founditem_form}, RequestContext(request))
 	
@@ -229,7 +231,6 @@ def lost(request,lost_id):
 			"Please contact at %s."%request.user.email,
 			"\n",
 			])
-		print content
 
 		send_mail(subject, content,settings.EMAIL_HOST_USER, [item.user.email])
 		item.status = False
