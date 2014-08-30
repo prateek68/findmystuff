@@ -48,7 +48,8 @@ $(document).ready(function(){
 
 <tr class="active">
 <td>{{x.itemname}} </td>
-<td>Lost at {{x.location}} on {{x.time}}</td>
+<td>Lost at {{x.location}} about <span data-toggle="tooltip" title="{{ x.time }}">
+{{ x.time|timesince }} ago.</span></td>
 <td>{{x.additionalinfo}} </td>
 
 <td><button class="btn-success confirm-button" data-toggle="modal" data-remote="true"  data-type='lost' data-id="{{ x.pk }}" >I've found it..!!</button></td>
@@ -83,7 +84,8 @@ $(document).ready(function(){
 
 <tr class="active">
 <td>{{x.itemname}} </td>
-<td>Lost at {{x.location}} on {{x.time}}</td>
+<td>Found at {{x.location}} about <span data-toggle="tooltip" title="{{ x.time }}">
+{{ x.time|timesince }} ago.</span></td>
 <td>{{x.additonalinfo}} </td>
 
 <td><button class="btn-danger confirm-button" data-toggle="modal" data-type='found' data-remote="true" data-id="{{ x.pk }}" >It's mine..!!</button></td>
