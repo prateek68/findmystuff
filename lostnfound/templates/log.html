@@ -4,6 +4,19 @@
 
 <div class="row" style="padding-top:5%">
   <div class="col-md-8 col-md-offset-2">
+<style type="text/css">
+  button.confirm-button{}
+</style>
+
+<script>
+$(document).ready(function(){
+  $(".confirm-button").click(function(){
+    $("#base-confirmation-modal").modal('show');
+    var url = "/get_confirm_modal/" + $(this).data().type + "/" + $(this).data().id + "/";
+    $("#confirmation-modal").load(url);
+    });
+  });
+</script>
 
     <ul class="nav nav-tabs" role="tablist">
     <li class="active"><a href="#1" role="tab" data-toggle="tab">
@@ -33,29 +46,12 @@
      <tbody>  
       {% for x in lost %}
 
-      <div class="modal fade" id="confirm_found_{{ x.pk }}_modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-      <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="ModalLabel"> Are you sure ? </h4>
-      </div>
-      <div class="modal-body">
-        Are you sure that you have found <strong>{{ x.itemname }}</strong> ? The owner will be intimated and it will be removed from the portal. Your email will be saved to prevent misuse.
-      </div>
-      <div class="modal-footer">
-        <a class="btn btn-info" href="{% url 'found' x.pk %}" role="button">Yup. I've found it.</a>
-      </div>
-      </div>
-      </div>
-      </div> 
-
 <tr class="active">
 <td>{{x.itemname}} </td>
 <td>Lost at {{x.location}} on {{x.time}}</td>
 <td>{{x.additionalinfo}} </td>
 
-<td><button class="btn-success" data-toggle="modal" data-target="#confirm_found_{{ x.pk }}_modal">I've found it..!!</button></td>
+<td><button class="btn-success confirm-button" data-toggle="modal" data-remote="true"  data-type='lost' data-id="{{ x.pk }}" >I've found it..!!</button></td>
 <td> <center>{% if x.image %}<a href="{{ x.image.url }}" target="new"><span style="color:black" class="glyphicon glyphicon-camera"> </span></a>{% else %} - {% endif %}</center></td>
 
 {% endfor %}
@@ -84,29 +80,13 @@
       <tbody>
 
       {% for x in found %}
-    <div class="modal fade" id="confirm_lost_{{ x.pk }}_modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="ModalLabel"> Are you sure ? </h4>
-      </div>
-      <div class="modal-body">
-        Are you sure that <strong>{{ x.itemname }}</strong> is yours ? The person who found this will be intimated and it will be removed from the portal. Your email will be saved to prevent misuse.
-      </div>
-      <div class="modal-footer">
-        <a class="btn btn-danger" href="{% url 'lost' x.pk %}" role="button">Yup. It's mine.</a>
-        </div>
-      </div>
-      </div>
-      </div>
 
 <tr class="active">
 <td>{{x.itemname}} </td>
 <td>Lost at {{x.location}} on {{x.time}}</td>
 <td>{{x.additonalinfo}} </td>
 
-<td><button class="btn-danger" data-toggle="modal" data-target="#confirm_lost_{{ x.pk }}_modal">It's mine..!!</button></td>
+<td><button class="btn-danger confirm-button" data-toggle="modal" data-type='found' data-remote="true" data-id="{{ x.pk }}" >It's mine..!!</button></td>
 <td> <center>{% if x.image %}<a href="{{ x.image.url }}" target="new"><span style="color:black" class="glyphicon glyphicon-camera"> </span></a>{% else %} - {% endif %}</center></td>
 
 {% endfor %}

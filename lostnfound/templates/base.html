@@ -62,6 +62,22 @@
     </div><!-- /.navbar-collapse -->
   </nav>
 
+<div class="modal fade" id="base-confirmation-modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" id="confirmation-modal">
+      <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title" id="ModalLabel"><strong>Are you sure ?</strong></h4>
+        </div>
+        <div class="modal-body">
+          <center><img src="{% static 'loading.gif' %}" style="height:100px; width:100px;"></center>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+  </div>
+</div> 
+
 {% block body %}
 {% endblock %}
   </body>

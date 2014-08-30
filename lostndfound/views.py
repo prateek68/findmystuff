@@ -271,3 +271,24 @@ def log(request):
 	found=FoundItem.objects.all().filter(status=True).order_by('-id')
 	s={'lost':lost,'found':found}
 	return render_to_response('log.html',s,RequestContext(request))
+
+@login_required
+def get_confirm_modal(request, itemtype, itemid):
+	success = True
+
+	if not itemtype in ['lost', 'found']:
+		success = False
+	try:
+		item = LostItem.objects.get(pk=itemid) if itemtype == 'lost' else \
+				FoundItem.objects.get(pk=itemid)
+	except (LostItem.DoesNotExist, FoundItem.DoesNotExist):
+		success = False
+
+	if not success:
+		itemtype = ''
+		itemid = ''
+		itemname = ''
+		item = None
+
+	return render_to_response('confirm_modal.html',
+		{'success':success, 'itemtype': itemtype, 'itemid':itemid, 'itemname':item.itemname if item else ''}, RequestContext(request))

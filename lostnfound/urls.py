@@ -26,6 +26,7 @@ urlpatterns = patterns('',
     url(r'^reopenfound/(?P<found_id>\d+)/$', 'lostndfound.views.reopenfound', name='reopenfound'),
     url(r'%s' % PATH, include('social.apps.django_app.urls',
         namespace='social')),
+    url(r'^get_confirm_modal/(?P<itemtype>[a-z]+)/(?P<itemid>[0-9]+)/$', 'lostndfound.views.get_confirm_modal'),
 )
 
 #TODO remove this. nginx will serve these.
