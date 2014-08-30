@@ -1,34 +1,38 @@
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-    <h4 class="modal-title" id="ModalLabel"> Are you sure ? </h4>
-</div>
-{% if success %}
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		    <h4 class="modal-title" id="ModalLabel"> Are you sure ? </h4>
+		</div>
+		{% if success %}
 
-{% ifequal itemtype 'lost' %}
-<div class="modal-body">
-	Are you sure that you have found <strong>{{ itemname }}</strong> ? The owner will be intimated and it will be removed from the portal. Your email will be saved to prevent misuse.
-</div>
+		{% ifequal itemtype 'lost' %}
+		<div class="modal-body">
+			Are you sure that you have found <strong>{{ itemname }}</strong> ? The owner will be intimated and it will be removed from the portal. Your email will be saved to prevent misuse.
+		</div>
 
-<div class="modal-footer">
-    <a class="btn btn-info" href="{% url 'found' itemid %}" role="button">Yup. I've found it.</a>
-</div>
+		<div class="modal-footer">
+		    <a class="btn btn-info" href="{% url 'found' itemid %}" role="button">Yup. I've found it.</a>
+		</div>
 
-{% else %}
+		{% else %}
 
-<div class="modal-body">
-    Are you sure that <strong>{{ itemname }}</strong> is yours ? The person who found this will be intimated and it will be removed from the portal. Your email will be saved to prevent misuse.
-</div>
-<div class="modal-footer">
-    <a class="btn btn-danger" href="{% url 'lost' itemid %}" role="button">Yup. It's mine.</a>
-</div>
+		<div class="modal-body">
+		    Are you sure that <strong>{{ itemname }}</strong> is yours ? The person who found this will be intimated and it will be removed from the portal. Your email will be saved to prevent misuse.
+		</div>
+		<div class="modal-footer">
+		    <a class="btn btn-danger" href="{% url 'lost' itemid %}" role="button">Yup. It's mine.</a>
+		</div>
 
-{% endifequal %}
+		{% endifequal %}
 
-{% else %}
-<div class="modal-body">
-	There was an error in fetching data from the server. Please let us know in the <a href="#">feedback</a> section.
-</div>
+		{% else %}
+		<div class="modal-body">
+			There was an error in fetching data from the server. Please let us know in the <a href="#">feedback</a> section.
+		</div>
 
-<div class="modal-footer">
+		<div class="modal-footer">
+		</div>
+		{% endif %}
+	</div>
 </div>
-{% endif %}

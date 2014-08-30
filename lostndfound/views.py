@@ -165,8 +165,8 @@ def gmap(request):
 				'description': i.additionalinfo,
 				'time': i.time,
 				'itemtype': 'lost' if isinstance(i, LostItem) else 'found',
-				'link': '%s/%d'%(
-					'lost' if isinstance(i, FoundItem) else 'found',
+				'link': '/get_confirm_modal/%s/%d'%(
+					'lost' if isinstance(i, LostItem) else 'found',
 					i.pk
 					),
 			}
@@ -253,7 +253,6 @@ def log(request):
 	s={'lost':lost,'found':found}
 	return render_to_response('log.html',s,RequestContext(request))
 
-@login_required
 def get_confirm_modal(request, itemtype, itemid):
 	success = True
 

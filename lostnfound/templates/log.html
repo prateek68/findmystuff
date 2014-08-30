@@ -13,7 +13,7 @@ $(document).ready(function(){
   $(".confirm-button").click(function(){
     $("#base-confirmation-modal").modal('show');
     var url = "/get_confirm_modal/" + $(this).data().type + "/" + $(this).data().id + "/";
-    $("#confirmation-modal").load(url);
+    $("#base-confirmation-modal").load(url);
     });
   });
 </script>

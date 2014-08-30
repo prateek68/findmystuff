@@ -37,7 +37,7 @@
       }
 
       var popup_html = '<div id="content"><div id = "siteNotice"></div><h3 id="firstHeading" class="firstHeading">' + 
-       name + '</h3> <div id="bodyContent"><p>' + description + '</p>(Lost on ' + time + ').</p> <p text-align:right > <a href="' + link + '"> <button type="button" class="btn btn-';
+       name + '</h3> <div id="bodyContent"><p>' + description + '</p>(Lost on ' + time + ').</p> <p text-align:right > <a class="btn btn-';
      
       if (item_type === 'lost'){
         popup_html += 'info';
@@ -46,7 +46,7 @@
         popup_html += 'danger'; 
       }
 
-      popup_html += ' btn-xs" style="width:135px;">';
+      popup_html += ' btn-xs" data-toggle="modal" href="'+ link +'" data-target="#base-confirmation-modal" style="width:135px;">';
 
       if (item_type === 'lost'){
         popup_html += 'I found it !';
@@ -55,8 +55,8 @@
         popup_html += 'Hey. Its mine !';
       }
 
-      popup_html += '</button></a> </div></div> ';
-
+      popup_html += '</a> </div></div> ';
+      console.log(popup_html)
       var marker = new google.maps.Marker(content);
       var infowindow = new google.maps.InfoWindow({
       content: popup_html
@@ -75,7 +75,11 @@
 	
   google.maps.event.addDomListener(window, 'load', initialize);
     </script>
-
+<script type="text/javascript">
+  $('body').on('hidden.bs.modal', '.modal', function(){
+    $(this).removeData('bs.modal');
+  })
+</script>>
 
 	 <style type="text/css">
 body{
