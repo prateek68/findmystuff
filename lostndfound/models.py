@@ -17,6 +17,7 @@ class LostItem(models.Model):
 	time 			= models.DateField()
 	pub_date 		= models.DateTimeField('date published', default=timezone.now)
 	found_by		= models.ForeignKey(User, related_name='foundby', null=True)
+	image			= models.FileField(upload_to='images/')
 
 	def __unicode__(self):
 		return self.itemname
@@ -32,6 +33,7 @@ class FoundItem(models.Model):
 	time 			= models.DateField()
 	pub_date 		= models.DateTimeField('date published', default=timezone.now)
 	lost_by			= models.ForeignKey(User, related_name='lostby', null=True)
+	image			= models.FileField(upload_to='images/')
 
 	def __unicode__(self):
 		return self.itemname

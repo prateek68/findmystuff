@@ -16,12 +16,13 @@ class LostItemForm(forms.ModelForm):
 	class Meta:
 		model  = LostItem
 		fields = ['itemname', 'location',
-				'additionalinfo', 'time']
+				'additionalinfo', 'time', 'image']
 
 	def __init__(self, *args, **kwargs):
 		super(LostItemForm, self).__init__(*args, **kwargs)
 		self.fields['location'] = forms.ChoiceField(choices=list(get_Location_Choices()))
 		self.fields['location'].empty_label = "Last Seen Location"
+		self.fields['image'].required = False
 
 	itemname = forms.CharField(label = 'Item', widget=forms.TextInput(attrs = {
 		'class':'form-control','placeholder':'Object Lost'}))
@@ -34,12 +35,13 @@ class FoundItemForm(forms.ModelForm):
 	class Meta:
 		model  = FoundItem
 		fields = ['itemname', 'location',
-				'additionalinfo', 'time']
+				'additionalinfo', 'time', 'image']
 
 	def __init__(self, *args, **kwargs):
 		super(FoundItemForm, self).__init__(*args, **kwargs)
 		self.fields['location'].empty_label = "Found Location"
 		self.fields['location'] = forms.ChoiceField(choices=list(get_Location_Choices()))
+		self.fields['image'].required = False
 
 
 	itemname = forms.CharField(label="Item", widget=forms.TextInput(attrs = {

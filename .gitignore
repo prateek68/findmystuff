@@ -10,3 +10,4 @@ lnf_nginx.conf
 lnf_uwsgi.ini
 requirements
 uwsgi_params
+media

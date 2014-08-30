@@ -14,7 +14,7 @@ urlpatterns = patterns('',
     url(r'^%s$' % PATH, 'lostndfound.views.home',name='home'),
     url(r'^%slogout$' % PATH, 'lostndfound.views.logout',name='logout'),
     url(r'^%steam/$' % PATH, 'lostndfound.views.team',name='team'),
-    url(r'^%sdone/$' % PATH, 'lostndfound.views.done', name='done'),
+    url(r'^%sdone/$' % PATH, 'lostndfound.views.home', name='home'),
     url(r'^%slostitem/$' % PATH, 'lostndfound.views.lostitem', name='lostitem'),
     url(r'^%sfounditem/$' % PATH, 'lostndfound.views.founditem', name='founditem'),
     url(r'^%sgmap/$' % PATH, 'lostndfound.views.gmap', name='gmap'),
@@ -27,3 +27,8 @@ urlpatterns = patterns('',
     url(r'%s' % PATH, include('social.apps.django_app.urls',
         namespace='social')),
 )
+
+#TODO remove this. nginx will serve these.
+urlpatterns += patterns('',
+            (r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+                    'document_root': settings.MEDIA_ROOT}))

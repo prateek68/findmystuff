@@ -54,19 +54,19 @@ class send_mail(threading.Thread):
 
 def home(request):
     """Home view, displays login mechanism"""
-    if request.user.is_authenticated():
-        return redirect('done')
-    return render_to_response('home.html', {}, RequestContext(request))
-
-@login_required
-def done(request):
-    s=User.objects.get(username=request.user).email
-    s1 = s.split('@')[-1]
-    if s1 not in settings.ALLOWED_LOGIN_HOSTS:
-        User.objects.get(username=request.user).delete()
-        return redirect('home')
-    """Login complete view, displays user data"""
+    # if request.user.is_authenticated():
     return redirect('gmap')
+    # return render_to_response('home.html', {}, RequestContext(request))
+
+# @login_required
+# def done(request):
+#     s=User.objects.get(username=request.user).email
+#     s1 = s.split('@')[-1]
+#     if s1 not in settings.ALLOWED_LOGIN_HOSTS:
+#         User.objects.get(username=request.user).delete()
+#         return redirect('home')
+#     """Login complete view, displays user data"""
+#     return redirect('gmap')
 
 def logout(request):
     """Logs out user"""
@@ -77,7 +77,7 @@ def logout(request):
 def lostitem(request):
 	lostitem_form = LostItemForm()
 	if request.method == 'POST':
-		lostitem_form=LostItemForm(request.POST)
+		lostitem_form=LostItemForm(request.POST, request.FILES)
 		if lostitem_form.is_valid():
 			obj = lostitem_form.save(commit=False)
 			obj.user = request.user
@@ -92,7 +92,7 @@ def lostitem(request):
 				"has lost", obj.itemname, "at", obj.location])
 			PostToFB(content)
 
-			return redirect('done')
+			return redirect('home')
 	return render_to_response('LostItem.html', {'lostitem_form': lostitem_form}, 
 		context_instance=RequestContext(request))
 
@@ -100,7 +100,7 @@ def lostitem(request):
 def founditem(request):
 	founditem_form = FoundItemForm()
 	if request.method == 'POST':
-		founditem_form=FoundItemForm(request.POST)
+		founditem_form=FoundItemForm(request.POST, request.FILES)
 		if founditem_form.is_valid():
 			obj = founditem_form.save(commit=False)
 			obj.user = request.user
@@ -113,7 +113,7 @@ def founditem(request):
 				"has found", obj.itemname, "at", obj.location])
 			
 			PostToFB(content)
-			return redirect("done")
+			return redirect("home")
 	return render_to_response('FoundItem.html',{'founditem_form': founditem_form}, RequestContext(request))
 	
 
@@ -126,7 +126,7 @@ def founditem(request):
 # 			"Sports Field":(28.5464649, 77.2720461,28.5480949, 77.2739461),
 # 			"Parking Area":(28.544490 , 77.271325,28.544890 , 77.27185)}
 
-@login_required
+# @login_required
 def gmap(request):
 	lost_items=LostItem.objects.all().filter(status=True).filter(
 		pub_date__gt=timezone.now()-datetime.timedelta(days=30)).order_by('-pub_date')
@@ -195,7 +195,7 @@ def gmap(request):
 	return render_to_response('done.html',s,RequestContext(request))
 
 def team(request):
-	return render_to_response('team.html',{},{})
+	return render_to_response('team.html',{},RequestContext(request))
 
 @login_required
 def found(request,found_id):
@@ -265,7 +265,7 @@ def history(request):
 	s={'lost':lost,'found':found,'lostactive':lostactive,'foundactive':foundactive}
 	return render_to_response('history.html',s,RequestContext(request))
 
-@login_required
+# @login_required
 def log(request):
 	lost=LostItem.objects.all().filter(status=True).order_by('-id')
 	found=FoundItem.objects.all().filter(status=True).order_by('-id')

@@ -3,7 +3,7 @@
 {% block body %}
 
 <div class="row" style="padding-top:5%">
-  <div class="col-md-6 col-md-offset-3">
+  <div class="col-md-8 col-md-offset-2">
 
     <ul class="nav nav-tabs" role="tablist">
     <li class="active"><a href="#1" role="tab" data-toggle="tab">
@@ -27,6 +27,7 @@
         <th>Details</th>
         <th>Specifics</th>
         <th>Report</th>
+        <th>Image</th>
       </tr>
       </thead>
      <tbody>  
@@ -55,6 +56,7 @@
 <td>{{x.additionalinfo}} </td>
 
 <td><button class="btn-success" data-toggle="modal" data-target="#confirm_found_{{ x.pk }}_modal">I've found it..!!</button></td>
+<td> <center>{% if x.image %}<a href="{{ x.image.url }}" target="new"><span style="color:black" class="glyphicon glyphicon-camera"> </span></a>{% else %} - {% endif %}</center></td>
 
 {% endfor %}
 </tbody>
@@ -76,6 +78,7 @@
         <th>Details</th>
         <th>Specifics</th>
         <th>Report</th>
+        <th>Image</th>
         </tr>
       </thead>
       <tbody>
@@ -104,7 +107,7 @@
 <td>{{x.additonalinfo}} </td>
 
 <td><button class="btn-danger" data-toggle="modal" data-target="#confirm_lost_{{ x.pk }}_modal">It's mine..!!</button></td>
-
+<td> <center>{% if x.image %}<a href="{{ x.image.url }}" target="new"><span style="color:black" class="glyphicon glyphicon-camera"> </span></a>{% else %} - {% endif %}</center></td>
 
 {% endfor %}
  {% else %}

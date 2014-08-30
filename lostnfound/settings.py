@@ -10,7 +10,7 @@ EMAIL_PORT = 587
 
 sys.path.insert(0, '../..')
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ROOT_PATH = abspath(dirname(__file__))
@@ -35,7 +35,7 @@ SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-MEDIA_ROOT = os.path.join(PROJECT_ROOT, os.getcwd()+'/static/')
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, os.getcwd()+'/media/')
 MEDIA_URL = '/media/'
 
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
