@@ -148,10 +148,17 @@ def gmap(request):
 
 			# this method gives a believably random still viewable look
 			# leave x unchanged
-			x = random.uniform(limit[i.location][0], limit[i.location][2])
+			d1 = ((limit[i.location][2] - limit[i.location][0])/5)
+			d2 =  limiterByLocation[i.location]
+			d2 = d2 % d1 if d2 % 2 else d2
+			delta = d1 * d2
+			x = limit[i.location][0] + delta
 
 			# change y according to the number of items in that location up until now.
-			delta = ((limit[i.location][3] - limit[i.location][1])/5) * limiterByLocation[i.location]
+			d1 = ((limit[i.location][3] - limit[i.location][1])/5)
+			d2 =  limiterByLocation[i.location]
+			d2 = d2 if d2 % 2 else d2 % d1
+			delta = d1 * d2
 			y = limit[i.location][1] + delta
 
 			now = datetime.datetime.now()
