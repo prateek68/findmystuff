@@ -5,8 +5,8 @@ from django.http import HttpResponseRedirect,HttpResponse, Http404
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from forms import LostItemForm,FoundItemForm
-from models import LostItem,FoundItem
+from forms import LostItemForm,FoundItemForm, FeedbackForm
+from models import LostItem,FoundItem, Feedback
 from django.utils import timezone
 import datetime
 import random
@@ -58,6 +58,7 @@ def home(request):
     return redirect('gmap')
     # return render_to_response('home.html', {}, RequestContext(request))
 
+#TODO this will allow anyone to login.
 # @login_required
 # def done(request):
 #     s=User.objects.get(username=request.user).email
@@ -275,3 +276,19 @@ def get_confirm_modal(request, itemtype, itemid):
 
 	return render_to_response('confirm_modal.html',
 		{'success':success, 'itemtype': itemtype, 'itemid':itemid, 'itemname':item.itemname if item else ''}, RequestContext(request))
+
+def feedback(request):
+	logged_in = True
+	if (not request.user.is_authenticated()) or (not request.is_ajax() and not request.method == "POST"):
+		return HttpResponse("Please login and go to the main page.")
+	form = FeedbackForm()
+	if request.method == 'POST':
+		form = FeedbackForm(request.POST)
+		if form.is_valid():
+			obj = form.save(commit=False)
+			obj.user = request.user
+			obj.save()
+			return HttpResponseRedirect(reverse('gmap'))
+	return render_to_response('feedback.html',{
+		'form': form, 'logged_in': login_required
+		}, RequestContext(request))

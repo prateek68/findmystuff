@@ -51,3 +51,9 @@ class Location(models.Model):
 		return self.name
 	def __repr__(self):
 		return self.name
+
+class Feedback(models.Model):
+	user 			= models.ForeignKey(User)
+	feedback 		= models.TextField(max_length=500)
+	date 			= models.DateTimeField(default=timezone.now)
+	fixed 			= models.BooleanField(default=False)

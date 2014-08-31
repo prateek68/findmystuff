@@ -14,6 +14,10 @@
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
     <link href="{% static 'css/main.css' %}" rel="stylesheet">
     <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+    <style type="text/css">
+      button.feedback-button{}
+    </style>
+
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="{% static 'js/chart.js' %}"></script>
@@ -29,6 +33,17 @@
       ga('send', 'pageview');
 
     </script>
+
+    <script>
+      $(document).ready(function(){
+        $(".feedback-button").click(function(){
+          $("#base-confirmation-modal").modal('show');
+          var url = "{% url 'feedback' %}";
+          $("#base-confirmation-modal").load(url);
+          });
+        });
+    </script>
+
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
   </head>
 
@@ -60,7 +75,7 @@
           <ul class="dropdown-menu">
             <li><a href="{% url 'history' %}">History</a></li>
             <li ><a href="{% url 'add_404_website' %}">FindMyStuff API</a></li>
-            <li><a href="#">Give Feedback</a></li>
+            <li><a class="feedback-button" data-toggle="modal" data-remote=true href="#" data-target="#base-confirmation-modal">Give Feedback</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
           </ul>
         </li>

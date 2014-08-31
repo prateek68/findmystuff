@@ -1,6 +1,6 @@
 from django.forms import ModelForm, Textarea, extras
 from django import forms
-from models import LostItem,FoundItem
+from models import LostItem,FoundItem, Feedback
 from django.forms import ModelChoiceField
 from django.contrib.admin import widgets
 from datetime import date
@@ -50,3 +50,8 @@ class FoundItemForm(forms.ModelForm):
 		'class':'form-control','placeholder':'Date'}), validators = [validate_date])
 	additionalinfo = forms.CharField(label="Additional Info", widget=forms.TextInput(attrs = {
 		'class':'form-control','placeholder':'Additional Info'}))
+
+class FeedbackForm(forms.ModelForm):
+	class Meta:
+		model 	= Feedback
+		fields 	= ['feedback']
