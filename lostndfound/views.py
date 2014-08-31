@@ -20,9 +20,6 @@ from collections import Counter
 
 import threading
 
-#######LAT LONG LIST#############
-{"Faculty Residency":(28.5439000, 77.2704000,28.5443000, 77.2709000),"Academic Block":(28.5441000, 77.2722000,28.5448000, 77.2729000)}
-
 class PostToFB(threading.Thread):
 	def __init__(self, message):
 		threading.Thread.__init__(self)
@@ -51,12 +48,6 @@ class send_mail(threading.Thread):
 	def run(self):
 		msg = EmailMultiAlternatives(self.subject, self.text_content, self.host_user, self.recipient_list)
 		# msg.send()
-
-def home(request):
-    """Home view, displays login mechanism"""
-    # if request.user.is_authenticated():
-    return redirect('gmap')
-    # return render_to_response('home.html', {}, RequestContext(request))
 
 #TODO this will allow anyone to login.
 # @login_required
@@ -200,7 +191,7 @@ def found(request,found_id):
 		item.found_by = request.user
 		item.save()
 
-		return redirect('gmap')
+		return redirect('home')
 	return render_to_response('wrongpage.html', {},{})
 
 @login_required
@@ -221,7 +212,7 @@ def lost(request,lost_id):
 		item.lost_by = request.user
 		item.save()
 
-		return redirect('gmap')
+		return redirect('home')
 	return render_to_response('wrongpage.html', {},{})
 
 @login_required
@@ -232,7 +223,7 @@ def reopenfound(request,found_id):
 		item.lost_by = None
 		item.save()
 	
-	return redirect('gmap')
+	return redirect('home')
 
 @login_required
 def reopenlost(request,lost_id):
@@ -241,7 +232,7 @@ def reopenlost(request,lost_id):
 		item.status = True
 		item.found_by = None
 		item.save()
-	return redirect('gmap')
+	return redirect('home')
 
 @login_required
 def history(request):
@@ -290,7 +281,7 @@ def feedback(request):
 			obj = form.save(commit=False)
 			obj.user = request.user
 			obj.save()
-			return HttpResponseRedirect(reverse('gmap'))
+			return HttpResponseRedirect(reverse('home'))
 	return render_to_response('feedback.html',{
 		'form': form, 'logged_in': login_required
 		}, RequestContext(request))
