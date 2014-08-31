@@ -165,6 +165,7 @@ SOCIALACCOUNT_PROVIDERS = {
      'AUTH_PARAMS': {'access_type': 'online'}
     }
 }
+SOCIALACCOUNT_ADAPTER = 'lostndfound.views.LoginAdapter'
 
 ITEMS_PER_LOCATION = 3
 

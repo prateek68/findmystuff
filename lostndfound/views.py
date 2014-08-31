@@ -8,6 +8,9 @@ from django.core.urlresolvers import reverse
 from forms import LostItemForm,FoundItemForm, FeedbackForm
 from models import LostItem,FoundItem, Feedback
 from django.utils import timezone
+from allauth.exceptions import ImmediateHttpResponse
+from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+
 import datetime
 import random
 from django.core.mail import EmailMultiAlternatives
@@ -49,16 +52,12 @@ class send_mail(threading.Thread):
 		msg = EmailMultiAlternatives(self.subject, self.text_content, self.host_user, self.recipient_list)
 		# msg.send()
 
-#TODO this will allow anyone to login.
-# @login_required
-# def done(request):
-#     s=User.objects.get(username=request.user).email
-#     s1 = s.split('@')[-1]
-#     if s1 not in settings.ALLOWED_LOGIN_HOSTS:
-#         User.objects.get(username=request.user).delete()
-#         return redirect('home')
-#     """Login complete view, displays user data"""
-#     return redirect('gmap')
+class LoginAdapter(DefaultSocialAccountAdapter):
+	def pre_social_login(self, request, sociallogin):
+		user = sociallogin.account.user
+		if user.email.split('@')[-1] not in settings.ALLOWED_LOGIN_HOSTS:
+			logout(request)
+			raise ImmediateHttpResponse(gmap(request))
 
 def logout(request):
     """Logs out user"""
