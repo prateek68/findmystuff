@@ -146,8 +146,13 @@ def gmap(request):
 		if(i.location in limit.keys()):
 			limiterByLocation.update([i.location])
 
+			# this method gives a believably random still viewable look
+			# leave x unchanged
 			x = random.uniform(limit[i.location][0], limit[i.location][2])
-			y = random.uniform(limit[i.location][1], limit[i.location][3])
+
+			# change y according to the number of items in that location up until now.
+			delta = ((limit[i.location][3] - limit[i.location][1])/5) * limiterByLocation[i.location]
+			y = limit[i.location][1] + delta
 
 			now = datetime.datetime.now()
 
