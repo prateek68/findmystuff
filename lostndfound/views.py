@@ -160,7 +160,7 @@ def gmap(request):
 
 			now = datetime.datetime.now()
 
-			contentString = "newmarker(%(x)f, %(y)f, '%(name)s', '%(description)s', '%(time)s', '%(itemtype)s', '%(link)s');\n"%{
+			contentString = "newmarker(%(x)f, %(y)f, '%(name)s', '%(description)s', '%(time)s', '%(itemtype)s', '%(link)s', '%(imagelink)s');\n"%{
 				'x': x,
 				'y': y,
 				'name': i.itemname,
@@ -171,6 +171,7 @@ def gmap(request):
 					'lost' if isinstance(i, LostItem) else 'found',
 					i.pk
 					),
+				'imagelink': i.image.url if i.image else ''
 			}
 
 			final += contentString
