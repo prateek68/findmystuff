@@ -229,6 +229,7 @@ def reopenfound(request,found_id):
 	if request.method=='GET':
 		item = get_object_or_404(FoundItem, pk = found_id)
 		item.status = True
+		item.lost_by = None
 		item.save()
 	
 	return redirect('gmap')
@@ -238,6 +239,7 @@ def reopenlost(request,lost_id):
 	if request.method=='GET':
 		item = get_object_or_404(LostItem, pk = lost_id)
 		item.status = True
+		item.found_by = None
 		item.save()
 	return redirect('gmap')
 
