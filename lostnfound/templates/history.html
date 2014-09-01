@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% load mod_timesince %}
 {% block body %}
 <div class="row" style="padding-top:5%">
 	<div class="col-md-8 col-md-offset-2">
@@ -21,6 +22,7 @@
 								<tr>
 									<th>Item</th>
 									<th>Details</th>
+									<th></th>
 								</tr>
 							</thead>
 							<tbody>	
@@ -28,7 +30,8 @@
 							{% for x in lostactive %}
 								<tr class="active">
 									<td>{{x.itemname}} </td>
-									<td>Lost at {{x.location}} on {{x.time}} {{x.additonalinfo}} </td>
+									<td><strong>Lost at {{x.location}} about {{x.time|ago }}.</strong> {{x.additionalinfo}}.</td>
+									<td><a href="{% url 'deletelost' x.pk %}"><span class="glyphicon glyphicon-remove" style="color:red;"></span></a></td>
 								</tr>
 								{% endfor %}
 							</tbody>
@@ -49,6 +52,7 @@
 						<tr>
 							<th>Item</th>
 							<th>Details</th>
+							<th></th>
 						</tr>
 					</thead>
 					<tbody>	
@@ -56,7 +60,8 @@
 						{% for x in foundactive %}
 							<tr class="active">
 								<td>{{x.itemname}} </td>
-								<td>Lost at {{x.location}} on {{x.time}} {{x.additonalinfo}} </td>
+								<td><strong>Found at {{x.location}} about {{x.time|ago }}.</strong> {{x.additionalinfo}}</td>
+								<td><a href="{% url 'deletefound' x.pk %}"><span class="glyphicon glyphicon-remove" style="color:red;"></span></a></td>
 							</tr>
 						{% endfor %}
 					</tbody>
@@ -78,6 +83,7 @@
 							<tr>
 								<th>Item</th>
 								<th>Details</th>
+								<th>Found by</th>
 								<th>Status</th>
 							</tr>
 							</thead>
@@ -85,7 +91,8 @@
 							{% for x in lost %}
 								<tr class="active">
 									<td>{{x.itemname}} </td>
-									<td>Lost at {{x.location}} on {{x.time}} {{x.additonalinfo}} </td>
+									<td><strong>Lost at {{x.location}} about {{x.time|ago }}.</strong> {{x.additionalinfo}}.</td>
+									<td><strong>{{ x.found_by.first_name }}</strong> ({{ x.found_by.email }})</td>
 									<td><a href="/reopenlost/{{x.id}}" align="right" class="btn btn-info">Reopen</a><br></td>
 								</tr>
 							{% endfor %}
@@ -108,6 +115,7 @@
 							<tr>
 								<th>Item</th>
 								<th>Details</th>
+								<th>Lost by</th>
 								<th>Status</th>
 							</tr>
 						</thead>
@@ -116,7 +124,8 @@
 							{% for x in found %}
 								<tr class="active">
 									<td>{{x.itemname}} </td>
-									<td>Lost at {{x.location}} on {{x.time}} {{x.additonalinfo}} </td>
+									<td><strong>Found at {{x.location}} about {{x.time|ago }}.</strong> {{x.additionalinfo}}. </td>
+									<td><strong>{{ x.lost_by.first_name }}</strong> ({{ x.lost_by.email }})</td>
 									<td><a href="/reopenfound/{{x.id}}" align="right" class="btn btn-sm btn-danger ">Reopen</a><br></td>
 								</tr>
 							{% endfor %}

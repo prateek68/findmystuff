@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% load mod_timesince %}
 {% block body %}
 
 <div class="row" style="padding-top:5%">
@@ -49,7 +50,7 @@ $(document).ready(function(){
 <tr class="active">
 <td>{{x.itemname}} </td>
 <td>Lost at {{x.location}} about <span data-toggle="tooltip" title="{{ x.time }}">
-{{ x.time|timesince }} ago.</span></td>
+{{ x.time|ago }} .</span></td>
 <td>{{x.additionalinfo}} </td>
 
 <td><button class="btn btn-success btn-xs confirm-button" data-toggle="modal" data-remote="true"  data-type='lost' data-id="{{ x.pk }}" >I've found it..!!</button></td>
@@ -85,7 +86,7 @@ $(document).ready(function(){
 <tr class="active">
 <td>{{x.itemname}} </td>
 <td>Found at {{x.location}} about <span data-toggle="tooltip" title="{{ x.time }}">
-{{ x.time|timesince }} ago.</span></td>
+{{ x.time|ago }} .</span></td>
 <td>{{x.additionalinfo}} </td>
 
 <td><button class="btn btn-danger btn-xs confirm-button " data-toggle="modal" data-type='found' data-remote="true" data-id="{{ x.pk }}" >It's mine..!!</button></td>

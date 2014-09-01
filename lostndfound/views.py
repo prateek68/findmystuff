@@ -12,10 +12,10 @@ from allauth.exceptions import ImmediateHttpResponse
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 
 import datetime
-import random
 from django.core.mail import EmailMultiAlternatives
 from lostnfound import settings
 from lostndfound.Data import get_limit
+from lostndfound.templatetags.mod_timesince import ago as timesince_self
 
 import urllib
 import urllib2
@@ -161,14 +161,12 @@ def gmap(request):
 			delta = d1 * d2
 			y = limit[i.location][1] + delta
 
-			now = datetime.datetime.now()
-
 			contentString = "newmarker(%(x)f, %(y)f, '%(name)s', '%(description)s', '%(time)s', '%(itemtype)s', '%(link)s', '%(imagelink)s');\n"%{
 				'x': x,
 				'y': y,
 				'name': i.itemname,
 				'description': i.additionalinfo,
-				'time': abs(i.time - datetime.date(now.year, now.month, now.day)).days,
+				'time': timesince_self(i.time),
 				'itemtype': 'lost' if isinstance(i, LostItem) else 'found',
 				'link': '/get_confirm_modal/%s/%d'%(
 					'lost' if isinstance(i, LostItem) else 'found',
@@ -296,3 +294,17 @@ def feedback(request):
 	return render_to_response('feedback.html',{
 		'form': form, 'logged_in': login_required
 		}, RequestContext(request))
+
+@login_required
+def deletelost(request, lost_id):
+	item = get_object_or_404(LostItem, pk=lost_id)
+	if item.user == request.user:
+		item.delete()
+	return HttpResponseRedirect(reverse('home'))
+
+@login_required
+def deletefound(request, found_id):
+	item = get_object_or_404(FoundItem, pk=found_id)
+	if item.user == request.user:
+		item.delete()
+	return HttpResponseRedirect(reverse('home'))
