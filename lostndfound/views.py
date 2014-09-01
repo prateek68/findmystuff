@@ -290,7 +290,7 @@ def feedback(request):
 			obj = form.save(commit=False)
 			obj.user = request.user
 			obj.save()
-			return HttpResponseRedirect(reverse('home'))
+		return HttpResponseRedirect(reverse('home'))
 	return render_to_response('feedback.html',{
 		'form': form, 'logged_in': login_required
 		}, RequestContext(request))

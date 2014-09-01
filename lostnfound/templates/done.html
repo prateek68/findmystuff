@@ -36,16 +36,17 @@
         content.icon = "{% static 'gmaps-blue-marker.png' %}";
       }
 
-      var popup_html = '<div id="content"><div id = "siteNotice"></div><h3 id="firstHeading" class="firstHeading">' + 
-       name + '</h3> <div id="bodyContent"><p>' + description;
+      var popup_html = '<div id="content"><h3 id="firstHeading" class="firstHeading">' + name;
 
-       if (imagelink !== ''){
-        popup_html += '<a href="'+ imagelink +'" target=new><span class="glyphicon glyphicon-camera"></span></a>';
+      if (imagelink !== ''){
+        popup_html += '<a href="'+ imagelink +'" target=new><span class="glyphicon glyphicon-camera" style="margin-left:20px; color: black"></span></a>';
        }
 
-       popup_html += '</p>Lost about ' + time;
+      popup_html += '</h3> <div id="bodyContent"><p style="font-size:16px;">' + description;
 
-        popup_html += '.</p> <p text-align:right > <a class="btn btn-';
+      popup_html += '<br />Lost about <strong>' + time;
+
+      popup_html += '</strong>.</p><a class="btn btn-';
      
       if (item_type === 'lost'){
         popup_html += 'info';
@@ -54,7 +55,7 @@
         popup_html += 'danger'; 
       }
 
-      popup_html += ' btn-xs" data-toggle="modal" href="'+ link +'" data-target="#base-confirmation-modal" style="width:135px;">';
+      popup_html += ' btn-xs" data-toggle="modal" href="'+ link +'" data-target="#base-confirmation-modal">';
 
       if (item_type === 'lost'){
         popup_html += 'I found it !';
