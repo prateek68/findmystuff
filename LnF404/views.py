@@ -83,15 +83,20 @@ def confirmIP(request, allotedIP):
 	return False
 
 @csrf_exempt
-def send_data(request, site_id='0', token='0'):
+def send_data(request, site_id='0', token='0', quantity = 0):
 	response 	= {'success': 'true'}
+
 	if token == '0':
 		dictionary = request.POST if request.method == "POST" else request.GET
 	else:
-		dictionary = {'id': site_id, 'token': token}
+		dictionary = {'id': site_id,
+		 'token': token,
+		 'quantity': quantity if quantity > 0 else settings.LnF404_ITEMS_NUMBER }
 
 	token_id = int(dictionary.get('id', None))
 	token 	 = str(dictionary.get('token', None))
+	quantity = int(dictionary.get('quantity', settings.LnF404_ITEMS_NUMBER))
+
 	if token_id and token:
 		try:
 			site = AuthenticationToken.objects.get(pk=token_id)
@@ -101,7 +106,8 @@ def send_data(request, site_id='0', token='0'):
 
 		if site and site.token == token:
 
-			response['quantity'] = RecentLostItem.objects.all().count()
+			response['quantity'] = min(RecentLostItem.objects.all().count(),
+										quantity)
 			for i, link in enumerate(RecentLostItem.objects.all()):
 				json_item_data = {}
 				json_item_data['item-name'] = link.item.itemname
@@ -109,6 +115,9 @@ def send_data(request, site_id='0', token='0'):
 				json_item_data['info']		= link.item.additionalinfo
 				json_item_data['email']		= link.item.user.email
 				response[i] = json_item_data
+
+				# doesn't break at 0 even if quantity is None.
+				if (i + 1) == quantity: break
 
 			return HttpResponse(json.dumps(response),
 			 content_type="application/json")

@@ -151,7 +151,7 @@ LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = '/done/'
 URL_PATH = ''
 
-LnF404_ITEMS_NUMBER = 5
+LnF404_ITEMS_NUMBER = 20
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/google/login'
