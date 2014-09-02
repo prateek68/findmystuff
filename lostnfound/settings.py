@@ -147,8 +147,8 @@ MANDRILL_API_KEY = 'Z_GwF4iDxCx59-24qzr4Nw'
 EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
 EMAIL_HOST_USER='iiitdfindmystuff@gmail.com'
 EMAIL_HOST_PASSWORD='kshitij@86'
-LOGIN_URL = '/'
-LOGIN_REDIRECT_URL = '/done/'
+LOGIN_URL = '/accounts/google/login/'
+LOGIN_REDIRECT_URL = '/'
 URL_PATH = ''
 
 LnF404_ITEMS_NUMBER = 20

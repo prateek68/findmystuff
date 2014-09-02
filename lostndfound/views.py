@@ -34,7 +34,7 @@ class PostToFB(threading.Thread):
 		url   = "https://graph.facebook.com/me/feed"
 		data  = urllib.urlencode({'message': self.message, 'access_token': token})
 		try:
-			#request = urllib2.urlopen(url, data)
+			request = urllib2.urlopen(url, data)
 			pass
 		except:
 			print "Error in posting to FB", self.message			# will show up in uwsgi logs.
@@ -50,7 +50,7 @@ class send_mail(threading.Thread):
 
 	def run(self):
 		msg = EmailMultiAlternatives(self.subject, self.text_content, self.host_user, self.recipient_list)
-		# msg.send()
+		msg.send()
 
 class LoginAdapter(DefaultSocialAccountAdapter):
 	def pre_social_login(self, request, sociallogin):
