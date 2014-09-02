@@ -51,7 +51,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 SECRET_KEY = '#$5btppqih8=%ae^#&amp;7en#kyi!vh%he9rg=ed#hm6fnw9^=umc'
@@ -69,7 +69,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 ROOT_URLCONF = 'lostnfound.urls'
@@ -88,15 +88,15 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'django.contrib.messages',
+    #'django.contrib.messages',
     'django.contrib.staticfiles',
     'lostndfound',
     'LnF404',
-    #'social.apps.django_app.default',
+    # 'social.apps.django_app.default',
     'djrill',
-    #'allauth',
-    #'allauth.account',
-    #'allauth.socialaccount',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'bootstrapform',
       )
@@ -160,14 +160,18 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
-    'SCOPE': ['https://www.googleapis.com/auth/userinfo.email',
-     'https://www.googleapis.com/auth/userinfo.profile'],
+    'SCOPE': [
+    'https://www.googleapis.com/auth/userinfo.email',
+     'https://www.googleapis.com/auth/userinfo.profile',
+     'https://www.googleapis.com/auth/plus.login',
+     'https://www.googleapis.com/auth/plus.me'
+     ],
      'AUTH_PARAMS': {'access_type': 'online'}
     }
 }
 SOCIALACCOUNT_ADAPTER = 'lostndfound.views.LoginAdapter'
 
-ITEMS_PER_LOCATION = 3
+ITEMS_PER_LOCATION = 4
 
 FACEBOOK_AUTHENTICATION_TOKEN = ""
 
