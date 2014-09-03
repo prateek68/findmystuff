@@ -49,8 +49,8 @@ $(document).ready(function(){
 
 <tr class="active">
 <td>{{x.itemname}} </td>
-<td>Lost at {{x.location}} about <span data-toggle="tooltip" title="{{ x.time }}">
-{{ x.time|ago }} .</span></td>
+<td>Last seen at {{x.location}} about <span data-toggle="tooltip" title="{{ x.time }}">
+{{ x.time|ago }} {% ifequal x.get_time_of_day_display 'Don\'t know' %}{% else %} in the {{ x.get_time_of_day_display|lower }}{% endifequal %}.</span></td>
 <td>{{x.additionalinfo}} </td>
 
 <td><button class="btn btn-success btn-sm confirm-button" data-toggle="modal" data-remote="true"  data-type='lost' data-id="{{ x.pk }}" >I've found it.</button></td>

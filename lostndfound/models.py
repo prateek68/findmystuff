@@ -7,6 +7,12 @@ import string
 from random import choice
 
 Location_Choices=()
+time_of_day_choices = (('XXX', 'Don\'t know'),
+						('MNG', 'Morning'),
+						('AFT', 'Afternoon'),
+						('EVE', 'Evening'),
+						('NGT', 'Night'),
+						)
 
 class LostItem(models.Model):
 	user 			= models.ForeignKey(User)
@@ -18,6 +24,7 @@ class LostItem(models.Model):
 	pub_date 		= models.DateTimeField('date published', default=timezone.now)
 	found_by		= models.ForeignKey(User, related_name='foundby', null=True)
 	image			= models.FileField(upload_to='images/')
+	time_of_day		= models.CharField(max_length=3, choices=time_of_day_choices, default='XXX')
 
 	def __unicode__(self):
 		return self.itemname

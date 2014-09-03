@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from forms import LostItemForm,FoundItemForm, FeedbackForm
 from models import LostItem,FoundItem, Feedback
+from models import time_of_day_choices as time_of_day_choices_
 from django.utils import timezone
 from allauth.exceptions import ImmediateHttpResponse
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
@@ -23,6 +24,9 @@ import urllib2
 from collections import Counter
 import re
 import threading
+
+time_of_day_choices = {a[0]: a[1].lower() for a in time_of_day_choices_}
+time_of_day_choices['XXX'] = ''
 
 class PostToFB(threading.Thread):
 	def __init__(self, message):
@@ -169,12 +173,13 @@ def gmap(request):
 			delta = d1 * d2
 			y = limit[i.location][1] + delta
 
-			contentString = "newmarker(%(x)f, %(y)f, \"%(name)s\", \"%(description)s\", \"%(time)s\", \"%(itemtype)s\", \"%(link)s\", \"%(imagelink)s\");\n"%{
+			contentString = "newmarker(%(x)f, %(y)f, \"%(name)s\", \"%(description)s\", \"%(time)s\", \"%(time_of_day)s\", \"%(itemtype)s\", \"%(link)s\", \"%(imagelink)s\");\n"%{
 				'x': x,
 				'y': y,
 				'name': ' '.join(re.findall(r"[\w']+", i.itemname.replace('"','\''))),
 				'description': ' '.join(re.findall(r"[\w']+", i.additionalinfo.replace('"','\''))),
 				'time': timesince_self(i.time),
+				'time_of_day': time_of_day_choices[i.time_of_day] if isinstance(i, LostItem) else '',
 				'itemtype': 'lost' if isinstance(i, LostItem) else 'found',
 				'link': '/get_confirm_modal/%s/%d'%(
 					'lost' if isinstance(i, LostItem) else 'found',

@@ -19,7 +19,7 @@
 
     {{s|safe}}
 
-    function newmarker(x, y, name, description, time, item_type, link, imagelink){
+    function newmarker(x, y, name, description, time, time_of_day, item_type, link, imagelink){
       var myLatlng = new google.maps.LatLng(x, y);
       content = {
         position: myLatlng,
@@ -44,10 +44,19 @@
 
       popup_html += '</h3> <div id="bodyContent"><p style="font-size:16px;">' + description;
 
-      popup_html += '<br />Lost about <strong>' + time;
+      if (item_type === 'lost'){
+        popup_html += '<br />Last seen <strong>' + time;
+        if (time_of_day !== ''){
+          popup_html += '</strong> in the ' + time_of_day;
+        }
+      }
 
-      popup_html += '</strong>.</p><a class="btn btn-';
-     
+      else{
+        popup_html += '<br />Found <strong>' + time + '</strong>';
+      }
+
+      popup_html += '.</p><a class="btn btn-';
+
       if (item_type === 'lost'){
         popup_html += 'info';
       }
@@ -66,7 +75,7 @@
 
       popup_html += '</a> </div></div> ';
       var marker = new google.maps.Marker(content);
-      console.log(popup_html);
+      
       var infowindow = new google.maps.InfoWindow({
       content: popup_html
     });
@@ -74,14 +83,14 @@
     if (openInfoWindow){
       openInfoWindow.close();
     }
-    
+
     openInfoWindow = infowindow;
     infowindow.open(map,marker);
    });
    marker.setMap(map);
   }
 	}
-	
+
   google.maps.event.addDomListener(window, 'load', initialize);
     </script>
 <script type="text/javascript">

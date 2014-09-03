@@ -30,7 +30,7 @@
 							{% for x in lostactive %}
 								<tr class="active">
 									<td>{{x.itemname}} </td>
-									<td><strong>Lost at {{x.location}} about {{x.time|ago }}.</strong> {{x.additionalinfo}}.</td>
+									<td><strong>Last seen at {{x.location}} about {{x.time|ago }} {% ifequal x.get_time_of_day_display 'Don\'t know' %}{% else %} in the {{ x.get_time_of_day_display|lower }}{% endifequal %}.</strong> {{x.additionalinfo}}.</td>
 									<td><a href="{% url 'deletelost' x.pk %}"><span class="glyphicon glyphicon-remove" style="color:red;"></span></a></td>
 								</tr>
 								{% endfor %}
@@ -91,7 +91,7 @@
 							{% for x in lost %}
 								<tr class="active">
 									<td>{{x.itemname}} </td>
-									<td><strong>Lost at {{x.location}} about {{x.time|ago }}.</strong> {{x.additionalinfo}}.</td>
+									<td><strong>Lost at {{x.location}} about {{x.time|ago }} {% ifequal x.get_time_of_day_display 'Don\'t know' %}{% else %} in the {{ x.get_time_of_day_display|lower }}{% endifequal %}.</strong> {{x.additionalinfo}}.</td>
 									<td><strong>{{ x.found_by.first_name }}</strong> ({{ x.found_by.email }})</td>
 									<td><a href="/reopenlost/{{x.id}}" align="right" class="btn btn-info">Reopen</a><br></td>
 								</tr>
