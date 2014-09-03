@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.http import HttpResponseRedirect,HttpResponse, Http404
@@ -56,12 +57,13 @@ class LoginAdapter(DefaultSocialAccountAdapter):
 	def pre_social_login(self, request, sociallogin):
 		user = sociallogin.account.user
 		if user.email.split('@')[-1] not in settings.ALLOWED_LOGIN_HOSTS:
-			logout(request)
-			raise ImmediateHttpResponse(gmap(request))
+			messages.error(request, "You can login only through an IIITD account.")
+			raise ImmediateHttpResponse(HttpResponseRedirect(reverse('home')))
 
 def logout(request):
     """Logs out user"""
     auth_logout(request)
+    messages.success(request, "Logged out successfully.")
     return redirect('home')
 
 @login_required
@@ -84,7 +86,10 @@ def lostitem(request):
 				'\nAdditional details:', obj.additionalinfo+'.'])
 			PostToFB(content)
 
+			messages.success(request, "Your item has been added to the portal.")
 			return redirect('home')
+
+		messages.error(request, "There was something wrong in the information provided.")
 	return render_to_response('LostItem.html', {'lostitem_form': lostitem_form}, 
 		context_instance=RequestContext(request))
 
@@ -106,7 +111,10 @@ def founditem(request):
 				'\nAdditional details:', obj.additionalinfo+'.'])
 			PostToFB(content)
 
-			return redirect("home")
+			messages.success(request, "Your item has been added to the portal.")
+			return redirect('home')
+
+		messages.error(request, "There was something wrong in the information provided.")
 	return render_to_response('FoundItem.html',{'founditem_form': founditem_form}, RequestContext(request))
 	
 
@@ -200,8 +208,9 @@ def found(request,found_id):
 		item.found_by = request.user
 		item.save()
 
-		return redirect('home')
-	return render_to_response('wrongpage.html', {},{})
+	else:
+		messages.warning(request, "There was something wrong in the request you sent.")
+	return redirect('home')
 
 @login_required
 def lost(request,lost_id):
@@ -221,19 +230,23 @@ def lost(request,lost_id):
 		item.lost_by = request.user
 		item.save()
 
-		return redirect('home')
-	return render_to_response('wrongpage.html', {},{})
+	else:
+		messages.warning(request, "There was something wrong in the request you sent.")
+	return redirect('home')
+
 
 @login_required
 def reopenfound(request,found_id):
 	if request.method=='GET':
 		item = get_object_or_404(FoundItem, pk = found_id)
 		if not item.user == request.user:
+			messages.warning(request, "It seems that it isn't your item.")
 			return redirect('home') 
 		item.status = True
 		item.lost_by = None
 		item.save()
-	
+		messages.success(request, "Your item has been added again to the portal.")
+
 	return redirect('home')
 
 @login_required
@@ -241,10 +254,13 @@ def reopenlost(request,lost_id):
 	if request.method=='GET':
 		item = get_object_or_404(LostItem, pk = lost_id)
 		if not item.user == request.user:
+			messages.warning(request, "It seems that it isn't your item.")
 			return redirect('home')
 		item.status = True
 		item.found_by = None
 		item.save()
+		messages.success(request, "Your item has been added again to the portal.")
+
 	return redirect('home')
 
 @login_required
@@ -294,6 +310,7 @@ def feedback(request):
 			obj = form.save(commit=False)
 			obj.user = request.user
 			obj.save()
+			messages.success(request, "Thank you for your valuable feedback.")
 		return HttpResponseRedirect(reverse('home'))
 	return render_to_response('feedback.html',{
 		'form': form, 'logged_in': login_required
@@ -304,6 +321,9 @@ def deletelost(request, lost_id):
 	item = get_object_or_404(LostItem, pk=lost_id)
 	if item.user == request.user:
 		item.delete()
+		messages.success(request, "Your item has been deleted from the portal.")
+	else:
+		messages.warning(request, "It seems that it isn't your item.")
 	return HttpResponseRedirect(reverse('home'))
 
 @login_required
@@ -311,4 +331,7 @@ def deletefound(request, found_id):
 	item = get_object_or_404(FoundItem, pk=found_id)
 	if item.user == request.user:
 		item.delete()
+		messages.success(request, "Your item has been deleted from the portal.")
+	else:
+		messages.warning(request, "It seems that it isn't your item.")
 	return HttpResponseRedirect(reverse('home'))
