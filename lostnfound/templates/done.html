@@ -58,14 +58,15 @@
       popup_html += ' btn-xs" data-toggle="modal" href="'+ link +'" data-target="#base-confirmation-modal">';
 
       if (item_type === 'lost'){
-        popup_html += 'I found it !';
+        popup_html += "I've found it.";
       }
       else{
-        popup_html += "It's mine !";
+        popup_html += "It's mine.";
       }
 
       popup_html += '</a> </div></div> ';
       var marker = new google.maps.Marker(content);
+      console.log(popup_html);
       var infowindow = new google.maps.InfoWindow({
       content: popup_html
     });
