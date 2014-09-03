@@ -28,8 +28,8 @@ class LostItemForm(forms.ModelForm):
 		'class':'form-control','placeholder':'Object Lost'}))
 	time = forms.DateField(label = 'Last seen on', widget=forms.DateInput(attrs = {
 		'class':'form-control','placeholder':'Date'}), validators = [validate_date])
-	additionalinfo = forms.CharField(label="Addition Information", widget=forms.Textarea(attrs = {
-		'class':'form-control','placeholder':'Additional Info'}), required = False)
+	additionalinfo = forms.CharField(label="More Details", widget=forms.Textarea(attrs = {
+		'class':'form-control','placeholder':'Describe the item you lost explicitly.'}))
 
 class FoundItemForm(forms.ModelForm):
 	class Meta:
@@ -45,11 +45,11 @@ class FoundItemForm(forms.ModelForm):
 
 
 	itemname = forms.CharField(label="Item", widget=forms.TextInput(attrs = {
-		'class':'form-control','placeholder':'Object Lost'}))
+		'class':'form-control','placeholder':'Object Found'}))
 	time = forms.DateField(label='Found on', widget=forms.DateInput(attrs = {
 		'class':'form-control','placeholder':'Date'}), validators = [validate_date])
-	additionalinfo = forms.CharField(label="Additional Info", widget=forms.Textarea(attrs = {
-		'class':'form-control','placeholder':'Additional Info'}), required = False)
+	additionalinfo = forms.CharField(label="More Details", widget=forms.Textarea(attrs = {
+		'class':'form-control','placeholder':'Describe the item you found explicitly.'}))
 
 class FeedbackForm(forms.ModelForm):
 	class Meta:
