@@ -20,7 +20,7 @@ from lostndfound.templatetags.mod_timesince import ago as timesince_self
 import urllib
 import urllib2
 from collections import Counter
-
+import re
 import threading
 
 class PostToFB(threading.Thread):
@@ -161,11 +161,11 @@ def gmap(request):
 			delta = d1 * d2
 			y = limit[i.location][1] + delta
 
-			contentString = "newmarker(%(x)f, %(y)f, '%(name)s', '%(description)s', '%(time)s', '%(itemtype)s', '%(link)s', '%(imagelink)s');\n"%{
+			contentString = "newmarker(%(x)f, %(y)f, \"%(name)s\", \"%(description)s\", \"%(time)s\", \"%(itemtype)s\", \"%(link)s\", \"%(imagelink)s\");\n"%{
 				'x': x,
 				'y': y,
-				'name': i.itemname,
-				'description': i.additionalinfo,
+				'name': ' '.join(re.findall(r"[\w']+", i.itemname.replace('"','\''))),
+				'description': ' '.join(re.findall(r"[\w']+", i.additionalinfo.replace('"','\''))),
 				'time': timesince_self(i.time),
 				'itemtype': 'lost' if isinstance(i, LostItem) else 'found',
 				'link': '/get_confirm_modal/%s/%d'%(
@@ -228,6 +228,8 @@ def lost(request,lost_id):
 def reopenfound(request,found_id):
 	if request.method=='GET':
 		item = get_object_or_404(FoundItem, pk = found_id)
+		if not item.user == request.user:
+			return redirect('home') 
 		item.status = True
 		item.lost_by = None
 		item.save()
@@ -238,6 +240,8 @@ def reopenfound(request,found_id):
 def reopenlost(request,lost_id):
 	if request.method=='GET':
 		item = get_object_or_404(LostItem, pk = lost_id)
+		if not item.user == request.user:
+			return redirect('home')
 		item.status = True
 		item.found_by = None
 		item.save()
