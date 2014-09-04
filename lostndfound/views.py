@@ -207,6 +207,10 @@ def found(request,found_id):
 			request.user.first_name, request.user.last_name,
 			"(%s)."%request.user.email,
 			"\n",
+			"If the item found by %(name)s isn't yours. Please click findmystuff.iiitd.edu.in:8085%(link)s to reopen your item in the portal."%{
+			'name': request.user.first_name,
+			'link': reverse('reopenlost', kwargs={'lost_id': found_id})
+			},
 			])
 		send_mail(subject, content,settings.EMAIL_HOST_USER, [item.user.email])
 		item.status = False
@@ -228,6 +232,10 @@ def lost(request,lost_id):
 			request.user.first_name, ''.join([request.user.last_name,'.']),
 			"Please contact at %s."%request.user.email,
 			"\n",
+			"If it isn't %(name)s's, please click findmystuff.iiitd.edu.in:8085%(link)s to reopen this."%{
+				'name': request.user.first_name,
+				'link': reverse('reopenfound', kwargs={'found_id': lost_id})
+			},
 			])
 
 		send_mail(subject, content,settings.EMAIL_HOST_USER, [item.user.email])
