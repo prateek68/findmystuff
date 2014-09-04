@@ -53,8 +53,8 @@ $(document).ready(function(){
 {{ x.time|ago }} {% ifequal x.get_time_of_day_display 'Don\'t know' %}{% else %} in the {{ x.get_time_of_day_display|lower }}{% endifequal %}.</span></td>
 <td>{{x.additionalinfo}} </td>
 
-<td><button class="btn btn-info btn-sm confirm-button" data-toggle="modal" data-remote="true"  data-type='lost' data-id="{{ x.pk }}" >I've found it.</button></td>
-<td> <center>{% if x.image %}<a href="{{ x.image.url }}" target="new"><span style="color:black" class="glyphicon glyphicon-camera"> </span></a>{% else %} - {% endif %}</center></td>
+<td><button class="btn btn-info btn-xs confirm-button" data-toggle="modal" data-remote="true"  data-type='lost' data-id="{{ x.pk }}" >I've found it.</button></td>
+<td> <center>{% if x.image %}<a href="{{ x.image.url }}" target="new"><span style="color:black; font-size:1.5em;" class="glyphicon glyphicon-camera"> </span></a>{% else %} <span style="color:#d3d3d3; font-size:1.5em;" class="glyphicon glyphicon-camera" > </span> {% endif %}</center></td>
 
 {% endfor %}
 </tbody>
@@ -90,7 +90,7 @@ $(document).ready(function(){
 <td>{{x.additionalinfo}} </td>
 
 <td><button class="btn btn-danger btn-xs confirm-button " data-toggle="modal" data-type='found' data-remote="true" data-id="{{ x.pk }}" >It's mine.</button></td>
-<td> <center>{% if x.image %}<a href="{{ x.image.url }}" target="new"><span style="color:black" class="glyphicon glyphicon-camera"> </span></a>{% else %} - {% endif %}</center></td>
+<td> <center>{% if x.image %}<a href="{{ x.image.url }}" target="new"><span style="color:black; font-size:1.5em;" class="glyphicon glyphicon-camera"> </span></a>{% else %} <span style="color:#d3d3d3; font-size:1.5em;" class="glyphicon glyphicon-camera" > </span> {% endif %}</center></td>
 
 {% endfor %}
  {% else %}

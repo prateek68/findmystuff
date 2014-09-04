@@ -93,7 +93,7 @@
 									<td>{{x.itemname}} </td>
 									<td><strong>Lost at {{x.location}} about {{x.time|ago }} {% ifequal x.get_time_of_day_display 'Don\'t know' %}{% else %} in the {{ x.get_time_of_day_display|lower }}{% endifequal %}.</strong> {{x.additionalinfo}}.</td>
 									<td><strong>{{ x.found_by.first_name }}</strong> ({{ x.found_by.email }})</td>
-									<td><a href="/reopenlost/{{x.id}}" align="right" class="btn btn-info">Reopen</a><br></td>
+									<td><a href="/reopenlost/{{x.id}}" align="right" class="btn btn-xs btn-info">Reopen</a><br></td>
 								</tr>
 							{% endfor %}
 							</tbody>
@@ -126,7 +126,7 @@
 									<td>{{x.itemname}} </td>
 									<td><strong>Found at {{x.location}} about {{x.time|ago }}.</strong> {{x.additionalinfo}}. </td>
 									<td><strong>{{ x.lost_by.first_name }}</strong> ({{ x.lost_by.email }})</td>
-									<td><a href="/reopenfound/{{x.id}}" align="right" class="btn btn-sm btn-danger ">Reopen</a><br></td>
+									<td><a href="/reopenfound/{{x.id}}" align="right" class="btn btn-xs btn-danger ">Reopen</a><br></td>
 								</tr>
 							{% endfor %}
 						</tbody>

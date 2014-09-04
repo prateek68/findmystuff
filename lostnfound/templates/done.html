@@ -36,7 +36,7 @@
         content.icon = "{% static 'gmaps-blue-marker.png' %}";
       }
 
-      var popup_html = '<div id="content" style="max-width:400px;"><h3 id="firstHeading" class="firstHeading">' + name;
+      var popup_html = '<div id="content" style="min-width:200px; max-width:400px;"><h3 id="firstHeading" class="firstHeading">' + name;
 
       if (imagelink !== ''){
         popup_html += '<a href="'+ imagelink +'" target=new><span class="glyphicon glyphicon-camera" style="margin-left:20px; color: black"></span></a>';
