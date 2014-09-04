@@ -23,6 +23,14 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'FindMyStuff_DB',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '3306',
+    },
+    'development': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'lostfound.db'
     }
