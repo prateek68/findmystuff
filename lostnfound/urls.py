@@ -35,3 +35,6 @@ urlpatterns = patterns('',
 urlpatterns += patterns('',
             (r'^media/(?P<path>.*)$', 'django.views.static.serve', {
                     'document_root': settings.MEDIA_ROOT}))
+
+handler404 = views.handle404
+handler500 = views.handle404

@@ -18,6 +18,7 @@ from django.core.mail import EmailMultiAlternatives
 from lostnfound import settings
 from lostndfound.Data import get_limit
 from lostndfound.templatetags.mod_timesince import ago as timesince_self
+from LnF404.models import RecentLostItem
 
 import urllib
 import urllib2
@@ -348,3 +349,7 @@ def deletefound(request, found_id):
 	else:
 		messages.warning(request, "It seems that it isn't your item.")
 	return HttpResponseRedirect(reverse('home'))
+
+def handle404(request):
+	items = RecentLostItem.objects.all()[:5]
+	return render_to_response('404.html', {'items': items}, RequestContext(request))
