@@ -79,6 +79,8 @@ def lostitem(request):
 		if lostitem_form.is_valid():
 			obj = lostitem_form.save(commit=False)
 			obj.user = request.user
+			obj.itemname = ' '.join(re.findall(r"[\w']+", obj.itemname.replace('"','\'')))
+			obj.additionalinfo = ' '.join(re.findall(r"[\w']+", obj.additionalinfo.replace('"','\'')))
 			obj.save()
 
 			####FACEBOOK POST########
@@ -106,6 +108,8 @@ def founditem(request):
 		if founditem_form.is_valid():
 			obj = founditem_form.save(commit=False)
 			obj.user = request.user
+			obj.itemname = ' '.join(re.findall(r"[\w']+", obj.itemname.replace('"','\'')))
+			obj.additionalinfo = ' '.join(re.findall(r"[\w']+", obj.additionalinfo.replace('"','\'')))
 			obj.save()
 
 			####FACEBOOK POST########
