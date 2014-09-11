@@ -24,7 +24,7 @@ import urllib
 import urllib2
 from collections import Counter
 import re
-import threading
+from multiprocessing import Process
 
 time_of_day_choices = {a[0]: a[1].lower() for a in time_of_day_choices_}
 time_of_day_choices['XXX'] = ''
@@ -44,18 +44,15 @@ class PostToFB(threading.Thread):
 		except:
 			print "Error in posting to FB", self.message			# will show up in uwsgi logs.
 
-class send_mail(threading.Thread):
-	def __init__(self, subject, text_content, host_user, recipient_list):
-		self.subject = subject
-		self.host_user = host_user
-		self.recipient_list = recipient_list
-		self.text_content = text_content
-		threading.Thread.__init__(self)
-		self.start()
+def _send_mail(subject, text_content, host_user, recipient_list):
+	msg = EmailMultiAlternatives(subject, text_content, host_user, recipient_list)
+	a=msg.send()
+	print "sent", a
 
-	def run(self):
-		msg = EmailMultiAlternatives(self.subject, self.text_content, self.host_user, self.recipient_list)
-		msg.send()
+def send_mail(subject, text_content, host_user, recipient_list):
+	p = Process(target=_send_mail, args=(subject, text_content, host_user, recipient_list))
+	p.start()
+	print "started process"
 
 class LoginAdapter(DefaultSocialAccountAdapter):
 	def pre_social_login(self, request, sociallogin):
