@@ -36,9 +36,10 @@
     <script>
       $(document).ready(function(){
         $(".feedback-button").click(function(){
-          $("#base-confirmation-modal").modal('show');
           var url = "{% url 'feedback' %}";
-          $("#base-confirmation-modal").load(url);
+          $("#base-confirmation-modal").load(url, function(){
+            $("#base-confirmation-modal").modal('show');
+            });
           });
         });
     </script>
@@ -96,7 +97,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li ><a href="{% url 'log' %}"><i class="fa fa-th-list "></i><span style="margin-left:10px;">All Items</span></a></li>
         {% if user.is_authenticated %}<li><a href="{% url 'history' %}"><i class="fa fa-list "></i><span style="margin-left:10px;">My Items</span></a></li>{% endif %}
-        <li ><a href="http://www.facebook.com/iiitdfms"><i class="fa fa-facebook-square "></i><span style="margin-left:10px;">Facebook Page</span></a></li>
+        <li ><a href="http://www.facebook.com/findmystuff.iiitd"><i class="fa fa-facebook-square "></i><span style="margin-left:10px;">Facebook Page</span></a></li>
         <li ><a href="{% url 'team' %}"><i class="fa fa-gavel "></i><span style="margin-left:10px;">Team</span></a></li> 
         
         {% if user.is_authenticated %}

@@ -102,9 +102,9 @@ INSTALLED_APPS = (
     'LnF404',
     # 'social.apps.django_app.default',
     'djrill',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
+    #'allauth',
+    #'allauth.account',
+    #'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'bootstrapform',
       )
