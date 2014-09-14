@@ -7,33 +7,87 @@
   <div class="col-md-8 col-md-offset-2">
 <style type="text/css">
   button.confirm-button{}
+  tr.result{}
 </style>
 
 <script>
 $(document).ready(function(){
+
   $(".confirm-button").click(function(){
     $("#base-confirmation-modal").modal('show');
     var url = "/get_confirm_modal/" + $(this).data().type + "/" + $(this).data().id + "/";
     $("#base-confirmation-modal").load(url);
-    });
   });
+
+    $("#searching_text").hide();
+  var search_results = {};
+
+  function include(arr,obj) {
+    return (arr.indexOf(obj) != -1);
+  }
+
+  function handle_search(data){
+    $("#searching_text").hide();
+    console.log(data);
+    var elem = $(".result");
+    for(var i = 0; i < elem.length; i++)
+    {
+      if (include(data, elem[i].id)){
+        $("#" + elem[i].id).fadeIn(0);
+      }
+      else {
+        $("#" + elem[i].id).fadeOut(0);
+      }
+    }
+  }
+
+  $("#search").on('input paste', function(){
+    var value = this.value;
+    if (value === ""){
+      $(".result").fadeIn(0);
+      return;
+    }
+    if (search_results[value] === undefined)
+    {
+      $("#searching_text").show();
+      $.get("/search?scope=all&query=" + this.value, function(data){
+       search_results[value] = data;
+       handle_search(data);
+      })
+    }
+    else
+    {
+      handle_search(search_results[value]);
+    }
+
+  })
+});
 </script>
 
-    <ul class="nav nav-tabs" role="tablist">
+    <ul class="nav nav-tabs nav-justified" role="tablist">
     <li class="active"><a href="#1" role="tab" data-toggle="tab">
       <span style="color:black;"><strong>Lost Items</strong></span>
     </a>
+    </li>
     <li><a href="#2" role="tab" data-toggle="tab">
       <span style="color:black;"><strong>Found Items</strong></span>
-    </a>  
+      </a>
+    </li>
     </ul>
+    <div>
+      <div style="padding-top:5px; width:50%; margin:0 auto;">
+        <div class="input-group">
+          <div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+          <input class="form-control" type="text" id="search">
+          <div class="input-group-addon" id="searching_text">Searching...</div>
+        </div>
+      </div>
+    </div>
       <div class="tab-content">
 
       <div class="tab-pane fade in active" id="1">
-      <br />
-      
       {% if lost %}
-    <h3>  Lost Items </h3>
+    <h3><strong>Lost Items</strong></h3>
     <table class="table">
       <thead>
       <tr>
@@ -47,7 +101,7 @@ $(document).ready(function(){
      <tbody>  
       {% for x in lost %}
 
-<tr class="active">
+<tr class="active result" id="lost-{{ x.pk }}">
 <td>{{x.itemname}} </td>
 <td>Last seen at {{x.location}} about <span data-toggle="tooltip" title="{{ x.time }}">
 {{ x.time|ago }} {% ifequal x.get_time_of_day_display 'Don\'t know' %}{% else %} in the {{ x.get_time_of_day_display|lower }}{% endifequal %}.</span></td>
@@ -66,9 +120,8 @@ $(document).ready(function(){
 
       </div>
       <div class="tab-pane fade in" id="2">
-      <br />
 {% if found %}
-<h3>Found Items </h3>
+<h3><strong>Found Items</strong></h3>
 <table class="table">
       <thead>
         <tr>
@@ -83,7 +136,7 @@ $(document).ready(function(){
 
       {% for x in found %}
 
-<tr class="active">
+<tr class="active result" id="found-{{ x.pk }}">
 <td>{{x.itemname}} </td>
 <td>Found at {{x.location}} about <span data-toggle="tooltip" title="{{ x.time }}">
 {{ x.time|ago }} .</span></td>

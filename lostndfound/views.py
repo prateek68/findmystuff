@@ -20,6 +20,8 @@ from lostndfound.Data import get_limit
 from lostndfound.templatetags.mod_timesince import ago as timesince_self
 from LnF404.models import RecentLostItem
 
+import json
+
 import urllib
 import urllib2
 from collections import Counter
@@ -353,3 +355,40 @@ def deletefound(request, found_id):
 def handle404(request):
 	items = RecentLostItem.objects.all()[:5]
 	return render_to_response('404.html', {'items': items}, RequestContext(request))
+
+def search(request):
+	response, resp = [], []
+	if request.method == "GET":
+		query = request.GET.get('query', None)
+		scope = request.GET.get('scope', None)
+
+		if query:
+			if scope == 'all':
+				# TODO
+				# should I add location too ??
+				# combine both the queries
+
+				resp1 = set( LostItem.objects.filter(status=True).order_by('-id').filter(
+					itemname__icontains = query))
+				resp2 = set(LostItem.objects.filter(status=True).order_by('-id').filter(
+					additionalinfo__icontains = query))
+				resp3 = set( FoundItem.objects.filter(status=True).order_by('-id').filter(
+					itemname__icontains = query))
+				resp4 = set(FoundItem.objects.filter(status=True).order_by('-id').filter(
+					additionalinfo__icontains = query))
+
+			elif scope == 'self':
+				resp1 = set( request.user.lostitem_set.order_by('-id').filter(
+					itemname__icontains = query))
+				resp2 = set(request.user.lostitem_set.order_by('-id').filter(
+					additionalinfo__icontains = query))
+				resp3 = resp4 = set([])
+
+			resp = resp1.union(resp2, resp3, resp4)
+
+	for i in resp:
+		response.append('-'.join(['lost' if isinstance(i, LostItem) else 'found',
+			str(i.pk)]))
+
+	return HttpResponse(json.dumps(response),
+		content_type ="application/json")

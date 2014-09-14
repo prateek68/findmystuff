@@ -27,8 +27,9 @@ urlpatterns = patterns('',
     url(r'^get_confirm_modal/(?P<itemtype>[a-z]+)/(?P<itemid>[0-9]+)/$',
      views.get_confirm_modal),
     url(r'^feedback/$', views.feedback, name='feedback'),
-    url(r'delete/lost/(?P<lost_id>\d+)/$', views.deletelost, name='deletelost'),
-    url(r'delete/found/(?P<found_id>\d+)/$', views.deletefound, name='deletefound'),
+    url(r'^delete/lost/(?P<lost_id>\d+)/$', views.deletelost, name='deletelost'),
+    url(r'^delete/found/(?P<found_id>\d+)/$', views.deletefound, name='deletefound'),
+    url(r'^search/$', views.search, name = 'search'),
 )
 
 #TODO remove this. nginx will serve these.
