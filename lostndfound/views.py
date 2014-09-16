@@ -368,15 +368,19 @@ def search(request):
 			if scope == 'all':
 
 				resp1 = LostItem.objects.filter(status=True).filter(
-					Q(itemname__icontains = query) | Q(additionalinfo__icontains = query))
+					Q(itemname__icontains = query) | Q(additionalinfo__icontains = query) | 
+					Q(location__icontains = query))
 				resp2 = FoundItem.objects.filter(status=True).filter(
-					Q(itemname__icontains = query) | Q(additionalinfo__icontains = query))
+					Q(itemname__icontains = query) | Q(additionalinfo__icontains = query) |
+					Q(location__icontains = query))
 
 			elif scope == 'self':
 				resp1 = request.user.lostitem_set.filter(
-					Q(itemname__icontains = query) | Q(additionalinfo__icontains = query))
+					Q(itemname__icontains = query) | Q(additionalinfo__icontains = query) |
+					Q(location__icontains = query))
 				resp2 = request.user.founditem_set.filter(
-					Q(itemname__icontains = query) | Q(additionalinfo__icontains = query))
+					Q(itemname__icontains = query) | Q(additionalinfo__icontains = query) |
+					Q(location__icontains = query))
 
 			resp = list(chain(resp1, resp2))
 
