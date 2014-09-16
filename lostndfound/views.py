@@ -382,7 +382,10 @@ def search(request):
 					itemname__icontains = query))
 				resp2 = set(request.user.lostitem_set.order_by('-id').filter(
 					additionalinfo__icontains = query))
-				resp3 = resp4 = set([])
+				resp3 = set(request.user.founditem_set.order_by('-id').filter(
+					itemname__icontains = query))
+				resp4 = set(request.user.founditem_set.order_by('id').filter(
+					additionalinfo__icontains=query))
 
 			resp = resp1.union(resp2, resp3, resp4)
 
