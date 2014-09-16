@@ -10,6 +10,7 @@ from forms import LostItemForm,FoundItemForm, FeedbackForm
 from models import LostItem,FoundItem, Feedback
 from models import time_of_day_choices as time_of_day_choices_
 from django.utils import timezone
+from django.db.models import Q
 from allauth.exceptions import ImmediateHttpResponse
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 
@@ -21,6 +22,7 @@ from lostndfound.templatetags.mod_timesince import ago as timesince_self
 from LnF404.models import RecentLostItem
 
 import json
+from itertools import chain
 
 import urllib
 import urllib2
@@ -364,30 +366,19 @@ def search(request):
 
 		if query:
 			if scope == 'all':
-				# TODO
-				# should I add location too ??
-				# combine both the queries
 
-				resp1 = set( LostItem.objects.filter(status=True).order_by('-id').filter(
-					itemname__icontains = query))
-				resp2 = set(LostItem.objects.filter(status=True).order_by('-id').filter(
-					additionalinfo__icontains = query))
-				resp3 = set( FoundItem.objects.filter(status=True).order_by('-id').filter(
-					itemname__icontains = query))
-				resp4 = set(FoundItem.objects.filter(status=True).order_by('-id').filter(
-					additionalinfo__icontains = query))
+				resp1 = LostItem.objects.filter(status=True).filter(
+					Q(itemname__icontains = query) | Q(additionalinfo__icontains = query))
+				resp2 = FoundItem.objects.filter(status=True).filter(
+					Q(itemname__icontains = query) | Q(additionalinfo__icontains = query))
 
 			elif scope == 'self':
-				resp1 = set( request.user.lostitem_set.order_by('-id').filter(
-					itemname__icontains = query))
-				resp2 = set(request.user.lostitem_set.order_by('-id').filter(
-					additionalinfo__icontains = query))
-				resp3 = set(request.user.founditem_set.order_by('-id').filter(
-					itemname__icontains = query))
-				resp4 = set(request.user.founditem_set.order_by('id').filter(
-					additionalinfo__icontains=query))
+				resp1 = request.user.lostitem_set.filter(
+					Q(itemname__icontains = query) | Q(additionalinfo__icontains = query))
+				resp2 = request.user.founditem_set.filter(
+					Q(itemname__icontains = query) | Q(additionalinfo__icontains = query))
 
-			resp = resp1.union(resp2, resp3, resp4)
+			resp = list(chain(resp1, resp2))
 
 	for i in resp:
 		response.append('-'.join(['lost' if isinstance(i, LostItem) else 'found',
