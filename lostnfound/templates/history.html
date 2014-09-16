@@ -25,7 +25,7 @@ $(document).ready(function(){
       }
     }
   }
-
+  var timer;
   $("#search").on('input paste', function(){
     var value = this.value;
     if (value === ""){
@@ -35,10 +35,14 @@ $(document).ready(function(){
     if (search_results[value] === undefined)
     {
       $("#searching_text").show();
-      $.get("/search?scope=self&query=" + this.value, function(data){
-       search_results[value] = data;
-       handle_search(data);
-      })
+      clearTimeout(timer);
+      var ms = 300;
+      timer = setTimeout(function(){
+          $.get("/search/?scope=self&query=" + value, function(data){
+          search_results[value] = data;
+          handle_search(data);
+        })
+      }, ms);
     }
     else
     {
