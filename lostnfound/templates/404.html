@@ -12,7 +12,6 @@
  Naah.. sorry we couldn't find this page.{% if items %} But while on the topic of lost things, keep your eyes peeled for these{% endif %}
  </center>
  </h1>
- <div class="row">
  {% for item in items %}
  <div class="col-6 col-sm-6 col-lg-4">
  <blockquote>
@@ -22,12 +21,11 @@
  </blockquote>
  </div>
  {% endfor %}
- </div>
+</div>
 <br />
 {% if items %}
 Visit the <a href="http://findmystuff.iiitd.edu.in/">FindMyStuff portal</a> if you have any information regarding these items.
 <br />
 404 Easter Egg API opened and maintained by <a href="https://github.com/darkryder">darkryder</a>.
 {% endif %}
-</div>
 {% endblock %}

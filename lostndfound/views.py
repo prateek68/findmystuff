@@ -20,7 +20,7 @@ from lostnfound import settings
 from lostndfound.Data import get_limit
 from lostndfound.templatetags.mod_timesince import ago as timesince_self
 from LnF404.models import RecentLostItem
-
+import threading
 import json
 from itertools import chain
 
@@ -41,12 +41,18 @@ class PostToFB(threading.Thread):
 
 	def run(self):
 		token = settings.FACEBOOK_AUTHENTICATION_TOKEN or None
-		url   = "https://graph.facebook.com/me/feed"
-		data  = urllib.urlencode({'message': self.message, 'access_token': token})
+		page  = settings.FACEBOOK_PAGE_ID or None
+		url   = "https://graph.facebook.com/v2.1/%d/links" %page
+		data  = urllib.urlencode({'message': self.message,
+			'access_token': token, 'link': 'findmystuff.iiitd.edu.in'})
+		print "trying to post to ", url, "message: ",data 
 		try:
 			request = urllib2.urlopen(url, data)
-		except:
-			print "Error in posting to FB", self.message			# will show up in uwsgi logs.
+			print request.read()
+		except urllib2.HTTPError as e:
+			error_message = e.read()
+			print "There was an error"
+			print error_message
 
 def _send_mail(subject, text_content, host_user, recipient_list):
 	msg = EmailMultiAlternatives(subject, text_content, host_user, recipient_list)
@@ -97,6 +103,7 @@ def lostitem(request):
 			return redirect('home')
 
 		messages.error(request, "There was something wrong in the information provided.")
+	else: messages.info(request, "Automatic posting on FB has been disabled currently. It'll be fixed in some time.")
 	return render_to_response('LostItem.html', {'lostitem_form': lostitem_form}, 
 		context_instance=RequestContext(request))
 
@@ -124,6 +131,7 @@ def founditem(request):
 			return redirect('home')
 
 		messages.error(request, "There was something wrong in the information provided.")
+	else: messages.info(request, "Automatic posting on FB has been disabled currently. It'll be fixed in some time.")
 	return render_to_response('FoundItem.html',{'founditem_form': founditem_form}, RequestContext(request))
 	
 
