@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Byld @ IIITD">
     <meta property="og:url" content="http://findmystuff.iiitd.edu.in/" />
-    <meta property="og:image" content="{% static 'logo.jpg' %}" />
+    <meta property="og:image" content="http://{{request.META.HTTP_HOST}}{% static 'logo.jpg' %}" />
     <meta property="og:title" content="Find My Stuff - IIITD" />
     <meta property="og:description" content="An automated lost and found portal built by Byld members at IIITD." />
 
