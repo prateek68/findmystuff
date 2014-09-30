@@ -33,26 +33,25 @@ from multiprocessing import Process
 time_of_day_choices = {a[0]: a[1].lower() for a in time_of_day_choices_}
 time_of_day_choices['XXX'] = ''
 
-class PostToFB(threading.Thread):
-	def __init__(self, message):
-		threading.Thread.__init__(self)
-		self.message = message
-		self.start()
+def _PostToFB(message):
+	token = settings.FACEBOOK_AUTHENTICATION_TOKEN or None
+	page  = settings.FACEBOOK_PAGE_ID or None
+	url   = "https://graph.facebook.com/v2.1/%d/links" %page
+	data  = urllib.urlencode({'message': message,
+		'access_token': token, 'link': 'findmystuff.iiitd.edu.in'})
+	print "trying to post to ", url, "message: ",data
+	try:
+		request = urllib2.urlopen(url, data)
+		print request.read()
+	except urllib2.HTTPError as e:
+		error_message = e.read()
+		print "There was an error: ",
+		print error_message
 
-	def run(self):
-		token = settings.FACEBOOK_AUTHENTICATION_TOKEN or None
-		page  = settings.FACEBOOK_PAGE_ID or None
-		url   = "https://graph.facebook.com/v2.1/%d/links" %page
-		data  = urllib.urlencode({'message': self.message,
-			'access_token': token, 'link': 'findmystuff.iiitd.edu.in'})
-		print "trying to post to ", url, "message: ",data 
-		try:
-			request = urllib2.urlopen(url, data)
-			print request.read()
-		except urllib2.HTTPError as e:
-			error_message = e.read()
-			print "There was an error"
-			print error_message
+def PostToFB(message):
+	p = Process(target = _PostToFB, args=(message,))
+	p.start()
+	print "started FB posting process"
 
 def _send_mail(subject, text_content, host_user, recipient_list):
 	msg = EmailMultiAlternatives(subject, text_content, host_user, recipient_list)
@@ -62,7 +61,7 @@ def _send_mail(subject, text_content, host_user, recipient_list):
 def send_mail(subject, text_content, host_user, recipient_list):
 	p = Process(target=_send_mail, args=(subject, text_content, host_user, recipient_list))
 	p.start()
-	print "started process"
+	print "started mail sending process"
 
 class LoginAdapter(DefaultSocialAccountAdapter):
 	def pre_social_login(self, request, sociallogin):
@@ -103,7 +102,7 @@ def lostitem(request):
 			return redirect('home')
 
 		messages.error(request, "There was something wrong in the information provided.")
-	else: messages.info(request, "Automatic posting on FB has been disabled currently. It'll be fixed in some time.")
+
 	return render_to_response('LostItem.html', {'lostitem_form': lostitem_form}, 
 		context_instance=RequestContext(request))
 
@@ -131,7 +130,7 @@ def founditem(request):
 			return redirect('home')
 
 		messages.error(request, "There was something wrong in the information provided.")
-	else: messages.info(request, "Automatic posting on FB has been disabled currently. It'll be fixed in some time.")
+
 	return render_to_response('FoundItem.html',{'founditem_form': founditem_form}, RequestContext(request))
 	
 
