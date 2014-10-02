@@ -13,6 +13,7 @@ from django.utils import timezone
 from django.db.models import Q
 from allauth.exceptions import ImmediateHttpResponse
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+import mails
 
 import datetime
 from django.core.mail import EmailMultiAlternatives
@@ -20,7 +21,6 @@ from lostnfound import settings
 from lostndfound.Data import get_limit
 from lostndfound.templatetags.mod_timesince import ago as timesince_self
 from LnF404.models import RecentLostItem
-import threading
 import json
 from itertools import chain
 
@@ -45,8 +45,7 @@ def _PostToFB(message):
 		print request.read()
 	except urllib2.HTTPError as e:
 		error_message = e.read()
-		print "There was an error: ",
-		print error_message
+		print "there was an error", error_message
 
 def PostToFB(message):
 	p = Process(target = _PostToFB, args=(message,))
@@ -88,15 +87,11 @@ def lostitem(request):
 			obj.additionalinfo = ' '.join(re.findall(r"[\w']+", obj.additionalinfo.replace('"','\'')))
 			obj.save()
 
-			####FACEBOOK POST########
-			# *name* (*email*) has lost *itemname* at *location*
-
-			content = ' '.join([
-				obj.user.first_name, obj.user.last_name,
-				'(', obj.user.email, ')',
-				"has lost", obj.itemname, "at", obj.location + '.',
-				'\nAdditional details:', obj.additionalinfo+'.'])
-			PostToFB(content)
+			PostToFB(mails.FB_LOST_ITEM_POST%{
+					'name': ' '.join([obj.user.first_name, obj.user.last_name]),
+					'email': obj.user.email, 'itemname': obj.itemname,
+					'location': obj.location, 'details': obj.additionalinfo
+				})
 
 			messages.success(request, "Your item has been added to the portal.")
 			return redirect('home')
@@ -118,13 +113,11 @@ def founditem(request):
 			obj.additionalinfo = ' '.join(re.findall(r"[\w']+", obj.additionalinfo.replace('"','\'')))
 			obj.save()
 
-			####FACEBOOK POST########
-			content = ' '.join([
-				obj.user.first_name, obj.user.last_name,
-				'(', obj.user.email, ')',
-				"has found", obj.itemname, "at", obj.location + '.',
-				'\nAdditional details:', obj.additionalinfo+'.'])
-			PostToFB(content)
+			PostToFB(mails.FB_FOUND_ITEM_POST%{
+					'name': ' '.join([obj.user.first_name, obj.user.last_name]),
+					'email': obj.user.email, 'itemname': obj.itemname,
+					'location': obj.location, 'details': obj.additionalinfo
+				})
 
 			messages.success(request, "Your item has been added to the portal.")
 			return redirect('home')
@@ -212,19 +205,15 @@ def team(request):
 def found(request,found_id):
 	if request.method == 'GET':
 		item = get_object_or_404(LostItem, pk = found_id)
-		subject = "Congratulations ! Found Your Lost Item"
-		content = " ".join([
-			"We have found your item.",
-			"Please contact",
-			request.user.first_name, request.user.last_name,
-			"(%s)."%request.user.email,
-			"\n",
-			"If the item found by %(name)s isn't yours. Please click findmystuff.iiitd.edu.in%(link)s to reopen your item in the portal."%{
-			'name': request.user.first_name,
-			'link': reverse('reopenlost', kwargs={'lost_id': found_id})
-			},
-			])
+
+		subject = mails.EMAIL_FOUND_YOUR_ITEM_SUBJECT%{'itemname': item.itemname}
+		content = mails.EMAIL_FOUND_YOUR_ITEM%{
+			'self_name': item.user.first_name, 'itemname': item.itemname,
+			'name': ' '.join([request.user.first_name, request.user.last_name]),
+			'email': request.user.email, 'link': reverse('reopenlost', kwargs={'lost_id': found_id})
+		}
 		send_mail(subject, content,settings.EMAIL_HOST_USER, [item.user.email])
+
 		item.status = False
 		item.found_by = request.user
 		item.save()
@@ -238,19 +227,14 @@ def lost(request,lost_id):
 	if request.method == 'GET' :
 		item = get_object_or_404(FoundItem, pk = lost_id)
 
-		subject = "Found the owner of Lost Item"
-		content = " ".join([
-			"The item '%s' you reported found belongs to "%item.itemname,
-			request.user.first_name, ''.join([request.user.last_name,'.']),
-			"Please contact at %s."%request.user.email,
-			"\n",
-			"If it isn't %(name)s's, please click findmystuff.iiitd.edu.in%(link)s to reopen this."%{
-				'name': request.user.first_name,
-				'link': reverse('reopenfound', kwargs={'found_id': lost_id})
-			},
-			])
-
+		subject = mails.EMAIL_FOUND_OWNER_SUBJECT%{'itemname': item.itemname}
+		content = mails.EMAIL_FOUND_OWNER%{
+			'self_name': item.user.first_name, 'itemname': item.itemname,
+			'name': ' '.join([request.user.first_name, request.user.last_name]),
+			'email': request.user.email, 'link': reverse('reopenfound', kwargs={'found_id': lost_id})
+		}
 		send_mail(subject, content,settings.EMAIL_HOST_USER, [item.user.email])
+
 		item.status = False
 		item.lost_by = request.user
 		item.save()
