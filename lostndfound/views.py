@@ -13,12 +13,14 @@ from django.utils import timezone
 from django.db.models import Q
 from allauth.exceptions import ImmediateHttpResponse
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 import mails
 
 import datetime
 from django.core.mail import EmailMultiAlternatives
 from lostnfound import settings
-from lostndfound.Data import get_limit
+from lostndfound.Data import get_limit, set_main_page_markers_string, get_main_page_markers_string
 from lostndfound.templatetags.mod_timesince import ago as timesince_self
 from LnF404.models import RecentLostItem
 import json
@@ -136,8 +138,11 @@ def founditem(request):
 # 			"Sports Field":(28.5464649, 77.2720461,28.5480949, 77.2739461),
 # 			"Parking Area":(28.544490 , 77.271325,28.544890 , 77.27185)}
 
-# @login_required
-def gmap(request):
+@receiver(post_save)
+@receiver(post_delete)
+def updateHomePage(sender, **kwargs):
+	if sender not in [LostItem, FoundItem]: return
+
 	lost_items=LostItem.objects.all().filter(status=True).filter(
 		pub_date__gt=timezone.now()-datetime.timedelta(days=30)).order_by('-pub_date')
 
@@ -164,7 +169,7 @@ def gmap(request):
 			limiterByLocation.update([i.location])
 
 			# this method gives a believably random still viewable look
-			# leave x unchanged
+			# change x according to the number of items in that location up until now.
 			d1 = ((limit[i.location][2] - limit[i.location][0])/5)
 			d2 =  limiterByLocation[i.location]
 			d2 = d2 % d1 if d2 % 2 else d2
@@ -195,7 +200,14 @@ def gmap(request):
 
 			final += contentString
 
-	s={'s':final}
+	set_main_page_markers_string(final)
+
+# when the django uwsgi module is loaded for the first time
+updateHomePage(LostItem)
+
+# @login_required
+def gmap(request):
+	s={'s':get_main_page_markers_string}
 	return render_to_response('done.html',s,RequestContext(request))
 
 def team(request):
@@ -329,6 +341,7 @@ def feedback(request):
 def deletelost(request, lost_id):
 	item = get_object_or_404(LostItem, pk=lost_id)
 	if item.user == request.user:
+		item.status = False				# to ensure that it's removed from lost and found api.
 		item.delete()
 		messages.success(request, "Your item has been deleted from the portal.")
 	else:

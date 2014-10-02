@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save, post_save, pre_delete
 from django.dispatch import receiver
 from django.views.decorators.csrf import csrf_exempt
 
@@ -44,6 +44,7 @@ def refresh_token(request, token_id):
 		site.save()
 	return HttpResponseRedirect(reverse('add_404_website'))
 
+@receiver(pre_delete)
 @receiver(post_save)
 def update_404_items(sender, **kwargs):
 	if sender != LostItem:
@@ -71,7 +72,7 @@ def update_404_items(sender, **kwargs):
 			RecentLostItem.objects.create(item=new_item)
 
 def confirmIP(request, allotedIP):
-	#TODO nginx is not adding forwarded for header. check it
+	#TODO our nginx at the proxy is not adding forwarded_for header. request IT department
 	return True
 	x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
 	if x_forwarded_for:
