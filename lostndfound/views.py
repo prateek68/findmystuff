@@ -33,7 +33,7 @@ def gmap(request):
     Shows the google map with recently lost found items
     """
     return render(request, 'done.html',{
-        'markers':get_main_page_markers_string})
+        'markers':get_main_page_markers_string()})
 
 @login_required
 def lostitem(request):
