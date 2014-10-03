@@ -2,30 +2,29 @@
 
 {% block body %}
 <div class = "container">
- <h1 style="font-size:10em;">
- <center>
- <span class="glyphicon glyphicon-search" style="color:red;"></span>
- </center>
- </h1>
- <h1 class="page-header">
- <center>
- Naah.. sorry we couldn't find this page.{% if items %} But while on the topic of lost things, keep your eyes peeled for these{% endif %}
- </center>
- </h1>
- {% for item in items %}
- <div class="col-6 col-sm-6 col-lg-4">
- <blockquote>
- <p>{{ item.item.itemname }} {% if item.item.location %}in or near {{ item.item.location }} {% endif %}</p>
- {% if item.item.additionalinfo %}<p>{{ item.item.additionalinfo|truncatechars:60 }}</p>{% endif %}
- {% if item.item.user.email %}<small>Contact {{ item.item.user.email }}</small>{% endif %}
- </blockquote>
- </div>
- {% endfor %}
+	<h1 style="font-size:10em;">
+		<center>
+			<span class="glyphicon glyphicon-search" style="color:red;"></span>
+		</center>
+	</h1>
+	<h1 class="page-header">
+		<center>
+			Naah.. sorry we couldn't find this page.{% if items %} But while on the topic of lost things, keep your eyes peeled for these{% endif %}
+		</center>
+	</h1>
+	{% for item in items %}
+	<div class="col-6 col-sm-6 col-lg-4">
+		<blockquote>
+			<p>{{ item.item.itemname }} {% if item.item.location %}in or near {{ item.item.location }} {% endif %}</p>
+			{% if item.item.additionalinfo %}<p>{{ item.item.additionalinfo|truncatechars:60 }}</p>{% endif %}
+			{% if item.item.user.email %}<small>Contact {{ item.item.user.email }}</small>{% endif %}
+		</blockquote>
+	</div>
+	{% endfor %}
 </div>
 <br />
 {% if items %}
-Visit the <a href="http://findmystuff.iiitd.edu.in/">FindMyStuff portal</a> if you have any information regarding these items.
 <br />
-404 Easter Egg API opened and maintained by <a href="https://github.com/darkryder">darkryder</a>.
+404 Easter Egg API opened and maintained by <a href="https://github.com/darkryder">Sambhav.</a>.
 {% endif %}
 {% endblock %}

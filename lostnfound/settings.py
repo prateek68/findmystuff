@@ -67,7 +67,6 @@ SECRET_KEY = '#$5btppqih8=%ae^#&amp;7en#kyi!vh%he9rg=ed#hm6fnw9^=umc'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -76,7 +75,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
@@ -141,16 +139,15 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
     'django.contrib.messages.context_processors.messages',
-    #'social.apps.django_app.context_processors.backends',
     'allauth.account.context_processors.account',
     'allauth.socialaccount.context_processors.socialaccount',
 )
 
 AUTHENTICATION_BACKENDS = (
-    # 'social.backends.google.GoogleOpenId',
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
+
 MANDRILL_API_KEY = 'Z_GwF4iDxCx59-24qzr4Nw'
 EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
 EMAIL_HOST_USER='iiitdfindmystuff@gmail.com'
@@ -177,7 +174,7 @@ SOCIALACCOUNT_PROVIDERS = {
      'AUTH_PARAMS': {'access_type': 'online'}
     }
 }
-SOCIALACCOUNT_ADAPTER = 'lostndfound.views.LoginAdapter'
+SOCIALACCOUNT_ADAPTER = 'lostndfound.adapters.LoginAdapter'
 
 ITEMS_PER_LOCATION = 4
 
@@ -192,3 +189,6 @@ try:
     from lostnfound.local_settings import *
 except ImportError:
     pass
+
+DAYS_OLD_HOME_PAGE_ITEMS = 60
+DEPLOYED_URL = "findmystuff.iiitd.edu.in"

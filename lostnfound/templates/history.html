@@ -4,53 +4,53 @@
 {% block body %}
 
 <script>
-$(document).ready(function(){
-  $("#searching_text").hide();
-  var search_results = {};
+	$(document).ready(function(){
+		$("#searching_text").hide();
+		var search_results = {};
 
-  function include(arr,obj) {
-    return (arr.indexOf(obj) != -1);
-  }
+		function include(arr,obj) {
+			return (arr.indexOf(obj) != -1);
+		}
 
-  function handle_search(data){
-    $("#searching_text").hide();
-    var elem = $(".result");
-    for(var i = 0; i < elem.length; i++)
-    {
-      if (include(data, elem[i].id)){
-        $("#" + elem[i].id).fadeIn(0);
-      }
-      else {
-        $("#" + elem[i].id).fadeOut(0);
-      }
-    }
-  }
-  var timer;
-  $("#search").on('input paste', function(){
-    var value = this.value;
-    if (value === ""){
-      $(".result").fadeIn(0);
-      return;
-    }
-    if (search_results[value] === undefined)
-    {
-      $("#searching_text").show();
-      clearTimeout(timer);
-      var ms = 300;
-      timer = setTimeout(function(){
-          $.get("/search/?scope=self&query=" + value, function(data){
-          search_results[value] = data;
-          handle_search(data);
-        })
-      }, ms);
-    }
-    else
-    {
-      handle_search(search_results[value]);
-    }
+		function handle_search(data){
+			$("#searching_text").hide();
+			var elem = $(".result");
+			for(var i = 0; i < elem.length; i++)
+			{
+				if (include(data, elem[i].id)){
+					$("#" + elem[i].id).fadeIn(0);
+				}
+				else {
+					$("#" + elem[i].id).fadeOut(0);
+				}
+			}
+		}
+		var timer;
+		$("#search").on('input paste', function(){
+			var value = this.value;
+			if (value === ""){
+				$(".result").fadeIn(0);
+				return;
+			}
+			if (search_results[value] === undefined)
+			{
+				$("#searching_text").show();
+				clearTimeout(timer);
+				var ms = 300;
+				timer = setTimeout(function(){
+					$.get("/search/?scope=self&query=" + value, function(data){
+						search_results[value] = data;
+						handle_search(data);
+					})
+				}, ms);
+			}
+			else
+			{
+				handle_search(search_results[value]);
+			}
 
-  })
-});
+		})
+	});
 </script>
 
 
@@ -65,79 +65,75 @@ $(document).ready(function(){
 				<li><a href="#inactivelost" data-toggle="tab"><span style="color:black; font-weight:bold;">My Past Lost Items</span></a></li>
 				<li><a href="#inactivefound" data-toggle="tab"><span style="color:black; font-weight:bold;">My Past Found Items</span></a></li>
 			</ul>
-		    <div>
-		      <div style="padding-top:5px; width:50%; margin:0 auto;">
-		        <div class="input-group">
-		          <div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
-		          <input class="form-control" type="text" id="search">
-		          <div class="input-group-addon" id="searching_text">Searching...</div>
-		        </div>
-		      </div>
-		    </div>
-		<div class="tab-content">
-			
-			<div class="tab-pane fade in active" id="activelost">
-				{% if lostactive %}
+			<div>
+				<div style="padding-top:5px; width:50%; margin:0 auto;">
+					<div class="input-group">
+						<div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+						<input class="form-control" type="text" id="search">
+						<div class="input-group-addon" id="searching_text">Searching...</div>
+					</div>
+				</div>
+			</div>
+			<div class="tab-content">
+
+				<div class="tab-pane fade in active" id="activelost">
+					{% if lostactive %}
 					<h3><strong> Active Lost Items </strong></h3>
-						<table class="table table-striped table-hover">
-							<thead>
-								<tr>
-									<th>Item</th>
-									<th>Details</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody>	
+					<table class="table table-striped table-hover">
+						<thead>
+							<tr>
+								<th>Item</th>
+								<th>Details</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>	
 
 							{% for x in lostactive %}
-								<tr class="active result" id="lost-{{x.pk}}">
-									<td>{{x.itemname}} </td>
-									<td><strong>Last seen at {{x.location}} about {{x.time|ago }} {% ifequal x.get_time_of_day_display 'Don\'t know' %}{% else %} in the {{ x.get_time_of_day_display|lower }}{% endifequal %}.</strong> {{x.additionalinfo}}.</td>
-									<td><a href="{% url 'deletelost' x.pk %}"><span class="glyphicon glyphicon-remove" style="color:red;"></span></a></td>
-								</tr>
-								{% endfor %}
-							</tbody>
-						</table>
-				{% else %}
+							<tr class="active result" id="lost-{{x.pk}}">
+								<td>{{x.itemname}} </td>
+								<td><strong>Last seen at {{x.location}} about {{x.time|ago }} {% ifequal x.get_time_of_day_display 'Don\'t know' %}{% else %} in the {{ x.get_time_of_day_display|lower }}{% endifequal %}.</strong> {{x.additionalinfo}}.</td>
+								<td><a href="{% url 'deletelost' x.pk %}"><span class="glyphicon glyphicon-remove" style="color:red;"></span></a></td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+					{% else %}
 					<h3>
 						<p>You have No Active Lost Items</p>
 					</h3>
-				{% endif %}
-		</div>
+					{% endif %}
+				</div>
+				<div class="tab-pane fade in" id="activefound">
+					{% if foundactive %}
+					<h3><strong> Active Found Items </strong></h3>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Item</th>
+								<th>Details</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>	
 
- 
-		<div class="tab-pane fade in" id="activefound">
-			{% if foundactive %}
-				<h3><strong> Active Found Items </strong></h3>
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Item</th>
-							<th>Details</th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody>	
-
-						{% for x in foundactive %}
+							{% for x in foundactive %}
 							<tr class="active result" id="found-{{x.pk}}">
 								<td>{{x.itemname}} </td>
 								<td><strong>Found at {{x.location}} about {{x.time|ago }}.</strong> {{x.additionalinfo}}</td>
 								<td><a href="{% url 'deletefound' x.pk %}"><span class="glyphicon glyphicon-remove" style="color:red;"></span></a></td>
 							</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-			{% else %}
-				<h3>
-					<p>You have No Active Found Items</p>
-				</h3>
-			{% endif %} 
-		</div>
-
-
-			<div class="tab-pane fade in" id="inactivelost">
-				{% if lost %}
+							{% endfor %}
+						</tbody>
+					</table>
+					{% else %}
+					<h3>
+						<p>You have No Active Found Items</p>
+					</h3>
+					{% endif %} 
+				</div>
+				<div class="tab-pane fade in" id="inactivelost">
+					{% if lost %}
 					<h3><strong> Inactive Lost Items </strong></h3>
 
 					<table class="table">
@@ -148,28 +144,28 @@ $(document).ready(function(){
 								<th>Found by</th>
 								<th>Status</th>
 							</tr>
-							</thead>
-							<tbody>	
+						</thead>
+						<tbody>	
 							{% for x in lost %}
-								<tr class="active result" id="lost-{{x.pk}}">
-									<td>{{x.itemname}} </td>
-									<td><strong>Lost at {{x.location}} about {{x.time|ago }} {% ifequal x.get_time_of_day_display 'Don\'t know' %}{% else %} in the {{ x.get_time_of_day_display|lower }}{% endifequal %}.</strong> {{x.additionalinfo}}.</td>
-									<td><strong>{{ x.found_by.first_name }}</strong> ({{ x.found_by.email }})</td>
-									<td><a href="/reopenlost/{{x.id}}" align="right" class="btn btn-xs btn-info">Reopen</a><br></td>
-								</tr>
+							<tr class="active result" id="lost-{{x.pk}}">
+								<td>{{x.itemname}} </td>
+								<td><strong>Lost at {{x.location}} about {{x.time|ago }} {% ifequal x.get_time_of_day_display 'Don\'t know' %}{% else %} in the {{ x.get_time_of_day_display|lower }}{% endifequal %}.</strong> {{x.additionalinfo}}.</td>
+								<td><strong>{{ x.found_by.first_name }}</strong> ({{ x.found_by.email }})</td>
+								<td><a href="/reopenlost/{{x.id}}" align="right" class="btn btn-xs btn-info">Reopen</a><br></td>
+							</tr>
 							{% endfor %}
-							</tbody>
+						</tbody>
 					</table>
-				{% else %}
-				<h3>
-					<p>You have No Inactive Lost Items</p>
-				</h3>
-				{% endif %}
-			</div>
+					{% else %}
+					<h3>
+						<p>You have No Inactive Lost Items</p>
+					</h3>
+					{% endif %}
+				</div>
 
-			<div class="tab-pane fade in" id="inactivefound">
+				<div class="tab-pane fade in" id="inactivefound">
 
-				{% if found %}
+					{% if found %}
 					<h3><strong> Inactive Found Items </strong></h3>
 
 					<table class="table">
@@ -184,27 +180,23 @@ $(document).ready(function(){
 						<tbody>
 
 							{% for x in found %}
-								<tr class="active result" id="found-{{x.pk}}">
-									<td>{{x.itemname}} </td>
-									<td><strong>Found at {{x.location}} about {{x.time|ago }}.</strong> {{x.additionalinfo}}. </td>
-									<td><strong>{{ x.lost_by.first_name }}</strong> ({{ x.lost_by.email }})</td>
-									<td><a href="/reopenfound/{{x.id}}" align="right" class="btn btn-xs btn-danger ">Reopen</a><br></td>
-								</tr>
+							<tr class="active result" id="found-{{x.pk}}">
+								<td>{{x.itemname}} </td>
+								<td><strong>Found at {{x.location}} about {{x.time|ago }}.</strong> {{x.additionalinfo}}. </td>
+								<td><strong>{{ x.lost_by.first_name }}</strong> ({{ x.lost_by.email }})</td>
+								<td><a href="/reopenfound/{{x.id}}" align="right" class="btn btn-xs btn-danger ">Reopen</a><br></td>
+							</tr>
 							{% endfor %}
 						</tbody>
 					</table>
-				{% else %}
+					{% else %}
 					<h3>
 						<p>You have No Inactive Found Items</p>
 					</h3>
-			{% endif %}
+					{% endif %}
+				</div>
 			</div>
-
-
-			
- 
 		</div>
-		</div>
- </div>
- </div>
+	</div>
+</div>
 {% endblock %}
