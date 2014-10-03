@@ -5,7 +5,7 @@ from lostndfound.models import LostItem
 
 class RecentLostItem(models.Model):
     """
-    Just contains the link to recent lost forms. 
+    Just contains the link to recent lost items.
     """
     item = models.ForeignKey(LostItem)
 
