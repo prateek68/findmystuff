@@ -1,5 +1,6 @@
 import django.db.utils
 from models import Location, LostItem
+import cached
 
 # for the first time that the server is started
 def startup_cache():

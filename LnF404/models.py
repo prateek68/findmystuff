@@ -23,6 +23,7 @@ class AuthenticationToken(models.Model):
     token           = models.CharField(max_length=32)
 
     def generate_token(self):
+        """generates a random string to be used as a token"""
         import string
         from random import choice
         choices = string.letters + string.digits
@@ -30,5 +31,6 @@ class AuthenticationToken(models.Model):
         return random_string
 
     def save(self, *args, **kwargs):
+        """save has been overriden to generate a new token while saving."""
         self.token = self.generate_token()
         super(AuthenticationToken, self).save(*args, **kwargs)

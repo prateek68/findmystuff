@@ -11,7 +11,7 @@ def _PostToFB(message):
         'access_token': token, 'link': link})
     
     try:
-        request = urllib2.urlopen(url, data)
+        request = urllib2.urlopen(url, data) # posting to fb page
     except urllib2.HTTPError as e:
         print "Error fb: ", e.read()    #is shown in the logs
 
@@ -26,7 +26,7 @@ def _send_mail(subject, text_content, host_user, recipient_list):
     msg = EmailMultiAlternatives(subject, text_content,
      host_user, recipient_list)
     try:
-        a = msg.send()
+        a = msg.send()          # sending the mail.
     except MandrillAPIError as e:   # TODO check this exception
         print "Error mail: ", e.read() 
     

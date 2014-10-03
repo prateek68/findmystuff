@@ -4,6 +4,7 @@ from django.utils import timezone
 
 from cached import get_location_choices
 
+# choices -> what time of the day was the item lost
 time_of_day_choices = (('XXX', 'Don\'t know'),
                         ('MNG', 'Morning'),
                         ('AFT', 'Afternoon'),
@@ -17,7 +18,9 @@ class LostItem(models.Model):
     location        = models.CharField(max_length=100,
                         choices=get_location_choices())
     additionalinfo  = models.CharField(max_length=1000,null=True)
+    # status -> whether the item is open (or not reported found.)
     status          = models.BooleanField(max_length=100, default = True)
+    # time -> what day was the item lost
     time            = models.DateField()
     pub_date        = models.DateTimeField('date published',
                         default=timezone.now)
@@ -29,14 +32,18 @@ class LostItem(models.Model):
 
     def __repr__(self):
         return self.itemname
+    def __unicode__(self):
+        return self.itemname
 
 class FoundItem(models.Model):
     user            = models.ForeignKey(User)
     itemname        = models.CharField(max_length=100)
     location        = models.CharField(max_length=100,
                         choices=get_location_choices())
+    # status -> whether the item is open (or not reported found.)
     status          = models.BooleanField(default=True)
     additionalinfo  = models.CharField(max_length=1000,null=True)
+    # time -> what day was the item lost
     time            = models.DateField()
     pub_date        = models.DateTimeField('date published',
                         default=timezone.now)
@@ -46,9 +53,13 @@ class FoundItem(models.Model):
 
     def __repr__(self):
         return self.itemname
+    def __unicode__(self):
+        return self.itemname
 
 class Location(models.Model):
     name            = models.CharField(max_length = 200)
+    # the co-ordinates of the location.
+    # theses co-ordinates are used to show the markers on the google map.
     x1              = models.FloatField()
     y1              = models.FloatField()
     x2              = models.FloatField()

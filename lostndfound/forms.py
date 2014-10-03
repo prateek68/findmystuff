@@ -9,6 +9,7 @@ from models import LostItem,FoundItem, Feedback
 from lostndfound.cached import get_location_choices
 
 def validate_date(value):
+    """validates the date. It should not be more than today."""
     from django.core.exceptions import ValidationError
     if date.today() < value:
         raise ValidationError("Date not passed")

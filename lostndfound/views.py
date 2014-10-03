@@ -15,7 +15,7 @@ from lostnfound import settings
 from communication import PostToFB, send_mail
 from forms import LostItemForm,FoundItemForm, FeedbackForm
 from LnF404.models import RecentLostItem
-from lostndfound.cached import get_cache, set_cache
+from lostndfound.cached import get_cache, set_cache, set_auth
 from lostndfound.cached import get_main_page_markers_string, check_auth
 from models import LostItem,FoundItem, Feedback
 import mails
@@ -45,7 +45,9 @@ def lostitem(request):
         lostitem_form=LostItemForm(request.POST, request.FILES)
         if lostitem_form.is_valid():
             obj = lostitem_form.save(commit=False)
+            # add reference to user
             obj.user = request.user
+            # to ensure that strings generated for markers are properly escaped.
             obj.itemname = ' '.join(re.findall(r"[\w']+",
                                      obj.itemname.replace('"','\'')))
             obj.additionalinfo = ' '.join(re.findall(r"[\w']+",
@@ -79,7 +81,9 @@ def founditem(request):
         founditem_form=FoundItemForm(request.POST, request.FILES)
         if founditem_form.is_valid():
             obj = founditem_form.save(commit=False)
+            # add reference to user
             obj.user = request.user
+            # to ensure that strings generated for markers are properly escaped.
             obj.itemname = ' '.join(re.findall(r"[\w']+",
                                     obj.itemname.replace('"','\'')))
             obj.additionalinfo = ' '.join(re.findall(r"[\w']+",
@@ -128,9 +132,11 @@ def found(request,found_id):
             'email': request.user.email, 'link': reverse('reopenlost',
                                                  kwargs={'lost_id': found_id})
         }
+        # send email to the person who had lost the item.
         send_mail(subject, content,
                     settings.EMAIL_HOST_USER, [item.user.email])
 
+        # this is to remove the item from the main page.
         item.status = False
         item.found_by = request.user
         item.save()
@@ -157,9 +163,11 @@ def lost(request,lost_id):
             'email': request.user.email, 'link': reverse('reopenfound',
                                                  kwargs={'found_id': lost_id})
         }
+        # send email to the person who had found the item.
         send_mail(subject, content,
                     settings.EMAIL_HOST_USER, [item.user.email])
 
+        # change status to remove item from the home page and from the API
         item.status = False
         item.lost_by = request.user
         item.save()
@@ -235,31 +243,34 @@ def log(request):
     Shows the list of all reported items.
     Fetches it from the cache. 
     """
-    if check_auth('log_items'):
+    if check_auth('log_items'):    # retrieve from cache if data is authentic
         lost = get_cache('lost')
         found = get_cache('found')
     else:
         lost = LostItem.objects.all().filter(status=True).order_by('-id')
         found = FoundItem.objects.all().filter(status=True).order_by('-id')
+        # save to the cache
         set_cache('lost', lost)
         set_cache('found', found)
-        set_cache('log_items_auth', True)
+        # set auth of log_items
+        set_auth('log_items', True)
 
     return render(request, 'log.html', {'lost':lost,'found':found})
 
 def get_confirm_modal(request, itemtype, itemid):
     """
-    sends confirmation modal.
+    sends confirmation modal according to item.
     """
     success = True
 
+    # check type
     if not itemtype in ['lost', 'found']:
         success = False
     try:
         item = LostItem.objects.get(pk=itemid) if itemtype == 'lost' else \
                 FoundItem.objects.get(pk=itemid)
     except (LostItem.DoesNotExist, FoundItem.DoesNotExist):
-        success = False
+        success = False     # item does not exist
 
     if not success:
         itemtype = ''
@@ -276,15 +287,22 @@ def feedback(request):
     sends the feedback modal.
     """
     logged_in = True
+
+    # CHECKS:
+    #   i) user is logged in
+    #   ii) request is either ajax for requesting feedback modal
+    #   iii) request is a POST request for submitting feedback
+    # else error
     if (not request.user.is_authenticated()) or \
             (not request.is_ajax() and not request.method == "POST"):
         return HttpResponse("Please login and go to the main page.")
+
     form = FeedbackForm()
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
         if form.is_valid():
             obj = form.save(commit=False)
-            obj.user = request.user
+            obj.user = request.user         # add user
             obj.save()
             messages.success(request, "Thank you for your valuable feedback.")
         return HttpResponseRedirect(reverse('home'))
@@ -298,7 +316,7 @@ def deletelost(request, lost_id):
     """
     item = get_object_or_404(LostItem, pk=lost_id)
     if item.user == request.user:
-        item.status = False # to ensure that it's removed from the api.
+        item.status = False # IMP: to ensure that it's removed from the api.
         item.delete()
         messages.success(request,
                             "Your item has been deleted from the portal.")
@@ -324,45 +342,53 @@ def handle404(request):
     """
     Handles the app's 404 errors.
     """
-    items = RecentLostItem.objects.all()[:5]
+    items = RecentLostItem.objects.all()[:5]    # simulates the API response.
     return render(request, '404.html', {'items': items})
 
 def search(request):
     """
     sends a json reponse of the ids of the items matching the query.
     """
-    response, resp = [], []
+    # response is the final list of 'name-pk' to be sent
+    # filtered in the filtered list of matching items
+    response, filtered = [], []
     if request.method == "GET":
-        query = request.GET.get('query', None)
-        scope = request.GET.get('scope', None)
+        query = request.GET.get('query', None)  # extract search query
+        scope = request.GET.get('scope', None)  # extract scope
 
+        # search for the query to match for:
+        #   1) name of the item
+        #   2) additional information within the item
+        #   3) location where the item was reported lost or found
         if query:
             if scope == 'all':
 
-                resp1 = LostItem.objects.filter(status=True).filter(
+                filtered1 = LostItem.objects.filter(status=True).filter(
                     Q(itemname__icontains = query) |
                     Q(additionalinfo__icontains = query) |
                     Q(location__icontains = query))
-                resp2 = FoundItem.objects.filter(status=True).filter(
+                filtered2 = FoundItem.objects.filter(status=True).filter(
                     Q(itemname__icontains = query) |
                     Q(additionalinfo__icontains = query) |
                     Q(location__icontains = query))
 
             elif scope == 'self':
-                resp1 = request.user.lostitem_set.filter(
+                filtered1 = request.user.lostitem_set.filter(
                     Q(itemname__icontains = query) |
                     Q(additionalinfo__icontains = query) |
                     Q(location__icontains = query))
-                resp2 = request.user.founditem_set.filter(
+                filtered2 = request.user.founditem_set.filter(
                     Q(itemname__icontains = query) |
                     Q(additionalinfo__icontains = query) |
                     Q(location__icontains = query))
 
-            else: resp1 = resp2 = []
+            else: filtered1 = filtered2 = []    # invalid scope
 
-            resp = list(chain(resp1, resp2))
+            # join the 2 lists blazingly fast
+            filtered = list(chain(filtered1, filtered2))
 
-    for i in resp:
+    # create response
+    for i in filtered:
         response.append('-'.join([
             'lost' if isinstance(i, LostItem) else 'found',
             str(i.pk)]))

@@ -1,5 +1,6 @@
 ####FACEBOOK POST########
 # *name* (*email*) has lost/found *itemname* at *location*
+# content of the post that's posted on FB.
 
 FB_LOST_ITEM_POST = """%(name)s (%(email)s) has lost %(itemname)s at %(location)s.
 Additional Details: %(details)s."""
@@ -9,6 +10,7 @@ Additional Details: %(details)s."""
 
 
 #### NOTIFICATION EMAIL ####
+# subject/body of the mails sent when items are reported lost/found.
 
 EMAIL_FOUND_YOUR_ITEM_SUBJECT = "Great news! We've found your '%(itemname)s'."
 EMAIL_FOUND_YOUR_ITEM = """Hi %(self_name)s,

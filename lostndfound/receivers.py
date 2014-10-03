@@ -16,7 +16,13 @@ from lostndfound.templatetags.mod_timesince import ago as timesince_self
 time_of_day_choices = {a[0]: a[1].lower() for a in time_of_day_choices_}
 time_of_day_choices['XXX'] = ''
 
+
 def add_new_marker(i, x, y):
+    """
+    creates a new string for generating a marker for the google maps for
+    the item 'i' at the 'x' and 'y' coordinates
+    """
+
     content = """newmarker(%(x)f, %(y)f, \"%(name)s\", \"%(description)s\", \
         \"%(time)s\", \"%(time_of_day)s\", \"%(itemtype)s\", \"%(link)s\", \
         \"%(imagelink)s\");"""%{
@@ -38,8 +44,9 @@ def add_new_marker(i, x, y):
     }
     return content
 
+
 @receiver(post_save)
-@receiver(post_delete)
+@receiver(post_delete) # should catch both the signals
 def update_home_page(sender, **kwargs):
     """
     updates the home page markers and saves it to the cache
@@ -48,6 +55,7 @@ def update_home_page(sender, **kwargs):
 
     days_old = getattr(settings, 'DAYS_OLD_HOME_PAGE_ITEMS', None) or 30
 
+    # get all the lost and found items
     lost_items=LostItem.objects.all().filter(status=True).filter(
         pub_date__gt=timezone.now()-datetime.timedelta(
                                     days=days_old)).order_by('-pub_date')
@@ -56,10 +64,11 @@ def update_home_page(sender, **kwargs):
         pub_date__gt=timezone.now()-datetime.timedelta(
                                     days=days_old)).order_by('-pub_date')
 
+    # is used for ensuring the items per location limit
     limiterByLocation = Counter([])
 
-    final = ""
-    limit = get_location_data()
+    final = ""                      # final string
+    limit = get_location_data()     # get location data from cache
     itemsPerLocationLimit = getattr(settings,'ITEMS_PER_LOCATION', None) or 5
 
     #giving preference to recent lost items
@@ -69,10 +78,12 @@ def update_home_page(sender, **kwargs):
 
     for i in items:
 
+        # skips over if items per location limit has been reached.
         if limiterByLocation[i.location] == itemsPerLocationLimit:
             continue
 
         if(i.location in limit.keys()):
+            # add to item-location counter
             limiterByLocation.update([i.location])
 
             # this method gives a believably random still viewable look
@@ -90,10 +101,19 @@ def update_home_page(sender, **kwargs):
             delta = d1 * d2
             y = limit[i.location][1] + delta
 
+            # create a string for the marker for this item
+            # and append it to the final string
             final = '\n'.join([add_new_marker(i, x, y), final])
-           
+
+    # save the final string data in the cache
     set_main_page_markers_string(final)
 
+    # so that we know that we should not
+    # fetch items from cache in the log view
+    set_auth("log_items", False)
+
+
+# changes data on adding a new location.
 @receiver(post_save, sender=Location)
 @receiver(post_delete, sender=Location)
 def update_locations(sender, **kwargs):
@@ -101,20 +121,18 @@ def update_locations(sender, **kwargs):
     updates location choices and location data in the cache.
     Triggered on adding/deleting new locations.
     """
-    location_choices = []
-    location_data = {}
+    location_choices = []   # simply saves the names
+    location_data = {}      # saves the location data
     for location in Location.objects.all():
         location_choices.append((location.name, location.name))
         location_data[location.name] = (location.x1, location.y1,
                                             location.x2, location.y2)
 
+    # if no locations
     if Location.objects.count == 0:
         location_choices = ("None", "None")
         location_data["None"] = (0, 0, 90, 90)
 
+    # save to cache
     set_location_choices(tuple(location_choices))
     set_location_data(location_data)
-
-    # so that we know that we should not
-    # fetch items from cache in the log view
-    set_auth("log_items", False)
