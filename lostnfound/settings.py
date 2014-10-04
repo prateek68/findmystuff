@@ -35,6 +35,14 @@ DATABASES = {
         'NAME': 'lostfound.db'
     }
 }
+
+CACHES = {
+    'default': {
+        'TIMEOUT': None
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
 PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
 PROJECT_NAME = basename(ROOT_PATH)
 TIME_ZONE = 'Asia/Kolkata'

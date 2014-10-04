@@ -170,8 +170,7 @@ class CheckCache(TestCase):
         self.assertTrue(cached.check_auth('temp'))
 
         cached.set_auth('temp', False)
-        self.assertFalse(cached.check_auth('temp'))
+        self.assertEqual(cached.check_auth('temp'), False)
 
         from django.core.cache import cache
         cache.delete('temp')
-
