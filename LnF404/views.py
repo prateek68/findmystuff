@@ -43,8 +43,8 @@ def refresh_token(request, token_id):
 # this is kept here rather than in a receivers.py file
 # as this is the only important thing in this app,
 # and it's not big.
-@receiver(pre_delete)
-@receiver(post_save) # the item status should be false before calling delete()
+@receiver(pre_delete) # the item status should be false before calling delete()
+@receiver(post_save)
 def update_404_items(sender, **kwargs):
     if sender != LostItem:
         return
@@ -58,7 +58,8 @@ def update_404_items(sender, **kwargs):
             RecentLostItem.objects.first().delete()     # ensures the max size
 
     else:
-        check = RecentLostItem.objects.filter(item=item).first()
+        # is faster than RecentLostItem.objects.filter(item=item)
+        check = item.recentlostitem_set.first()
         if check:
             # delete the object that was found
             check.delete()
@@ -123,7 +124,8 @@ def send_data(request, site_id='0', token='0', quantity = 0):
                                         quantity)
 
             # create data to send
-            for i, link in enumerate(RecentLostItem.objects.all()):
+            for i, link in enumerate(
+                RecentLostItem.objects.all().order_by('pk').reverse()):
                 json_item_data = {}
                 json_item_data['item-name'] = link.item.itemname
                 json_item_data['location']  = link.item.location

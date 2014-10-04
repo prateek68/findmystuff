@@ -1,6 +1,7 @@
 import urllib
 import urllib2
 from multiprocessing import Process
+from django.core.mail import EmailMultiAlternatives
 from djrill import MandrillAPIError
 from lostnfound import settings
 

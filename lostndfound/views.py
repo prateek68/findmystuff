@@ -316,7 +316,11 @@ def deletelost(request, lost_id):
     """
     item = get_object_or_404(LostItem, pk=lost_id)
     if item.user == request.user:
-        item.status = False # IMP: to ensure that it's removed from the api.
+        # IMP: make status False to ensure that it's removed from the api.
+        # Also the hacky way of using update is used, rather than save
+        # since I want to avoid sending any unnecessary signals now.
+        LostItem.objects.filter(pk=item.pk).update(
+            status=False)
         item.delete()
         messages.success(request,
                             "Your item has been deleted from the portal.")
