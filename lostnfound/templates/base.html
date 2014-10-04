@@ -24,6 +24,9 @@
   <script src="{% static 'js/bootstrap.js' %}"></script>
 
   <script src="{% static 'js/analytics.js' %}"></script>
+  <script type="text/javascript">
+  window.feedback_url = "{% url 'feedback' %}"
+  </script>
   <script src="{% static 'js/feedback.js' %}"></script>
 
   {% if messages %}
