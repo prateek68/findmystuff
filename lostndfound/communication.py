@@ -1,3 +1,5 @@
+import urllib
+import urllib2
 from multiprocessing import Process
 from djrill import MandrillAPIError
 from lostnfound import settings
