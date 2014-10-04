@@ -23,9 +23,10 @@ def add_new_marker(i, x, y):
     the item 'i' at the 'x' and 'y' coordinates
     """
 
-    content = """newmarker(%(x)f, %(y)f, \"%(name)s\", \"%(description)s\", \
-        \"%(time)s\", \"%(time_of_day)s\", \"%(itemtype)s\", \"%(link)s\", \
-        \"%(imagelink)s\");"""%{
+    content = ''.join([
+        "newmarker(%(x)f, %(y)f, \"%(name)s\", \"%(description)s\", ",
+        "\"%(time)s\", \"%(time_of_day)s\", \"%(itemtype)s\", \"%(link)s\", ",
+        "\"%(imagelink)s\");"])%{
         'x': x,
         'y': y,
         'name': ' '.join(re.findall(r"[\w']+",
@@ -107,7 +108,6 @@ def update_home_page(sender, **kwargs):
 
     # save the final string data in the cache
     set_main_page_markers_string(final)
-
     # so that we know that we should not
     # fetch items from cache in the log view
     set_auth("log_items", False)
