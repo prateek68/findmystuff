@@ -321,6 +321,7 @@ def deletelost(request, lost_id):
         # since I want to avoid sending any unnecessary signals now.
         LostItem.objects.filter(pk=item.pk).update(
             status=False)
+        item = get_object_or_404(LostItem, pk=lost_id)
         item.delete()
         messages.success(request,
                             "Your item has been deleted from the portal.")
