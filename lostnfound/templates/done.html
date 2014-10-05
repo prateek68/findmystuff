@@ -17,7 +17,7 @@
     var map = new google.maps.Map(document.getElementById("map-canvas"),
         mapOptions);
 
-    {{s|safe}}
+    {{markers|safe}}
 
     function newmarker(x, y, name, description, time, time_of_day, item_type, link, imagelink){
       var myLatlng = new google.maps.LatLng(x, y);
@@ -93,13 +93,14 @@
 
   google.maps.event.addDomListener(window, 'load', initialize);
     </script>
+
 <script type="text/javascript">
   $('body').on('hidden.bs.modal', '.modal', function(){
     $(this).removeData('bs.modal');
   })
-</script>>
+</script>
 
-	 <style type="text/css">
+<style type="text/css">
 body{
 background-color:#303030;
 }
@@ -111,7 +112,7 @@ background-color:#303030;
 	font-weight:700;
     color: #DDDDDD;
 	text-align: center;
-  }
+}
 	
 </style>
 
