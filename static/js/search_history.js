@@ -24,6 +24,7 @@ $(document).ready(function(){
 	var timer;
 	$("#search").on('input paste', function(){
 		var value = this.value;
+		var token = $('input[name="csrfmiddlewaretoken"]')[0].value
 		if (value === ""){
 			$(".result").fadeIn(0);
 			return;
@@ -34,7 +35,9 @@ $(document).ready(function(){
 			clearTimeout(timer);
 			var ms = 300;
 			timer = setTimeout(function(){
-				$.get("/search/?scope=self&query=" + value, function(data){
+				$.post("/search/", { "scope": "self",
+				  "query": value,
+				  "csrfmiddlewaretoken" : token }, function(data){
 					search_results[value] = data;
 					handle_search(data);
 				})

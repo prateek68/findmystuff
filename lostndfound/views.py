@@ -357,9 +357,9 @@ def search(request):
     # response is the final list of 'name-pk' to be sent
     # filtered in the filtered list of matching items
     response, filtered = [], []
-    if request.method == "GET":
-        query = request.GET.get('query', None)  # extract search query
-        scope = request.GET.get('scope', None)  # extract scope
+    if request.method == "POST":
+        query = request.POST.get('query', None)  # extract search query
+        scope = request.POST.get('scope', None)  # extract scope
 
         # search for the query to match for:
         #   1) name of the item
