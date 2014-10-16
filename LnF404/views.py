@@ -6,6 +6,7 @@ from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
+from django.templatetags.static import static
 from django.views.decorators.csrf import csrf_exempt
 
 from lostnfound import settings
@@ -131,6 +132,11 @@ def send_data(request, site_id='0', token='0', quantity = 0):
                 json_item_data['location']  = link.item.location
                 json_item_data['info']      = link.item.additionalinfo
                 json_item_data['email']     = link.item.user.email
+                json_item_data['image']     = bool(link.item.image)
+                json_item_data['image_url'] = request.build_absolute_uri(
+                                                link.item.image.url if \
+                                                link.item.image else static(
+                                                 'noimage_placeholder.jpg'))
 
                 response[i] = json_item_data
 
