@@ -176,8 +176,6 @@ SOCIALACCOUNT_PROVIDERS = {
     'SCOPE': [
     'https://www.googleapis.com/auth/userinfo.email',
      'https://www.googleapis.com/auth/userinfo.profile',
-     'https://www.googleapis.com/auth/plus.login',
-     'https://www.googleapis.com/auth/plus.me'
      ],
      'AUTH_PARAMS': {'access_type': 'online'}
     }
