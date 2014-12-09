@@ -7,7 +7,6 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.db.models import Q
 from django.http import HttpResponseRedirect,HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -20,6 +19,7 @@ from lostndfound.cached import get_main_page_markers_string, check_auth
 from models import LostItem,FoundItem, Feedback
 import mails
 import receivers
+from utils import search as search_database
 
 def logout(request):
     """Logs out user"""
@@ -365,32 +365,11 @@ def search(request):
         #   1) name of the item
         #   2) additional information within the item
         #   3) location where the item was reported lost or found
-        if query:
-            if scope == 'all':
-
-                filtered1 = LostItem.objects.filter(status=True).filter(
-                    Q(itemname__icontains = query) |
-                    Q(additionalinfo__icontains = query) |
-                    Q(location__icontains = query))
-                filtered2 = FoundItem.objects.filter(status=True).filter(
-                    Q(itemname__icontains = query) |
-                    Q(additionalinfo__icontains = query) |
-                    Q(location__icontains = query))
-
-            elif scope == 'self':
-                filtered1 = request.user.lostitem_set.filter(
-                    Q(itemname__icontains = query) |
-                    Q(additionalinfo__icontains = query) |
-                    Q(location__icontains = query))
-                filtered2 = request.user.founditem_set.filter(
-                    Q(itemname__icontains = query) |
-                    Q(additionalinfo__icontains = query) |
-                    Q(location__icontains = query))
-
-            else: filtered1 = filtered2 = []    # invalid scope
-
-            # join the 2 lists blazingly fast
-            filtered = list(chain(filtered1, filtered2))
+        if query and scope in ['all', 'self']:
+            (find_location1, find_location2) = (LostItem.objects,
+                    FoundItem.objects) if scope == 'all' else \
+                    (request.user.lostitem_set, request.user.founditem_set)
+            filtered = search_database(query, find_location1, find_location2)
 
     # create response
     for i in filtered:

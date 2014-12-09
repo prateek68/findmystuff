@@ -7,6 +7,7 @@ urlpatterns = patterns('',
 
     # for POST request
     url(r'^$', views.send_data, name='LnF_API'),
+    url(r'^search/$', views.send_search_results),
 
     # for GET requests
     url(r'^(?P<site_id>[0-9]+)/(?P<token>[a-zA-Z0-9]+)/(?P<quantity>[0-9]+)/$', views.send_data,),

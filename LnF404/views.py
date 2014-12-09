@@ -10,12 +10,16 @@ from django.templatetags.static import static
 from django.views.decorators.csrf import csrf_exempt
 
 from lostnfound import settings
-from lostndfound.models import LostItem
+from lostndfound.models import LostItem, FoundItem
+from lostndfound.utils import search
 from LnF404.forms import AddWebsiteForm
 from LnF404.models import RecentLostItem, AuthenticationToken
 
 @login_required
 def add(request):
+    """ Gives a new site id and authentication token
+    to the user.
+    """
 
     websites = AuthenticationToken.objects.filter(user = request.user)
 
@@ -35,6 +39,8 @@ def add(request):
 
 @login_required
 def refresh_token(request, token_id):
+    """ Refreshes the token, in case the user feels that the token has been leaked
+    """
     site = get_object_or_404(AuthenticationToken, pk=token_id)
     if site.user == request.user:
         site.save()
@@ -47,6 +53,8 @@ def refresh_token(request, token_id):
 @receiver(pre_delete) # the item status should be false before calling delete()
 @receiver(post_save)
 def update_404_items(sender, **kwargs):
+    """ Updates the list of recently lost items.
+    """
     if sender != LostItem:
         return
 
@@ -90,9 +98,56 @@ def confirmIP(request, allotedIP):
         return True
     return False
 
+def _build_JSON_response(request, response, quantity, items_to_build=None):
+    """ Takes in how many items to consider,
+    and builds a dictionary response
+    """
+    # send appropriate quantity parameter
+    response['quantity'] = quantity
+
+    items = items_to_build if items_to_build != None else \
+                    RecentLostItem.objects.all().order_by('pk').reverse()
+
+    # create data to send
+    for i, link in enumerate(items):
+
+        item  = link.item if isinstance(link, RecentLostItem) else link
+        json_item_data = {}
+        json_item_data['item-name'] = item.itemname
+        json_item_data['location']  = item.location
+        json_item_data['info']      = item.additionalinfo
+        json_item_data['email']     = item.user.email
+        json_item_data['image']     = bool(item.image)
+        json_item_data['image_url'] = request.build_absolute_uri(
+                                        item.image.url if \
+                                        item.image else static(
+                                         'noimage_placeholder.jpg'))
+
+        response[i] = json_item_data
+
+        # doesn't break at 0 even if quantity is None.
+        if (i + 1) == quantity: break
+
+    return response
+
+def _authenticate(request, site_id, token):
+    if site_id and token: # parameters were readable
+        try:
+            site = AuthenticationToken.objects.get(pk=site_id)
+            site = site if confirmIP(request, site.website_IP) else None
+        except AuthenticationToken.DoesNotExist:
+            # an app with this app_id was not registered.
+            site = None
+
+        if site and site.token == token: # authenticating the app with token
+            return True
+    return False
+
 # csrf_exempt decorator to allow POST requests
 @csrf_exempt
 def send_data(request, site_id='0', token='0', quantity = 0):
+    """ Sends the requested data
+    """
     response    = {'success': 'true'}
     num         = 6     # no. of items to send back
 
@@ -105,46 +160,38 @@ def send_data(request, site_id='0', token='0', quantity = 0):
          'token': token,
          'quantity': quantity if quantity > 0 else num}
 
-    token_id = int(dictionary.get('id', None))
+    token_id = int(dictionary.get('id', -1))
     token    = str(dictionary.get('token', None))
     quantity = int(dictionary.get('quantity', num))
 
-    # parameters were readable
-    if token_id and token:
-        try:
-            site = AuthenticationToken.objects.get(pk=token_id)
-            site = site if confirmIP(request, site.website_IP) else None
-        except AuthenticationToken.DoesNotExist:
-            # an app with this app_id was not registered.
-            site = None
+    if _authenticate(request, token_id, token):
+        response = _build_JSON_response(request, response, min([
+                        RecentLostItem.objects.all().count(), quantity]))
+        return HttpResponse(json.dumps(response),
+                            content_type="application/json")
 
-        if site and site.token == token:   # authenticating the app with token
+    # if authentication failed, or app was not registered.
+    response['success'] = 'false'
+    return HttpResponse(json.dumps(response), content_type="application/json")
 
-            # send appropriate quantity parameter
-            response['quantity'] = min(RecentLostItem.objects.all().count(),
-                                        quantity)
+@csrf_exempt
+def send_search_results(request):
+    """ Sends the items matching the query
+    """
 
-            # create data to send
-            for i, link in enumerate(
-                RecentLostItem.objects.all().order_by('pk').reverse()):
-                json_item_data = {}
-                json_item_data['item-name'] = link.item.itemname
-                json_item_data['location']  = link.item.location
-                json_item_data['info']      = link.item.additionalinfo
-                json_item_data['email']     = link.item.user.email
-                json_item_data['image']     = bool(link.item.image)
-                json_item_data['image_url'] = request.build_absolute_uri(
-                                                link.item.image.url if \
-                                                link.item.image else static(
-                                                 'noimage_placeholder.jpg'))
+    response = {'success': 'true'}
+    dictionary = request.POST if request.method == "POST" else request.GET
 
-                response[i] = json_item_data
+    token_id = int(dictionary.get('id', -1))
+    token    = str(dictionary.get('token', None))
+    query    = str(dictionary.get('query', None))
 
-                # doesn't break at 0 even if quantity is None.
-                if (i + 1) == quantity: break
-
-            return HttpResponse(json.dumps(response),
-             content_type="application/json")
+    if _authenticate(request, token_id, token):
+        items       = list(search(query, LostItem.objects, FoundItem.objects))
+        quantity    = int(dictionary.get('quantity', len(items)))
+        response    = _build_JSON_response(request, response, quantity, items)
+        return HttpResponse(json.dumps(response),
+                            content_type="application/json")
 
     # if authentication failed, or app was not registered.
     response['success'] = 'false'
