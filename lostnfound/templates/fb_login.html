@@ -89,10 +89,14 @@
     <div class="panel-heading">
       Developer Login - FB App
     </div>
-    <div style="padding: 30px 30px 30px 30px;">
-      <fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
-      <div id="status"></div>
-    </div>
+      <div style="padding: 30px 30px 30px 30px;">
+        <fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
+        <div id="status"></div>
+        <br />
+        Extend the token in the console using <div class="well">https://graph.facebook.com/oauth/access_token?%20
+        client_id=APP_ID&%20client_secret=APP_SECRET&%20
+        grant_type=fb_exchange_token&%20fb_exchange_token=RECENTLY_RETRIEVED_ACCESS_TOKEN</div> and set it in the server.
+      </div>
   </div>
 </div>
 {% endblock %}
