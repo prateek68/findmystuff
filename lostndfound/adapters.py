@@ -1,5 +1,6 @@
 from allauth.exceptions import ImmediateHttpResponse
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+from django.contrib import messages
 
 from lostnfound import settings
 

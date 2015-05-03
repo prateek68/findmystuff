@@ -48,9 +48,9 @@ def lostitem(request):
             # add reference to user
             obj.user = request.user
             # to ensure that strings generated for markers are properly escaped.
-            obj.itemname = ' '.join(re.findall(r"[\w']+",
+            obj.itemname = ' '.join(re.findall(r"[\w.?!']+",
                                      obj.itemname.replace('"','\'')))
-            obj.additionalinfo = ' '.join(re.findall(r"[\w']+",
+            obj.additionalinfo = ' '.join(re.findall(r"[\w.?!']+",
                                         obj.additionalinfo.replace('"','\'')))
             obj.save()
 
@@ -379,3 +379,19 @@ def search(request):
 
     return HttpResponse(json.dumps(response),
         content_type ="application/json")
+
+def fb_privacy_policy(request):
+    """
+    Shows the privacy policy of the facebook app.
+    """
+    return render(request, 'fb_privacy_policy.html')
+
+def fb_login(request):
+    """
+    Login via fb, and give the access token in the console. The developer
+    should copy the token from the console and set the access token in the 
+    server and restart it every 2 months or so.
+    """
+    app_id = settings.FACEBOOK_APP_ID
+    return render(request, 'fb_login.html', {
+        'app_id':app_id})
