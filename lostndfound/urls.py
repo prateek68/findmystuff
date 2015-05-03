@@ -21,4 +21,8 @@ urlpatterns = patterns('',
     url(r'^delete/lost/(?P<lost_id>\d+)/$', views.deletelost, name='deletelost'),
     url(r'^delete/found/(?P<found_id>\d+)/$', views.deletefound, name='deletefound'),
     url(r'^search/$', views.search, name = 'search'),
+
+    # FB developer policy
+    url(r'^fb/policy/$', views.fb_privacy_policy, name='fb_privacy_policy'),
+    url(r'^fb/login/$', views.fb_login, name='fb_login'),
 )

@@ -1,22 +1,30 @@
-import urllib
-import urllib2
 from multiprocessing import Process
+from open_facebook import OpenFacebook
+
 from django.core.mail import EmailMultiAlternatives
 from djrill import MandrillAPIError
+
 from lostnfound import settings
 
 def _PostToFB(message):
     token = getattr(settings, 'FACEBOOK_AUTHENTICATION_TOKEN', "")
-    page  = getattr(settings, 'FACEBOOK_PAGE_ID', 123)
-    url   = "https://graph.facebook.com/v2.1/%d/links" % page
-    link  = getattr(settings, 'DEPLOYED_URL', "www.google.com")
-    data  = urllib.urlencode({'message': message,
-        'access_token': token, 'link': link})
-    
-    try:
-        request = urllib2.urlopen(url, data) # posting to fb page
-    except urllib2.HTTPError as e:
-        print "Error fb: ", e.read()    #is shown in the logs
+    page  = str(getattr(settings, 'FACEBOOK_PAGE_ID', 123))
+
+    user_account = OpenFacebook(token)
+    accounts = user_account.get('me/accounts')
+    for x in accounts['data']:
+        if x['id'] == page:
+            page = x
+            break
+    else:
+        # page not found
+        print "Page not found with corresponding ID"
+        return
+
+    page_graph = OpenFacebook(page['access_token'])
+    result = page_graph.set('me/feed', message=message)
+
+    print "FB post result:", result
 
 def PostToFB(message):
     """

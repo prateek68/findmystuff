@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block body %}
+<div style="padding-top:100px; padding-left:100px; padding-right:100px;">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Privacy Policy - FB App
+    </div>
+    <div style="padding: 30px 30px 30px 30px;">
+      <ul>
+        <li>
+          This app is simply for allowing the admin site to post on the fb page.
+        </li>
+        <li>
+          Only the admin of the app needs to login.
+        </li>
+      </ul>
+      <a href="{% url 'fb_login' %}" style="color:black"> Login Here </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

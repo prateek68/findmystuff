@@ -41,7 +41,7 @@
 							{% for x in lostactive %}
 							<tr class="active result" id="lost-{{x.pk}}">
 								<td>{{x.itemname}} </td>
-								<td><strong>Last seen at {{x.location}} about {{x.time|ago }} {% ifequal x.get_time_of_day_display 'Don\'t know' %}{% else %} in the {{ x.get_time_of_day_display|lower }}{% endifequal %}.</strong> {{x.additionalinfo}}.</td>
+								<td><strong>Last seen at {{x.location}} about {{x.time|ago }} {% ifequal x.get_time_of_day_display 'Don\'t know' %}{% else %} in the {{ x.get_time_of_day_display|lower }}{% endifequal %}.</strong> {{x.additionalinfo|linebreaks}}.</td>
 								<td><a href="{% url 'deletelost' x.pk %}"><span class="glyphicon glyphicon-remove" style="color:red;"></span></a></td>
 							</tr>
 							{% endfor %}
@@ -69,7 +69,7 @@
 							{% for x in foundactive %}
 							<tr class="active result" id="found-{{x.pk}}">
 								<td>{{x.itemname}} </td>
-								<td><strong>Found at {{x.location}} about {{x.time|ago }}.</strong> {{x.additionalinfo}}</td>
+								<td><strong>Found at {{x.location}} about {{x.time|ago }}.</strong> {{x.additionalinfo|linebreaks}}</td>
 								<td><a href="{% url 'deletefound' x.pk %}"><span class="glyphicon glyphicon-remove" style="color:red;"></span></a></td>
 							</tr>
 							{% endfor %}
@@ -98,7 +98,7 @@
 							{% for x in lost %}
 							<tr class="active result" id="lost-{{x.pk}}">
 								<td>{{x.itemname}} </td>
-								<td><strong>Lost at {{x.location}} about {{x.time|ago }} {% ifequal x.get_time_of_day_display 'Don\'t know' %}{% else %} in the {{ x.get_time_of_day_display|lower }}{% endifequal %}.</strong> {{x.additionalinfo}}.</td>
+								<td><strong>Lost at {{x.location}} about {{x.time|ago }} {% ifequal x.get_time_of_day_display 'Don\'t know' %}{% else %} in the {{ x.get_time_of_day_display|lower }}{% endifequal %}.</strong> {{x.additionalinfo|linebreaks}}.</td>
 								<td><strong>{{ x.found_by.first_name }}</strong> ({{ x.found_by.email }})</td>
 								<td><a href="/reopenlost/{{x.id}}" align="right" class="btn btn-xs btn-info">Reopen</a><br></td>
 							</tr>
@@ -131,7 +131,7 @@
 							{% for x in found %}
 							<tr class="active result" id="found-{{x.pk}}">
 								<td>{{x.itemname}} </td>
-								<td><strong>Found at {{x.location}} about {{x.time|ago }}.</strong> {{x.additionalinfo}}. </td>
+								<td><strong>Found at {{x.location}} about {{x.time|ago }}.</strong> {{x.additionalinfo|linebreaks}}. </td>
 								<td><strong>{{ x.lost_by.first_name }}</strong> ({{ x.lost_by.email }})</td>
 								<td><a href="/reopenfound/{{x.id}}" align="right" class="btn btn-xs btn-danger ">Reopen</a><br></td>
 							</tr>
