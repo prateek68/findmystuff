@@ -395,7 +395,7 @@ def autocomplete_search(request):
                 content_type="application/json")
 
         to_search = LostItem.objects if query_type=='lost' else FoundItem.objects
-        search_result = search_database(query, to_search)[:5]
+        search_result = search_database(query, to_search, reverse=True)[:5]
 
         for x in search_result:
             response.append({
