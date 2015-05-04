@@ -57,7 +57,7 @@ def lostitem(request):
             PostToFB(mails.FB_LOST_ITEM_POST%{
                     'name': ' '.join([obj.user.first_name,
                                          obj.user.last_name]),
-                    'email': obj.user.email, 'itemname': obj.itemname,
+                    'itemname': obj.itemname,
                     'location': obj.location, 'details': obj.additionalinfo
                 })
 
@@ -92,7 +92,7 @@ def founditem(request):
 
             PostToFB(mails.FB_FOUND_ITEM_POST%{
                     'name': ' '.join([obj.user.first_name, obj.user.last_name]),
-                    'email': obj.user.email, 'itemname': obj.itemname,
+                    'itemname': obj.itemname,
                     'location': obj.location, 'details': obj.additionalinfo
                 })
 

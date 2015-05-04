@@ -2,10 +2,10 @@
 # *name* (*email*) has lost/found *itemname* at *location*
 # content of the post that's posted on FB.
 
-FB_LOST_ITEM_POST = """%(name)s (%(email)s) has lost %(itemname)s at %(location)s.
+FB_LOST_ITEM_POST = """%(name)s has lost %(itemname)s at %(location)s.
 Additional Details: %(details)s."""
 
-FB_FOUND_ITEM_POST = """%(name)s (%(email)s) has found %(itemname)s at %(location)s.
+FB_FOUND_ITEM_POST = """%(name)s has found %(itemname)s at %(location)s.
 Additional Details: %(details)s."""
 
 
