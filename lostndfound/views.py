@@ -380,6 +380,49 @@ def search(request):
     return HttpResponse(json.dumps(response),
         content_type ="application/json")
 
+def autocomplete_search(request):
+    """
+    Sends name of the items, and the url to request more information
+    when the user is reporting a new item lost/found
+    """
+    response = []
+    if request.method == "GET":
+        query = request.GET.get('query', None)
+        query_type = request.GET.get('type', None)
+
+        if (not all([query, query_type])) or query_type not in ['lost', 'found']:
+            return HttpResponse(json.dumps(response),
+                content_type="application/json")
+
+        to_search = LostItem.objects if query_type=='lost' else FoundItem.objects
+        search_result = search_database(query, to_search)[:5]
+
+        for x in search_result:
+            response.append({
+                    'itemname': x.itemname,
+                    'url': reverse('autocomplete_info', kwargs={
+                                'pk': x.pk, 'category': query_type})
+                })
+
+    return HttpResponse(json.dumps(response), content_type="application/json")
+
+def autocomplete_info(request, category, pk):
+    """
+    Returns a modal containing all the information, as well as the url to
+    get the confirm modal.
+    """
+    to_search = LostItem if category == 'lost' else FoundItem
+    result = to_search.objects.filter(pk=pk)
+    result = result[0] if result else None
+    return render(request, 'autocomplete_info.html', {
+                    'item': result,
+                    'confirm_modal_link': reverse('get_confirm_modal',
+                        kwargs={
+                            'itemtype': category,
+                            'itemid': result.pk
+                        }) if result else None
+                    })
+
 def fb_privacy_policy(request):
     """
     Shows the privacy policy of the facebook app.

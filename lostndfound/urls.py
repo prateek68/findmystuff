@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.conf.urls import patterns, include, url
 
 from . import views
@@ -16,11 +15,13 @@ urlpatterns = patterns('',
     url(r'^reopenlost/(?P<lost_id>\d+)/$', views.reopenlost, name='reopenlost'),
     url(r'^reopenfound/(?P<found_id>\d+)/$', views.reopenfound, name='reopenfound'),
     url(r'^get_confirm_modal/(?P<itemtype>[a-z]+)/(?P<itemid>[0-9]+)/$',
-     views.get_confirm_modal),
+            views.get_confirm_modal, name='get_confirm_modal'),
     url(r'^feedback/$', views.feedback, name='feedback'),
     url(r'^delete/lost/(?P<lost_id>\d+)/$', views.deletelost, name='deletelost'),
     url(r'^delete/found/(?P<found_id>\d+)/$', views.deletefound, name='deletefound'),
     url(r'^search/$', views.search, name = 'search'),
+    url(r'^autocomplete/search/$', views.autocomplete_search, name='autocomplete_search'),
+    url(r'^autocomplete/info/(?P<category>\w+)/(?P<pk>\d+)$', views.autocomplete_info, name='autocomplete_info'),
 
     # FB developer policy
     url(r'^fb/policy/$', views.fb_privacy_policy, name='fb_privacy_policy'),

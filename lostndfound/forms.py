@@ -23,7 +23,7 @@ class LostItemForm(forms.ModelForm):
         self.fields['image'].required = False
 
     itemname = forms.CharField(label = 'Item', widget=forms.TextInput(attrs = {
-        'class':'form-control','placeholder':'Object Lost'}))
+        'class':'form-control','placeholder':'Object Lost', 'id': "item_name_field"}))
     time = forms.DateField(label = 'Last seen on', widget=forms.DateInput(attrs = {
         'class':'form-control','placeholder':'Date'}), validators = [validate_date])
     additionalinfo = forms.CharField(label="More Details", widget=forms.Textarea(attrs = {
@@ -42,7 +42,7 @@ class FoundItemForm(forms.ModelForm):
         self.fields['image'].required = False
 
     itemname = forms.CharField(label="Item", widget=forms.TextInput(attrs = {
-        'class':'form-control','placeholder':'Object Found'}))
+        'class':'form-control','placeholder':'Object Found', 'id': "item_name_field"}))
     time = forms.DateField(label='Found on', widget=forms.DateInput(attrs = {
         'class':'form-control','placeholder':'Date'}), validators = [validate_date])
     additionalinfo = forms.CharField(label="More Details", widget=forms.Textarea(attrs = {

@@ -1,0 +1,35 @@
+{% load mod_timesince %}
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			<h4 class="modal-title" id="ModalLabel"> {{ item.itemname }} </h4>
+		</div>
+		{% if confirm_modal_link %}
+
+		<div class="modal-body">
+			Name: {{ item.itemname }} <br />
+			Info: {{ item.additionalinfo }} <br />
+			Where: {{ item.location }} <br />
+			When: {{ item.time|ago }} <br />
+			{% if item.image %}<a href="{{ item.image.url }}" target="new"><span style="color:black; font-size:1.5em;" class="glyphicon glyphicon-camera"> </span></a>{% else %} <span style="color:#d3d3d3; font-size:1.5em;" class="glyphicon glyphicon-camera" > </span> {% endif %}<br />
+		</div>
+
+		<div class="modal-footer">
+			<button class="btn btn-info autocomplete_info_confirm" data-remote="true" data-url="{{ confirm_modal_link }}" >This is it.</button>
+		</div>
+		{% else %}
+		<div class="modal-body">
+			There was an error in fetching data from the server. Please let us know in the feedback section.
+		</div>
+
+		<div class="modal-footer">
+		</div>
+		{% endif %}
+	</div>
+</div>
+<script type="text/javascript">
+	$(".autocomplete_info_confirm").click(function(){
+		$("#base-confirmation-modal").load($(this).data().url)
+	});
+</script>

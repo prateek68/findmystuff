@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load bootstrap %}
 
 {% block body %}
 
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="{% static 'js/autocomplete.js' %}"></script>
+
 
 <script>
+  window.item_category_to_autosearch = 'found';
   $(function() {
     var today = new Date();
     $( "#{{lostitem_form.time.auto_id}}" ).datepicker({
@@ -15,6 +19,14 @@
     });
   });
 </script>
+
+
+<div id="responsebox" style="padding: 20px 20px 20px 20px;">
+  Reponses.
+  <div id="responses">
+    
+  </div>
+</div>
 
 <div class="row" style="padding-top:50px;">
   <div class="col-lg-offset-3 col-lg-6">
