@@ -3,16 +3,14 @@
 	<div class="modal-content">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-			<h4 class="modal-title" id="ModalLabel"> {{ item.itemname }} </h4>
+			<h4 class="modal-title" id="ModalLabel"> <b>{{ item.itemname }}</b> <span style="margin-left:20px;">{% if item.image %}<a href="{{ item.image.url }}" target="new"><span style="color:black; font-size:1.5em;" class="glyphicon glyphicon-camera"> </span></a>{% else %} <span style="color:#d3d3d3; font-size:1.5em;" class="glyphicon glyphicon-camera" > </span> {% endif %}</span></h4>
 		</div>
 		{% if confirm_modal_link %}
 
 		<div class="modal-body">
-			Name: {{ item.itemname }} <br />
-			Info: {{ item.additionalinfo }} <br />
-			Where: {{ item.location }} <br />
-			When: {{ item.time|ago }} <br />
-			{% if item.image %}<a href="{{ item.image.url }}" target="new"><span style="color:black; font-size:1.5em;" class="glyphicon glyphicon-camera"> </span></a>{% else %} <span style="color:#d3d3d3; font-size:1.5em;" class="glyphicon glyphicon-camera" > </span> {% endif %}<br />
+			<b>Info:</b> {{ item.additionalinfo|linebreaks }}
+			<b>Where:</b> {{ item.location|linebreaks }}
+			<b>When:</b><br /> {{ item.time|ago }}
 		</div>
 
 		<div class="modal-footer">
