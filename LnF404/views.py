@@ -116,7 +116,6 @@ def _build_JSON_response(request, response, quantity, items_to_build=None):
         json_item_data['item-name'] = item.itemname
         json_item_data['location']  = item.location
         json_item_data['info']      = item.additionalinfo
-        json_item_data['email']     = item.user.email
         json_item_data['image']     = bool(item.image)
         json_item_data['image_url'] = request.build_absolute_uri(
                                         item.image.url if \
