@@ -12,7 +12,7 @@ only through specific domains
 """
 class LoginAdapter(DefaultSocialAccountAdapter):
     def pre_social_login(self, request, sociallogin):
-        user = sociallogin.account.user
+        user = sociallogin.user
         # allowed hosts
         allowed = getattr(settings, 'ALLOWED_LOGIN_HOSTS', [])
         # error message in case of failure
