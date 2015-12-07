@@ -1,5 +1,6 @@
 from multiprocessing import Process
 from open_facebook import OpenFacebook
+import requests
 
 from django.core.mail import EmailMultiAlternatives
 from djrill import MandrillAPIError
@@ -39,12 +40,28 @@ def _send_mail(subject, text_content, host_user, recipient_list):
     try:
         a = msg.send()          # sending the mail.
     except MandrillAPIError as e:   # TODO check this exception
-        print "Error mail: ", e.read() 
-    
+        print "Error mail: ", e.read()
+
 def send_mail(subject, text_content, host_user, recipient_list):
     """
     Creates a new process which posts sends a mail
     """
     p = Process(target=_send_mail, args=(subject, text_content,
      host_user, recipient_list))
+    p.start()
+
+def _postToFTP(item, info, link):
+    api_key = getattr(settings, "FTP_API_KEY", None)
+    url = getattr(settings, "FTP_API_URL", None)
+    if api_key is None or url is None:
+        print "settings misconfigured for FTP"
+        return
+    response = requests.post(url, data={
+        'api_key'=api_key, 'title'=item,
+        'description'=info, 'link'=link
+        })
+    print "FTP push status", item, response.json()
+
+def postToFTP(item, info, link):
+    p = Process(target=_postToFTP, args=(item, info, link))
     p.start()

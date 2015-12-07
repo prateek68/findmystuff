@@ -200,3 +200,5 @@ except ImportError:
 DAYS_OLD_HOME_PAGE_ITEMS = 60
 DEPLOYED_URL = "findmystuff.iiitd.edu.in"
 ALLOWED_LOGIN_HOSTS_ERROR = "You can login only through a IIITD account."
+FTP_API_KEY = ""
+FTP_API_URL = ""

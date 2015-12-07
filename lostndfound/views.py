@@ -11,7 +11,7 @@ from django.http import HttpResponseRedirect,HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
 from lostnfound import settings
-from communication import PostToFB, send_mail
+from communication import PostToFB, send_mail, postToFTP
 from forms import LostItemForm,FoundItemForm, FeedbackForm
 from LnF404.models import RecentLostItem
 from lostndfound.cached import get_cache, set_cache, set_auth
@@ -54,12 +54,14 @@ def lostitem(request):
                                         obj.additionalinfo.replace('"','\'')))
             obj.save()
 
-            PostToFB(mails.FB_LOST_ITEM_POST%{
-                    'name': ' '.join([obj.user.first_name,
-                                         obj.user.last_name]),
-                    'itemname': obj.itemname,
-                    'location': obj.location, 'details': obj.additionalinfo
-                })
+            post_message_data = {'name': ' '.join([
+                obj.user.first_name, obj.user.last_name]),
+                'itemname': obj.itemname,
+                'location': obj.location, 'details': obj.additionalinfo}
+            PostToFB(mails.FB_LOST_ITEM_POST % post_message_data)
+            postToFTP(obj,itemname,
+                mails.FTP_LOST_ITEM_POST % post_message_data,
+                reverse('log'))
 
             messages.success(request,
                                 "Your item has been added to the portal.")
@@ -90,11 +92,14 @@ def founditem(request):
                                     obj.additionalinfo.replace('"','\'')))
             obj.save()
 
-            PostToFB(mails.FB_FOUND_ITEM_POST%{
-                    'name': ' '.join([obj.user.first_name, obj.user.last_name]),
-                    'itemname': obj.itemname,
-                    'location': obj.location, 'details': obj.additionalinfo
-                })
+            post_message_data = {'name': ' '.join([
+                obj.user.first_name, obj.user.last_name]),
+                'itemname': obj.itemname,
+                'location': obj.location, 'details': obj.additionalinfo}
+            PostToFB(mails.FB_FOUND_ITEM_POST % post_message_data)
+            postToFTP(obj,itemname,
+                mails.FTP_FOUND_ITEM_POST % post_message_data,
+                reverse('log'))
 
             messages.success(request,
                 "Your item has been added to the portal.")

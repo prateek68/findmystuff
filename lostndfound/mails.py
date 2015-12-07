@@ -30,3 +30,6 @@ If it doesn't belong to %(name)s, please click findmystuff.iiitd.edu.in%(link)s 
 
 Thanks,
 Find My Stuff - IIITD"""
+
+FTP_LOST_ITEM_POST = FB_LOST_ITEM_POST
+FTP_FOUND_ITEM_POST = FB_FOUND_ITEM_POST
