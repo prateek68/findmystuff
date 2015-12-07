@@ -57,8 +57,8 @@ def _postToFTP(item, info, link):
         print "settings misconfigured for FTP"
         return
     response = requests.post(url, data={
-        'api_key'=api_key, 'title'=item,
-        'description'=info, 'link'=link
+        'api_key':api_key, 'title':item,
+        'description':info, 'link':link
         })
     print "FTP push status", item, response.json()
 
