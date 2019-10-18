@@ -1,7 +1,7 @@
 ##10/10/2013##
 ##Name - findmystuff##
 ##version number - 1.0##
-This project was undertaken by our team to develop a lost and found system for IIIT-Delhi students.
+This project was undertaken by our team to develop a lost and found system, for IIIT-Delhi students.
 
 Key features
 
